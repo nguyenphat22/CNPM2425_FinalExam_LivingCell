@@ -1,1 +1,2 @@
-# CNPM2425_FinalExam_LivingCell
+# Đây là khởi đầu của đồ án CNPM
+_Chưa có gì cả, khỏi nhìn_
