@@ -14,8 +14,8 @@ Chào mừng đến với kho lưu trữ của nhóm **Living Cells**!
 - 🧑‍💻 **Nguyễn Thị Thanh Trà** - Thành viên
 
 ## Nền tảng & Công cụ 🛠️
-- **Ngôn ngữ lập trình**: PHP
-- **Database**: SQL Server
+- **Ngôn ngữ lập trình**: PHP 
+- **Database**: MySQL
 - **Công cụ**: Git, GitHub, VS Code
 
 ## Dự án 📂
