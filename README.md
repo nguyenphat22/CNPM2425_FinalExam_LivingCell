@@ -25,7 +25,7 @@ _Đang cập nhật, hoặc sẽ không bao giờ cập nhật nữa..._
 Nếu bạn có câu hỏi hoặc muốn hợp tác, hãy tạo issue trên GitHub; hoặc nếu bạn thích ai đó trong nhóm, hãy gặp họ trực tiếp, nhóm chúng tôi không giải quyết được.
 
 ------------------------------------------------
-##Team Introduction 🚀
+## Team Introduction 🚀
 
 Welcome to the repository of Living Cells!
 This is where we store projects, assignments, and documents related to the Introduction to Software Engineering course. We hope this isn’t completely useless.
