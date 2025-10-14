@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 11, 2025 lúc 04:02 AM
+-- Thời gian đã tạo: Th10 14, 2025 lúc 04:42 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Cơ sở dữ liệu: `qlrlktdh`
+-- Cơ sở dữ liệu: `qlrltest`
 --
 
 -- --------------------------------------------------------
@@ -169,8 +169,20 @@ CREATE TABLE `bang_taikhoan` (
   `TenDangNhap` varchar(50) NOT NULL,
   `MatKhau` varchar(255) NOT NULL,
   `VaiTro` enum('Admin','SinhVien','KhaoThi','CTCTHSSV','DoanTruong') NOT NULL,
-  `TrangThai` enum('Active','Inactive','Locked') DEFAULT 'Active'
+  `TrangThai` enum('Active','Inactive','Locked') DEFAULT 'Active',
+  `Email` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `bang_taikhoan`
+--
+
+INSERT INTO `bang_taikhoan` (`MaTK`, `TenDangNhap`, `MatKhau`, `VaiTro`, `TrangThai`, `Email`) VALUES
+(1, 'admin', '$2y$10$OhQog1fLvJgosiMfLRnF8epggU.fEl9saEGJGsM40GFop1EUZemc6', 'Admin', 'Active', 'admin@example.com'),
+(2, 'sv001', '$2y$10$fT7OudlFMXvYxz4jQENQGOAU6l6ZnSIyzZK/F4Df/GWYexZ1ZVLz2', 'SinhVien', 'Active', 'sv001@hcmue.edu.vn'),
+(3, 'ctct01', '$2y$10$8jYI5dWUya39ZUO.8IkJXu3BZc7P1WyiajuxuC0jUvw4FZ53L3p1O', 'CTCTHSSV', 'Active', 'ctct01@hcmue.edu.vn'),
+(4, 'khaothi01', '$2y$10$8jYI5dWUya39ZUO.8IkJXu3BZc7P1WyiajuxuC0jUvw4FZ53L3p1O', 'KhaoThi', 'Active', 'khaothi01@hcmue.edu.vn'),
+(5, 'doan01', '$2y$10$8jYI5dWUya39ZUO.8IkJXu3BZc7P1WyiajuxuC0jUvw4FZ53L3p1O', 'DoanTruong', 'Active', 'doan01@hcmue.edu.vn');
 
 -- --------------------------------------------------------
 
@@ -300,7 +312,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('G593ugT3lHnAbKpq19RAsJ85VzOvuxAeLrM6RQVu', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoia3JUR3BCUFR2Y0dBeHFoWUdMVDBmTlBWWWp1b1Zibk91eFdsVEVMaSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1760147858);
+('JfLCKFCN7WLC5A9qFwSuctFSxRBVoIBRDPy6CSZc', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiY09xZDh3NmV6ZmZpS3pLR1Y5Y24zTkpLM2dUT1lMUTcxUDdlT2Q4YSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9jdGN0L3Npbmh2aWVuIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo0OiJ1c2VyIjthOjQ6e3M6NDoiTWFUSyI7aTozO3M6MTE6IlRlbkRhbmdOaGFwIjtzOjY6ImN0Y3QwMSI7czo2OiJWYWlUcm8iO3M6ODoiQ1RDVEhTU1YiO3M6NDoiTWFTViI7Tjt9fQ==', 1760452890);
 
 -- --------------------------------------------------------
 
@@ -483,7 +495,7 @@ ALTER TABLE `bang_ngaytinhnguyen`
 -- AUTO_INCREMENT cho bảng `bang_taikhoan`
 --
 ALTER TABLE `bang_taikhoan`
-  MODIFY `MaTK` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `MaTK` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT cho bảng `failed_jobs`
