@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\AccountsImport;
+use App\Imports\AccountsImport; 
 
 class AccountController extends Controller
 {
@@ -30,21 +31,31 @@ class AccountController extends Controller
     }
 
     // Demo store/update/delete để form hoạt động (không phải sản phẩm cuối)
-    public function store(\Illuminate\Http\Request $r)
+   public function store(Request $r)
 {
-    // lỗi của modal Thêm sẽ nằm trong bag tên 'add'
+    // Lỗi hiển thị trong modal Thêm (bag 'add')
     $r->validateWithBag('add', [
-        'MaTK'        => 'required|string|max:50',
-        'TenDangNhap' => 'required|string|max:50',
+        'MaTK'        => 'required|string|max:50|unique:BANG_TaiKhoan,MaTK',
+        'TenDangNhap' => 'required|string|max:50|unique:BANG_TaiKhoan,TenDangNhap',
         'MatKhau'     => 'required|min:6',
         'VaiTro'      => 'required|in:Admin,SinhVien,KhaoThi,CTCTHSSV,DoanTruong',
-        'Email'       => 'nullable|email|max:100',
+        'Email'       => 'nullable|email|max:100|unique:BANG_TaiKhoan,Email',
+    ], [
+        'MaTK.unique'        => 'MaTK(ID) đã tồn tại.',
+        'TenDangNhap.unique' => 'Tên đăng nhập đã tồn tại.',
+        'Email.unique'       => 'Email đã tồn tại.',
+    ], [
+        'MaTK'        => 'MaTK(ID)',
+        'TenDangNhap' => 'Tên đăng nhập',
+        'MatKhau'     => 'Mật khẩu',
+        'VaiTro'      => 'Vai trò',
+        'Email'       => 'Email',
     ]);
 
-    \Illuminate\Support\Facades\DB::table('BANG_TaiKhoan')->insert([
+    DB::table('BANG_TaiKhoan')->insert([
         'MaTK'        => $r->MaTK,
         'TenDangNhap' => $r->TenDangNhap,
-        'MatKhau'     => \Illuminate\Support\Facades\Hash::make($r->MatKhau),
+        'MatKhau'     => Hash::make($r->MatKhau),
         'VaiTro'      => $r->VaiTro,
         'TrangThai'   => 'Active',
         'Email'       => $r->Email,
@@ -53,14 +64,28 @@ class AccountController extends Controller
     return back()->with('ok','Đã thêm tài khoản.');
 }
 
-    public function update(\Illuminate\Http\Request $r)
+public function update(Request $r)
 {
-    // lỗi của modal Sửa sẽ nằm trong bag tên 'edit'
+    // Lỗi hiển thị trong modal Sửa (bag 'edit')
     $r->validateWithBag('edit', [
         'MaTK'        => 'required|string|max:50',
-        'TenDangNhap' => 'required|string|max:50',
+        'TenDangNhap' => [
+            'required','string','max:50',
+            Rule::unique('BANG_TaiKhoan','TenDangNhap')->ignore($r->MaTK, 'MaTK'),
+        ],
         'VaiTro'      => 'required|in:Admin,SinhVien,KhaoThi,CTCTHSSV,DoanTruong',
-        'Email'       => 'nullable|email|max:100',
+        'Email'       => [
+            'nullable','email','max:100',
+            Rule::unique('BANG_TaiKhoan','Email')->ignore($r->MaTK, 'MaTK'),
+        ],
+    ], [
+        'TenDangNhap.unique' => 'Tên đăng nhập đã tồn tại.',
+        'Email.unique'       => 'Email đã tồn tại.',
+    ], [
+        'MaTK'        => 'MaTK(ID)',
+        'TenDangNhap' => 'Tên đăng nhập',
+        'VaiTro'      => 'Vai trò',
+        'Email'       => 'Email',
     ]);
 
     $data = [
@@ -70,23 +95,23 @@ class AccountController extends Controller
         'Email'       => $r->Email,
     ];
     if ($r->filled('MatKhau')) {
-        $data['MatKhau'] = \Illuminate\Support\Facades\Hash::make($r->MatKhau);
+        $data['MatKhau'] = Hash::make($r->MatKhau);
     }
 
-    \Illuminate\Support\Facades\DB::table('BANG_TaiKhoan')
-        ->where('MaTK', $r->MaTK)
-        ->update($data);
+    DB::table('BANG_TaiKhoan')->where('MaTK', $r->MaTK)->update($data);
 
     return back()->with('ok','Đã cập nhật tài khoản.');
 }
 
 
+
     public function delete(Request $r)
-    {
-        $r->validate(['MaTK' => 'required|numeric']);
-        DB::table('BANG_TaiKhoan')->where('MaTK',$r->MaTK)->delete();
-        return back()->with('ok','Đã xóa tài khoản.');
-    }
+{
+    $r->validate(['MaTK' => 'required|string']); // MaTK có thể là MSSV có dấu chấm/0 đầu
+    DB::table('BANG_TaiKhoan')->where('MaTK', $r->MaTK)->delete();
+    return back()->with('ok', 'Đã xóa tài khoản.');
+}
+
     public function import(\Illuminate\Http\Request $r)
 {
     $r->validate([
