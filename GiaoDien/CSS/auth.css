@@ -1,0 +1,57 @@
+:root{
+  --primary:#0c4b78;
+  --primary-dark:#09385d;
+  --panel-w:40%;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;height:100vh;display:flex;overflow:hidden;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* layout 2 nửa */
+.left{
+  width:var(--panel-w);background:var(--primary);color:#fff;
+  display:flex;flex-direction:column;align-items:center;gap:18px;
+  padding:28px 22px;border-radius:0 28px 28px 0;overflow:auto;
+}
+.right{
+  width:calc(100% - var(--panel-w));
+  background:url('../assets/images/background_truong.png') center/cover no-repeat;
+}
+
+/* logo & title */
+.school{display:flex;align-items:center;gap:14px;margin-bottom:4px}
+.school img{height:86px}
+.club{display:flex;gap:22px;align-items:center;margin:6px 0 4px}
+.club img{height:78px}
+.title{ text-align:center;font-weight:800;line-height:1.35;letter-spacing:.5px }
+
+/* card form */
+.card-box{
+  width:100%;max-width:430px;background:#fff;color:#000;border-radius:10px;
+  padding:24px 24px 14px;box-shadow:0 6px 18px rgba(0,0,0,.12);margin-top:10px;
+}
+.card-box input{height:42px}
+.btn-primary{background:var(--primary);border:none;height:45px}
+.btn-primary:hover{background:var(--primary-dark)}
+a.light{color:#d7e9ff;text-decoration:none}
+a.light:hover{text-decoration:underline}
+
+/* link "quên mật khẩu?" nhỏ màu xanh */
+.forgot-link{color:#67b3ff;font-size:14px;text-decoration:none;transition:.2s}
+.forgot-link:hover{color:#a7d5ff;text-decoration:underline}
+
+/* responsive */
+@media (max-width: 992px){
+  :root{ --panel-w:50% }
+  .school img{height:74px}
+  .club img{height:66px}
+}
+@media (max-width: 768px){
+  body{flex-direction:column}
+  .left{width:100%;border-radius:0;padding:22px 16px}
+  .right{display:none}
+  .card-box{max-width:520px}
+}

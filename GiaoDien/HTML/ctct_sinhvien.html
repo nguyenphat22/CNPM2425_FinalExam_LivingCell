@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CTCT-HSSV | Danh sách sinh viên</title>
+  <link rel="stylesheet" href="../CSS/ctct.css" />
+</head>
+<body>
+
+<button class="menu-btn" aria-label="Mở menu">☰</button>
+
+<aside class="sidebar">
+  <div class="brand">
+    <img src="../assets/images/logo_truong.png" alt="Logo trường">
+  </div>
+
+  <div class="userbox">
+    <div class="user-ico">👤</div>
+    <div class="user-meta">
+      <div class="name">Nguyễn Văn A</div>
+      <div class="sub">0000</div>
+      <div class="sub">Phòng CTCT-HSSV</div>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <a class="active" href="#"><span>👥</span><span class="txt">Danh sách sinh viên</span></a>
+    <a href="ctct_renluyen.html"><span>📋</span><span class="txt">Danh sách điểm rèn luyện</span></a>
+  </nav>
+
+  <button class="btn-logout">Đăng xuất</button>
+</aside>
+<div class="overlay"></div>
+
+<main>
+  <header class="header">
+    <div class="line1">HỆ THỐNG NGHIỆP VỤ CÔNG TÁC RÈN LUYỆN SINH VIÊN</div>
+    <div class="line2">TRƯỜNG ĐẠI HỌC SƯ PHẠM THÀNH PHỐ HỒ CHÍ MINH</div>
+  </header>
+
+  <section class="page">
+    <div class="page-title">Danh sách sinh viên</div>
+
+    <!-- Toolbar: có Lưu ở TRÊN, thêm Xuất file -->
+    <div class="toolbar">
+      <div class="left">
+        <button class="btn btn-blue">Nhập file</button>
+        <button class="btn btn-outline" id="btnExport">Xuất file</button>
+        <button class="btn btn-green" id="btnAdd">Thêm</button>
+        <button class="btn btn-yellow" id="btnSaveTop">Lưu</button>
+      </div>
+      <div class="right">
+        <input type="text" placeholder="Nhập thông tin sinh viên cần tìm (MSSV, họ và tên,...)">
+        <button class="btn btn-cyan">Tìm</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="table" aria-label="Bảng danh sách sinh viên">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Mã số sinh viên</th>
+            <th>Họ và tên</th>
+            <th>Ngày sinh</th>
+            <th>Khoa</th>
+            <th>Lớp</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Demo 2 dòng, bạn nối dữ liệu thật sau -->
+          <tr>
+            <td>1</td><td>SV001</td><td>Nguyễn Văn A</td><td>01/01/2003</td><td>CNTT</td><td>CTK44A</td>
+            <td>
+              <div class="row-actions">
+                <button class="btn btn-yellow btn-sm" data-modal="#modalEdit">Sửa</button>
+                <button class="btn btn-red btn-sm">Xóa</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>2</td><td>SV002</td><td>Trần B</td><td>11/05/2003</td><td>Toán</td><td>TO44B</td>
+            <td>
+              <div class="row-actions">
+                <button class="btn btn-yellow btn-sm" data-modal="#modalEdit">Sửa</button>
+                <button class="btn btn-red btn-sm">Xóa</button>
+              </div>
+            </td>
+          </tr>
+          <tr><td colspan="7" class="empty">— Dữ liệu khác —</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+      <span class="page disabled">← Previous</span>
+      <span class="page active">1</span>
+      <span class="page">2</span>
+      <span class="page">3</span>
+      <span class="page">…</span>
+      <span class="page">Next →</span>
+    </div>
+  </section>
+</main>
+
+<!-- Modal: Thêm SV -->
+<div class="modal" id="modalAdd">
+  <div class="modal-content">
+    <h2>Thêm sinh viên</h2>
+    <form>
+      <label for="add_mssv">MSSV</label><input id="add_mssv" placeholder="MSSV">
+      <label for="add_hoten">Họ và tên</label><input id="add_hoten" placeholder="Họ và tên">
+      <label for="add_ns">Ngày sinh</label><input id="add_ns" type="date" placeholder="Ngày sinh" title="Chọn ngày sinh">
+      <label for="add_khoa">Khoa</label><input id="add_khoa" placeholder="Khoa">
+      <label for="add_lop">Lớp</label><input id="add_lop" placeholder="Lớp">
+      <button type="submit" class="btn btn-green w100">Thêm</button>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Sửa SV -->
+<div class="modal" id="modalEdit">
+  <div class="modal-content">
+    <h2>Sửa sinh viên</h2>
+    <form>
+      <label for="edit_mssv">MSSV</label><input id="edit_mssv" placeholder="MSSV" value="SV001">
+      <label for="edit_hoten">Họ và tên</label><input id="edit_hoten" placeholder="Họ và tên" value="Nguyễn Văn A">
+      <label for="edit_ns">Ngày sinh</label><input id="edit_ns" type="date" title="Chọn ngày sinh">
+      <label for="edit_khoa">Khoa</label><input id="edit_khoa" placeholder="Khoa" value="CNTT">
+      <label for="edit_lop">Lớp</label><input id="edit_lop" placeholder="Lớp" value="CTK44A">
+      <button type="submit" class="btn btn-yellow w100">Lưu thay đổi</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Toggle menu
+  const body = document.body;
+  document.querySelector('.menu-btn').onclick = () => body.classList.toggle('nav-open');
+  document.querySelector('.overlay').onclick = () => body.classList.remove('nav-open');
+
+  // Modal helper
+  function openModal(id){ document.querySelector(id).classList.add('show'); }
+  function closeModal(e){ if(e.target.classList.contains('modal')) e.target.classList.remove('show'); }
+  document.getElementById('btnAdd').onclick = () => openModal('#modalAdd');
+  document.querySelectorAll('[data-modal="#modalEdit"]').forEach(b=>b.onclick=()=>openModal('#modalEdit'));
+  document.getElementById('modalAdd').onclick = closeModal;
+  document.getElementById('modalEdit').onclick = closeModal;
+
+  // Xuất file (demo)
+  document.getElementById('btnExport').onclick = () => alert('Xuất file: bạn nối logic export tại đây!');
+  document.getElementById('btnSaveTop').onclick = () => alert('Lưu thay đổi: nối API lưu dữ liệu tại đây!');
+</script>
+</body>
+</html>
