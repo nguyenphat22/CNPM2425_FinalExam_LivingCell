@@ -32,3 +32,7 @@ Route::middleware('auth.session')->group(function () {
     Route::post('/admin/accounts/update',          [AccountController::class, 'update'])->name('admin.accounts.update'); // demo
     Route::post('/admin/accounts/delete',          [AccountController::class, 'delete'])->name('admin.accounts.delete'); // demo
 });
+// Admin Home -> redirect sang danh sách tài khoản
+Route::get('/admin', function () {
+    return redirect()->route('admin.accounts.index');
+})->name('admin.home');

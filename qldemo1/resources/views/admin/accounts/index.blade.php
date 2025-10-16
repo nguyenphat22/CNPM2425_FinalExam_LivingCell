@@ -21,7 +21,7 @@
     <button class="btn btn-secondary">Upload file</button>
   </form>
 
-  <button class="btn btn-warning" type="button" onclick="showSaveMessage()">Lưu(Update)</button>
+  <button class="btn btn-warning" type="button" onclick="showSaveMessage()">Lưu</button>
 
   <form class="ms-auto d-flex" method="get">
     <input class="form-control me-2" name="q" value="{{ $q }}" placeholder="Tìm...">
@@ -83,52 +83,84 @@
 
 {{ $data->links() }}
 
-{{-- Modal THÊM --}}
-<div class="modal fade" id="modalAdd" tabindex="-1">
+{{-- Modal THÊM (MaTK tự động – KHÔNG cần nhập) --}}
+<div class="modal fade" id="modalAdd" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <form class="modal-content" method="post" action="{{ route('admin.accounts.store') }}">
       @csrf
       <div class="modal-header">
         <h5 class="modal-title">Thêm Tài khoản</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
       </div>
+
       <div class="modal-body">
-        <div class="mb-2">
-          <label class="form-label">MaTK</label>
-          <input class="form-control @error('MaTK','add') is-invalid @enderror" name="MaTK" value="{{ old('MaTK') }}" required>
-          @error('MaTK','add') <div class="invalid-feedback">{{ $message }}</div> @enderror
-        </div>
+
         <div class="mb-2">
           <label class="form-label">Tên đăng nhập</label>
-          <input class="form-control @error('TenDangNhap','add') is-invalid @enderror" name="TenDangNhap" value="{{ old('TenDangNhap') }}" required>
-          @error('TenDangNhap','add') <div class="invalid-feedback">{{ $message }}</div> @enderror
+          <input
+            class="form-control @error('TenDangNhap','add') is-invalid @enderror"
+            name="TenDangNhap"
+            value="{{ old('TenDangNhap') }}"
+            required
+          >
+          @error('TenDangNhap','add')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
         </div>
+
         <div class="mb-2">
           <label class="form-label">Mật khẩu</label>
-          <input type="password" class="form-control @error('MatKhau','add') is-invalid @enderror" name="MatKhau" required>
-          @error('MatKhau','add') <div class="invalid-feedback">{{ $message }}</div> @enderror
+          <input
+            type="password"
+            class="form-control @error('MatKhau','add') is-invalid @enderror"
+            name="MatKhau"
+            required
+          >
+          @error('MatKhau','add')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
         </div>
+
         <div class="mb-2">
           <label class="form-label">Vai trò</label>
-          <select class="form-select @error('VaiTro','add') is-invalid @enderror" name="VaiTro" required>
-            <option value="Admin"       @selected(old('VaiTro')==='Admin')>Admin</option>
-            <option value="SinhVien"    @selected(old('VaiTro')==='SinhVien')>SinhVien</option>
-            <option value="CTCTHSSV"    @selected(old('VaiTro')==='CTCTHSSV')>CTCTHSSV</option>
-            <option value="KhaoThi"     @selected(old('VaiTro')==='KhaoThi')>KhaoThi</option>
-            <option value="DoanTruong"  @selected(old('VaiTro')==='DoanTruong')>DoanTruong</option>
+          <select
+            class="form-select @error('VaiTro','add') is-invalid @enderror"
+            name="VaiTro"
+            required
+          >
+            <option value="Admin"      @selected(old('VaiTro')==='Admin')>Admin</option>
+            <option value="SinhVien"   @selected(old('VaiTro')==='SinhVien')>SinhVien</option>
+            <option value="CTCTHSSV"   @selected(old('VaiTro')==='CTCTHSSV')>CTCTHSSV</option>
+            <option value="KhaoThi"    @selected(old('VaiTro')==='KhaoThi')>KhaoThi</option>
+            <option value="DoanTruong" @selected(old('VaiTro')==='DoanTruong')>DoanTruong</option>
           </select>
-          @error('VaiTro','add') <div class="invalid-feedback">{{ $message }}</div> @enderror
+          @error('VaiTro','add')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
         </div>
+
         <div class="mb-2">
           <label class="form-label">Email</label>
-          <input type="email" class="form-control @error('Email','add') is-invalid @enderror" name="Email" value="{{ old('Email') }}" placeholder="vd: user@example.com">
-          @error('Email','add') <div class="invalid-feedback">{{ $message }}</div> @enderror
+          <input
+            type="email"
+            class="form-control @error('Email','add') is-invalid @enderror"
+            name="Email"
+            value="{{ old('Email') }}"
+            placeholder="vd: user@example.com"
+          >
+          @error('Email','add')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
         </div>
       </div>
-      <div class="modal-footer"><button class="btn btn-primary">Lưu(Update)</button></div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary">Lưu</button>
+      </div>
     </form>
   </div>
 </div>
+
 
 {{-- Modal SỬA --}}
 <div class="modal fade" id="modalEdit" tabindex="-1">
@@ -217,7 +249,7 @@
       position:'fixed', top:'10px', left:'50%',
       transform:'translateX(-50%)', zIndex:'2000', width:'350px'
     });
-    box.textContent = '✅ Đã lưu thành công!';
+    box.textContent = '✅ Đã lưu thành công!✅';
     document.body.appendChild(box);
     setTimeout(()=>{ box.remove(); location.reload(); },1500);
   }
