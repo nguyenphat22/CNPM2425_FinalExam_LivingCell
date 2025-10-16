@@ -51,22 +51,30 @@ class AuthController extends Controller
 
     // Bước 1: xác thực tên đăng nhập + email
     public function handleForgot(Request $r)
-    {
-        $r->validate([
-            'TenDangNhap' => 'required',
-            'Email'       => 'required|email',
+{
+    $r->validate([
+        'TenDangNhap' => 'required',
+        'Email'       => 'required|email',
+    ]);
+
+    $u = DB::table('BANG_TaiKhoan')
+        ->where('TenDangNhap', $r->TenDangNhap)
+        ->where('Email', $r->Email)
+        ->first();
+
+    if (!$u) {
+        // KHÔNG dùng withInput() => không giữ lại dữ liệu cũ
+        return back()->withErrors([
+            'credentials' => 'Tên đăng nhập và email công tác không khớp.',
         ]);
-        $u = DB::table('BANG_TaiKhoan')
-            ->where('TenDangNhap', $r->TenDangNhap)
-            ->where('Email', $r->Email)
-            ->first();
-
-        if (!$u) return back()->withErrors('Không khớp tên đăng nhập / email.');
-
-        // Gắn một "token nhẹ" lên session để cho phép vào trang reset
-        $r->session()->put('reset_ok_user_id', $u->MaTK);
-        return redirect()->route('reset.show')->with('ok', 'Xác thực thành công, vui lòng đặt mật khẩu mới.');
     }
+
+    // Nếu xác thực thành công
+    $r->session()->put('reset_ok_user_id', $u->MaTK);
+    return redirect()->route('reset.show')
+        ->with('ok', 'Xác thực thành công, vui lòng đặt mật khẩu mới.');
+}
+
 
     public function showReset(Request $r)
     {
