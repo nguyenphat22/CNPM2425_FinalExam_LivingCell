@@ -35,17 +35,14 @@ class AccountController extends Controller
 {
     // Lỗi hiển thị trong modal Thêm (bag 'add')
     $r->validateWithBag('add', [
-        'MaTK'        => 'required|string|max:50|unique:BANG_TaiKhoan,MaTK',
         'TenDangNhap' => 'required|string|max:50|unique:BANG_TaiKhoan,TenDangNhap',
         'MatKhau'     => 'required|min:6',
         'VaiTro'      => 'required|in:Admin,SinhVien,KhaoThi,CTCTHSSV,DoanTruong',
         'Email'       => 'nullable|email|max:100|unique:BANG_TaiKhoan,Email',
     ], [
-        'MaTK.unique'        => 'MaTK(ID) đã tồn tại.',
         'TenDangNhap.unique' => 'Tên đăng nhập đã tồn tại.',
         'Email.unique'       => 'Email đã tồn tại.',
     ], [
-        'MaTK'        => 'MaTK(ID)',
         'TenDangNhap' => 'Tên đăng nhập',
         'MatKhau'     => 'Mật khẩu',
         'VaiTro'      => 'Vai trò',
@@ -53,7 +50,6 @@ class AccountController extends Controller
     ]);
 
     DB::table('BANG_TaiKhoan')->insert([
-        'MaTK'        => $r->MaTK,
         'TenDangNhap' => $r->TenDangNhap,
         'MatKhau'     => Hash::make($r->MatKhau),
         'VaiTro'      => $r->VaiTro,

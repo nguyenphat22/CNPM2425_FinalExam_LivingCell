@@ -4,6 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\AccountController;
+use App\Http\Controllers\CtctController;
+use App\Http\Controllers\KhaothiController;
+use App\Http\Controllers\DoanController;
+use App\Http\Controllers\SinhVienController;
 
 Route::get('/', fn() => redirect()->route('login.show'));
 
@@ -32,3 +36,41 @@ Route::middleware('auth.session')->group(function () {
     Route::post('/admin/accounts/update',          [AccountController::class, 'update'])->name('admin.accounts.update'); // demo
     Route::post('/admin/accounts/delete',          [AccountController::class, 'delete'])->name('admin.accounts.delete'); // demo
 });
+// Admin Home -> redirect sang danh sách tài khoản
+Route::get('/admin', function () {
+    return redirect()->route('admin.accounts.index');
+})->name('admin.home');
+// CTCT HSSV routes
+Route::prefix('ctct')
+    ->middleware(['auth.session','role:CTCTHSSV'])
+    ->group(function () {
+        Route::get('/', fn() => redirect()->route('ctct.sinhvien.index'))->name('ctct.home');
+        Route::get('/sinhvien', [CtctController::class,'sinhVienIndex'])->name('ctct.sinhvien.index');
+        Route::get('/drl',      [CtctController::class,'drlIndex'])->name('ctct.drl.index');
+    });
+// Khao Thi routes
+Route::prefix('khaothi')
+  ->middleware(['auth.session','role:KhaoThi'])
+  ->group(function () {
+    Route::get('/', fn() => redirect()->route('khaothi.sinhvien.index'))->name('khaothi.home');
+    Route::get('/sinhvien', [KhaothiController::class,'sinhVienIndex'])->name('khaothi.sinhvien.index');
+    Route::get('/gpa',      [KhaothiController::class,'gpaIndex'])->name('khaothi.gpa.index');
+  });
+
+// Đoàn Trường routes
+Route::prefix('doantruong')
+    ->middleware(['auth.session','role:DoanTruong'])
+    ->group(function () {
+        Route::get('/', fn() => redirect()->route('doan.khenthuong.index'))->name('doan.home');
+
+        Route::get('/khenthuong',   [DoanController::class,'khenThuongIndex'])->name('doan.khenthuong.index');
+        Route::get('/tinhnguyen',   [DoanController::class,'tinhNguyenIndex'])->name('doan.tinhnguyen.index');
+        Route::get('/danhhieu',     [DoanController::class,'danhHieuIndex'])->name('doan.danhhieu.index');
+    });
+
+// Sinh Viên routes
+Route::prefix('sinhvien')
+    ->middleware(['auth.session','role:SinhVien'])
+    ->group(function () {
+        Route::get('/', [SinhVienController::class, 'index'])->name('sv.home');
+    });

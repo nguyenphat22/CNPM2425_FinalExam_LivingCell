@@ -28,7 +28,12 @@ class DashboardController extends Controller
 
         return view('dash.sinhvien', compact('sv','gpa','drl','ntn','goiY'));
     }
-    public function ctct()     { return view('dash.ctct'); }
-    public function khaothi()  { return view('dash.khaothi'); }
-    public function doan()     { return view('dash.doan'); }
+    // app/Http/Controllers/DashboardController.php
+public function ctct()
+{
+    // chuyển thẳng tới trang CTCT -> Danh sách sinh viên
+    return redirect()->route('ctct.sinhvien.index');
+}
+    public function khaothi()  { return redirect()->route('khaothi.sinhvien.index'); }
+    public function doan()     { return redirect()->route('doan.index'); }
 }
