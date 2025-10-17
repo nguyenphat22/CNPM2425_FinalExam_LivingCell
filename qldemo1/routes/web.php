@@ -56,6 +56,22 @@ Route::prefix('khaothi')
     Route::get('/sinhvien', [KhaothiController::class,'sinhVienIndex'])->name('khaothi.sinhvien.index');
     Route::get('/gpa',      [KhaothiController::class,'gpaIndex'])->name('khaothi.gpa.index');
   });
+Route::prefix('ctct')->middleware('role:CTCTHSSV')->group(function () {
+    Route::get('/', fn () => redirect()->route('ctct.sinhvien.index'))->name('ctct.home');
+
+    Route::get('/sinhvien', [\App\Http\Controllers\CtctController::class, 'sinhVienIndex'])
+        ->name('ctct.sinhvien.index');
+
+    Route::post('/sinhvien/store',  [\App\Http\Controllers\CtctController::class, 'svStore'])
+        ->name('ctct.sv.store');
+
+    Route::post('/sinhvien/update', [\App\Http\Controllers\CtctController::class, 'svUpdate'])
+        ->name('ctct.sv.update');
+
+    Route::post('/sinhvien/delete', [\App\Http\Controllers\CtctController::class, 'svDelete'])
+        ->name('ctct.sv.delete');
+    Route::post('sinhvien/import', [CtctController::class, 'svImport'])->name('ctct.sv.import');
+});
 
 // Đoàn Trường routes
 Route::prefix('doantruong')
