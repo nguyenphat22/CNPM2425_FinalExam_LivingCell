@@ -1,64 +1,227 @@
-{{-- resources/views/ctct/sinhvien.blade.php --}}
 @extends('layouts.app')
-@section('title','CTCT-HSSV | Danh sách sinh viên')
+@section('title','Danh sách sinh viên')
 
 @section('content')
-<div class="row">
+<h4 class="mb-3">Danh sách sinh viên</h4>
 
-  <main class="col-md-9">
-    <h5>Danh sách sinh viên</h5>
+{{-- thanh công cụ: Import + Thêm + Tìm --}}
+<div class="d-flex gap-2 mb-3 align-items-center">
+  {{-- Nút Lưu giả (refresh trang + thông báo) --}}
+  <button id="btn-refresh" class="btn btn-success">
+    <i class="bi bi-check-circle me-1"></i> Lưu
+  </button>
+  <form method="post" action="{{ route('ctct.sv.import') }}" enctype="multipart/form-data" class="d-flex gap-2">
+  @csrf
+  <input type="file" name="file" class="form-control" style="max-width:260px;" accept=".xlsx,.xls,.csv" required>
+  <button class="btn btn-secondary" type="submit">Nhập file Excel ds sinh viên</button>
+</form>
 
-    <div class="d-flex gap-2 mb-2">
-      <button class="btn btn-secondary">Nhập file Excel ds sinh viên</button>
-      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSV">Thêm</button>
-      <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#editSV">Sửa</button>
-      <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delSV">Xóa</button>
-      <button class="btn btn-warning">Lưu</button>
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">Thêm</button>
 
-      <form class="ms-auto d-flex">
-        <input class="form-control me-2" placeholder="Tìm...">
-        <button class="btn btn-outline-primary">Tìm</button>
-      </form>
-    </div>
-
-    <div class="table-responsive mb-4">
-      <table class="table table-bordered">
-        <thead class="table-light">
-          <tr><th>STT</th><th>MSSV</th><th>Họ và Tên</th><th>Ngày sinh</th><th>Khoa</th><th>Lớp</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>1</td><td>SV001</td><td>Nguyễn A</td><td>2004-01-01</td><td>SP Toán</td><td>10A1</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </main>
+  <form class="ms-auto d-flex" method="get">
+    <input class="form-control me-2" name="q" value="{{ $q }}" placeholder="Tìm...">
+    <button class="btn btn-outline-primary">Tìm</button>
+  </form>
 </div>
 
-{{-- Modals SV --}}
-<div class="modal fade" id="addSV" tabindex="-1">
-  <div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header"><h5 class="modal-title">Thêm sinh viên</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
-    <div class="modal-body">
-      <div class="mb-2"><label class="form-label">MSSV</label><input class="form-control"></div>
-      <div class="mb-2"><label class="form-label">Họ và tên</label><input class="form-control"></div>
-      <div class="mb-2"><label class="form-label">Ngày sinh</label><input type="date" class="form-control"></div>
-      <div class="mb-2"><label class="form-label">Khoa</label><input class="form-control"></div>
-      <button class="btn btn-primary">Thêm</button>
-    </div>
-  </div></div>
+<div class="table-responsive">
+  <table class="table table-bordered align-middle">
+    <thead class="table-light">
+      <tr>
+        <th style="width:80px">STT</th>
+        <th style="width:120px">MSSV</th>
+        <th>Họ và Tên</th>
+        <th style="width:140px">Ngày sinh</th>
+        <th style="width:160px">Khoa</th>
+        <th style="width:120px">Lớp</th>
+        <th style="width:120px">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+    @forelse($data as $i => $r)
+      <tr>
+        <td>{{ $data->firstItem() + $i }}</td>
+        <td>{{ $r->MaSV }}</td>
+        <td>{{ $r->HoTen }}</td>
+        <td>
+          @php
+            $d = $r->NgaySinh ? \Illuminate\Support\Carbon::parse($r->NgaySinh)->format('Y-m-d') : '';
+          @endphp
+          {{ $d }}
+        </td>
+        <td>{{ $r->Khoa }}</td>
+        <td>{{ $r->Lop }}</td>
+        <td>
+          <button type="button"
+            class="btn btn-sm btn-outline-primary me-1"
+            data-bs-toggle="modal" data-bs-target="#modalEdit"
+            data-masv="{{ $r->MaSV }}"
+            data-hoten="{{ $r->HoTen }}"
+            data-ngaysinh="{{ $r->NgaySinh }}"
+            data-khoa="{{ $r->Khoa }}"
+            data-lop="{{ $r->Lop }}">Sửa</button>
+
+          <button type="button"
+            class="btn btn-sm btn-outline-danger"
+            data-bs-toggle="modal" data-bs-target="#modalDelete"
+            data-masv="{{ $r->MaSV }}">Xóa</button>
+        </td>
+      </tr>
+    @empty
+      <tr><td colspan="7" class="text-center">Không có dữ liệu</td></tr>
+    @endforelse
+    </tbody>
+  </table>
 </div>
 
-<div class="modal fade" id="editSV" tabindex="-1">
-  <div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header"><h5 class="modal-title">Sửa thông tin sinh viên</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
-    <div class="modal-body">
-      <div class="mb-2"><label class="form-label">MSSV</label><input class="form-control"></div>
-      <div class="mb-2"><label class="form-label">Họ và tên</label><input class="form-control"></div>
-      <div class="mb-2"><label class="form-label">Ngày sinh</label><input type="date" class="form-control"></div>
-      <div class="mb-2"><label class="form-label">Khoa</label><input class="form-control"></div>
-      <div class="mb-2"><label class="form-label">Lớp</label><input class="form-control"></div>
-      <button class="btn btn-primary">Lưu</button>
-    </div>
-  </div></div>
+{{ $data->links() }}
+
+{{-- MODAL THÊM --}}
+<div class="modal fade" id="modalAdd" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post" action="{{ route('ctct.sv.store') }}">
+      @csrf
+      <div class="modal-header">
+        <h5 class="modal-title">Thêm sinh viên</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-2">
+          <label class="form-label">MSSV</label>
+          <input class="form-control @error('MaSV') is-invalid @enderror" name="MaSV" value="{{ old('MaSV') }}" required>
+          @error('MaSV')<div class="invalid-feedback">{{ $message }}</div>@enderror
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Họ và Tên</label>
+          <input class="form-control @error('HoTen') is-invalid @enderror" name="HoTen" value="{{ old('HoTen') }}" required>
+          @error('HoTen')<div class="invalid-feedback">{{ $message }}</div>@enderror
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Ngày sinh</label>
+          <input type="date" class="form-control @error('NgaySinh') is-invalid @enderror" name="NgaySinh" value="{{ old('NgaySinh') }}" required>
+          @error('NgaySinh')<div class="invalid-feedback">{{ $message }}</div>@enderror
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Khoa</label>
+          <input class="form-control @error('Khoa') is-invalid @enderror" name="Khoa" value="{{ old('Khoa') }}">
+          @error('Khoa')<div class="invalid-feedback">{{ $message }}</div>@enderror
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Lớp</label>
+          <input class="form-control @error('Lop') is-invalid @enderror" name="Lop" value="{{ old('Lop') }}">
+          @error('Lop')<div class="invalid-feedback">{{ $message }}</div>@enderror
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary">Lưu</button>
+      </div>
+    </form>
+  </div>
 </div>
+
+{{-- MODAL SỬA --}}
+<div class="modal fade" id="modalEdit" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post" action="{{ route('ctct.sv.update') }}">
+      @csrf
+      <div class="modal-header">
+        <h5 class="modal-title">Sửa sinh viên</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-2">
+          <label class="form-label">MSSV</label>
+          {{-- KHÔNG cho đổi MaSV để tránh lỗi khóa chính --}}
+          <input class="form-control" name="MaSV" id="edit_masv" readonly>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Họ và Tên</label>
+          <input class="form-control" name="HoTen" id="edit_hoten" required>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Ngày sinh</label>
+          <input type="date" class="form-control" name="NgaySinh" id="edit_ngaysinh" required>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Khoa</label>
+          <input class="form-control" name="Khoa" id="edit_khoa">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Lớp</label>
+          <input class="form-control" name="Lop" id="edit_lop">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary">Lưu</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{{-- MODAL XÓA --}}
+<div class="modal fade" id="modalDelete" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post" action="{{ route('ctct.sv.delete') }}">
+      @csrf
+      <div class="modal-header">
+        <h5 class="modal-title">Xác nhận xóa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="MaSV" id="del_masv_input">
+        Bạn chắc chắn muốn xóa sinh viên MaSV: <strong id="del_masv_text"></strong>?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button class="btn btn-danger">Xóa</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+@push('scripts')
+<script>
+// Nút Lưu giả (refresh trang + thông báo)
+document.addEventListener('DOMContentLoaded', () => {
+  // Khi bấm nút "Lưu (Cập nhật)"
+  const refreshBtn = document.getElementById('btn-refresh');
+  refreshBtn?.addEventListener('click', () => {
+    // Hiện thông báo thành công
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-success position-fixed top-0 end-0 m-3 shadow';
+    alert.style.zIndex = '2000';
+    alert.textContent = '✅ Đã cập nhật thành công!';
+    document.body.appendChild(alert);
+
+
+    // Tự ẩn sau 50 giây
+    setTimeout(() => alert.remove(), 50000);
+    // Refresh lại trang (tuỳ chọn)
+    location.reload();
+    
+  });
+});
+document.addEventListener('DOMContentLoaded', () => {
+  // --- SỬA ---
+  const editModal = document.getElementById('modalEdit');
+  editModal?.addEventListener('show.bs.modal', ev => {
+    const btn = ev.relatedTarget;
+    document.getElementById('edit_masv').value     = btn.getAttribute('data-masv');
+    document.getElementById('edit_hoten').value    = btn.getAttribute('data-hoten');
+    document.getElementById('edit_ngaysinh').value = btn.getAttribute('data-ngaysinh');
+    document.getElementById('edit_khoa').value     = btn.getAttribute('data-khoa') ?? '';
+    document.getElementById('edit_lop').value      = btn.getAttribute('data-lop') ?? '';
+  });
+
+  // --- XÓA ---
+  const delModal = document.getElementById('modalDelete');
+  delModal?.addEventListener('show.bs.modal', ev => {
+    const btn = ev.relatedTarget;
+    const masv = btn.getAttribute('data-masv');
+    document.getElementById('del_masv_input').value = masv;
+    document.getElementById('del_masv_text').textContent = masv;
+  });
+});
+</script>
+@endpush
 @endsection
