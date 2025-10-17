@@ -249,9 +249,14 @@
       position:'fixed', top:'10px', left:'50%',
       transform:'translateX(-50%)', zIndex:'2000', width:'350px'
     });
-    box.textContent = '✅ Đã lưu thành công!✅';
+    box.textContent = '✅ Đã lưu thành công, đang chuyển về trang chính...';
     document.body.appendChild(box);
-    setTimeout(()=>{ box.remove(); location.reload(); },1500);
+   setTimeout(()=>{
+      box.remove();
+      // chuyển về trang danh sách sau khi hiển thị thông báo
+      window.location.href = "{{ url('/admin/accounts') }}";
+      // hoặc dùng replace để không lưu lịch sử: window.location.replace('http://127.0.0.1:8000/admin/accounts');
+    },1500);
   }
 
   // Khởi tạo các handler khi DOM sẵn sàng

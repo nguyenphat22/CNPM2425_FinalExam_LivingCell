@@ -56,22 +56,29 @@ Route::prefix('khaothi')
     Route::get('/sinhvien', [KhaothiController::class,'sinhVienIndex'])->name('khaothi.sinhvien.index');
     Route::get('/gpa',      [KhaothiController::class,'gpaIndex'])->name('khaothi.gpa.index');
   });
-Route::prefix('ctct')->middleware('role:CTCTHSSV')->group(function () {
-    Route::get('/', fn () => redirect()->route('ctct.sinhvien.index'))->name('ctct.home');
+// CTCT HSSV routes
+Route::prefix('ctct')
+    ->middleware(['auth.session','role:CTCTHSSV'])
+    ->name('ctct.')                      // <-- mọi route bên trong sẽ có tiền tố ctct.
+    ->group(function () {
 
-    Route::get('/sinhvien', [\App\Http\Controllers\CtctController::class, 'sinhVienIndex'])
-        ->name('ctct.sinhvien.index');
+        Route::get('/', fn () => redirect()->route('ctct.sinhvien.index'))
+            ->name('home');
 
-    Route::post('/sinhvien/store',  [\App\Http\Controllers\CtctController::class, 'svStore'])
-        ->name('ctct.sv.store');
+        // Danh sách sinh viên
+        Route::get('/sinhvien',         [CtctController::class,'sinhVienIndex'])->name('sinhvien.index');
+        Route::post('/sinhvien/store',  [CtctController::class,'svStore'])->name('sv.store');
+        Route::post('/sinhvien/update', [CtctController::class,'svUpdate'])->name('sv.update');
+        Route::post('/sinhvien/delete', [CtctController::class,'svDelete'])->name('sv.delete');
+        Route::post('/sinhvien/import', [CtctController::class,'svImport'])->name('sv.import');
 
-    Route::post('/sinhvien/update', [\App\Http\Controllers\CtctController::class, 'svUpdate'])
-        ->name('ctct.sv.update');
-
-    Route::post('/sinhvien/delete', [\App\Http\Controllers\CtctController::class, 'svDelete'])
-        ->name('ctct.sv.delete');
-    Route::post('sinhvien/import', [CtctController::class, 'svImport'])->name('ctct.sv.import');
-});
+        // Điểm rèn luyện
+        Route::get( '/drl',         [CtctController::class,'drlIndex'])->name('drl.index');
+        Route::post('/drl/update',  [CtctController::class,'drlUpdate'])->name('drl.update');
+        Route::post('/drl/delete',  [CtctController::class,'drlDestroy'])->name('drl.delete');
+        Route::post('/drl/import',  [CtctController::class,'drlImport'])->name('drl.import');
+        Route::get( '/drl/export',  [CtctController::class,'drlExport'])->name('drl.export'); // <-- export là GET
+    });
 
 // Đoàn Trường routes
 Route::prefix('doantruong')
