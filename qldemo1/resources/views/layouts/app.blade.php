@@ -40,14 +40,26 @@
   {{-- SIDEBAR --}}
   <aside class="sidebar bg-dark text-white p-3 d-flex flex-column">
     <div class="brand mb-3">QLSV</div>
-    <ul class="nav nav-pills flex-column gap-2 mb-auto">
-      <li class="nav-item">
-        <a class="nav-link @if(request()->routeIs('admin.accounts.*')) active @endif"
-           href="{{ route('admin.accounts.index') }}">
-          Danh sách tài khoản
-        </a>
-      </li>
-    </ul>
+    {{-- Sidebar theo module --}}
+<div class="mb-auto">
+  @if (request()->is('admin*'))
+    <div class="text-white-80">Quản trị hệ thống</div>
+    @include('admin._sidebar')
+    @elseif (request()->is('sinhvien*'))
+    <div class="text-white-80">Trang Sinh viên</div>
+  @include('sinhvien._sidebar')
+  @elseif (request()->is('ctct*'))
+    <div class="text-white-80">CTCT-HSSV</div>
+    @include('ctct._sidebar')
+  @elseif (request()->is('khaothi*'))
+  <div class="text-white-80">Khảo thí</div>
+    @include('khaothi._sidebar')
+  @elseif (request()->is('doantruong*'))
+  <div class="text-white-80">Đoàn Trường</div>
+    @include('doan._sidebar')
+  @endif
+</div>
+
 
     <form method="post" action="{{ route('logout') }}" class="mt-3">
       @csrf
