@@ -50,12 +50,19 @@ Route::prefix('ctct')
     });
 // Khao Thi routes
 Route::prefix('khaothi')
-  ->middleware(['auth.session','role:KhaoThi'])
-  ->group(function () {
-    Route::get('/', fn() => redirect()->route('khaothi.sinhvien.index'))->name('khaothi.home');
-    Route::get('/sinhvien', [KhaothiController::class,'sinhVienIndex'])->name('khaothi.sinhvien.index');
-    Route::get('/gpa',      [KhaothiController::class,'gpaIndex'])->name('khaothi.gpa.index');
-  });
+    ->middleware(['auth.session','role:KhaoThi'])
+    ->name('khaothi.')
+    ->group(function () {
+        Route::get('/', fn() => redirect()->route('khaothi.sinhvien.index'))->name('home');
+        Route::get('/sinhvien', [KhaothiController::class, 'sinhVienIndex'])->name('sinhvien.index');
+
+        // === QUẢN LÝ ĐIỂM HỌC TẬP ===
+        Route::get('/gpa',         [KhaothiController::class, 'gpaIndex'])->name('gpa.index');
+        Route::post('/gpa/update', [KhaothiController::class, 'gpaUpdate'])->name('gpa.update');
+        Route::post('/gpa/delete', [KhaothiController::class, 'gpaDelete'])->name('gpa.delete');
+        Route::post('/gpa/import', [KhaothiController::class, 'gpaImport'])->name('gpa.import'); // ✅ thêm dòng này
+        Route::get ('/gpa/export', [KhaothiController::class, 'gpaExport'])->name('gpa.export');
+    });
 // CTCT HSSV routes
 Route::prefix('ctct')
     ->middleware(['auth.session','role:CTCTHSSV'])
@@ -83,12 +90,25 @@ Route::prefix('ctct')
 // Đoàn Trường routes
 Route::prefix('doantruong')
     ->middleware(['auth.session','role:DoanTruong'])
+    ->name('doan.') // ✅ thêm dòng này để Laravel nhận tên route như doan.danhhieu.store
     ->group(function () {
-        Route::get('/', fn() => redirect()->route('doan.khenthuong.index'))->name('doan.home');
+        Route::get('/', fn() => redirect()->route('doan.khenthuong.index'))->name('home');
 
-        Route::get('/khenthuong',   [DoanController::class,'khenThuongIndex'])->name('doan.khenthuong.index');
-        Route::get('/tinhnguyen',   [DoanController::class,'tinhNguyenIndex'])->name('doan.tinhnguyen.index');
-        Route::get('/danhhieu',     [DoanController::class,'danhHieuIndex'])->name('doan.danhhieu.index');
+        Route::get('/khenthuong', [DoanController::class, 'khenThuongIndex'])->name('khenthuong.index');
+        Route::get('/tinhnguyen', [DoanController::class, 'tinhNguyenIndex'])->name('tinhnguyen.index');
+        Route::get('/danhhieu',   [DoanController::class, 'danhHieuIndex'])->name('danhhieu.index');
+
+        // Thêm 3 route POST cho danh hiệu
+        Route::post('/danhhieu/store',  [DoanController::class, 'dhStore'])->name('danhhieu.store');
+        Route::post('/danhhieu/update', [DoanController::class, 'dhUpdate'])->name('danhhieu.update');
+        Route::post('/danhhieu/delete', [DoanController::class, 'dhDelete'])->name('danhhieu.delete');
+        // Ngày tình nguyện
+        Route::post('/tinhnguyen/store',  [DoanController::class,'ntnStore'])->name('tinhnguyen.store');
+        Route::post('/tinhnguyen/update', [DoanController::class,'ntnUpdate'])->name('tinhnguyen.update');
+        Route::post('/tinhnguyen/delete', [DoanController::class,'ntnDelete'])->name('tinhnguyen.delete');
+        
+        // Import Excel
+        Route::post('/tinhnguyen/import', [DoanController::class,'ntnImport'])->name('tinhnguyen.import');
     });
 
 // Sinh Viên routes

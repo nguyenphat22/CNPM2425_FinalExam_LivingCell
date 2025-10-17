@@ -1,77 +1,180 @@
 @extends('layouts.app')
-@section('title','Phòng Khảo thí | Quản lý điểm học tập')
+@section('title','Khảo thí | Quản lý điểm học tập')
 
 @section('content')
-<div class="row">
+<h5 class="mb-3">Quản lý điểm học tập</h5>
 
-  <main class="col-md-9">
-    <h5 class="mb-3">Quản lý điểm học tập</h5>
+<div class="d-flex gap-2 mb-3 align-items-center">
+  <form method="post" action="{{ route('khaothi.gpa.import') }}" enctype="multipart/form-data" class="d-flex gap-2">
+    @csrf
+    <input type="file" name="file" class="form-control" style="max-width:260px;" accept=".xlsx,.xls,.csv" required>
+    <button class="btn btn-secondary" type="submit">Nhập file Excel</button>
+  </form>
 
-    <div class="d-flex gap-2 mb-3">
-      <button class="btn btn-secondary">Nhập file Excel</button>
-      <button class="btn btn-success">Xuất báo cáo file Excel</button>
-      <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#editGPA">Sửa</button>
-      <button class="btn btn-danger">Xóa</button>
-      <button class="btn btn-warning">Lưu (Cập nhật)</button>
+  <a class="btn btn-success"
+     href="{{ route('khaothi.gpa.export', ['hk'=>$hk,'nh'=>$nh,'q'=>$q]) }}">
+    Xuất báo cáo file Excel
+  </a>
 
-      <div class="ms-auto d-flex gap-2">
-        <select class="form-select">
-          <option>HK1 - 2024-2025</option>
-          <option>HK2 - 2024-2025</option>
-        </select>
-        <input class="form-control" placeholder="Tìm MSSV / Họ tên">
-        <button class="btn btn-outline-primary">Tìm</button>
-      </div>
-    </div>
+  <button id="btn-refresh" class="btn btn-warning">Lưu (Cập nhật)</button>
 
-    <div class="table-responsive">
-      <table class="table table-bordered align-middle">
-        <thead class="table-light">
-          <tr>
-            <th style="width:80px">STT</th>
-            <th>MSSV</th>
-            <th>Họ và Tên</th>
-            <th>Điểm học tập</th>
-            <th>Xếp loại</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>1</td><td>SV001</td><td>Nguyễn A</td><td>3.60</td><td>Tốt</td></tr>
-          <tr><td>2</td><td>SV002</td><td>Trần B</td><td>2.85</td><td>Khá</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </main>
+  <form class="ms-auto d-flex gap-2" method="get">
+    <select class="form-select" name="hk" style="width:140px">
+      <option value="1" {{ (int)$hk===1?'selected':'' }}>HK1</option>
+      <option value="2" {{ (int)$hk===2?'selected':'' }}>HK2</option>
+      <option value="3" {{ (int)$hk===3?'selected':'' }}>HK Hè</option>
+    </select>
+    <input class="form-control" name="nh" value="{{ $nh }}" style="width:150px" placeholder="2024-2025">
+    <input class="form-control" name="q"  value="{{ $q }}" placeholder="Tìm MSSV / Họ tên">
+    <button class="btn btn-outline-primary">Tìm</button>
+  </form>
 </div>
 
-{{-- Modal Sửa điểm học tập --}}
-<div class="modal fade" id="editGPA" tabindex="-1" aria-hidden="true">
+@if (session('failures'))
+  <div class="alert alert-warning">
+    <div class="fw-bold">Một số dòng không hợp lệ:</div>
+    <ul class="mb-0">
+      @foreach (session('failures') as $f)
+        <li>Dòng {{ $f->row() }}: {{ implode('; ', $f->errors()) }}</li>
+      @endforeach
+    </ul>
+  </div>
+@endif
+
+<div class="table-responsive">
+  <table class="table table-bordered align-middle">
+    <thead class="table-light">
+      <tr>
+        <th style="width:60px">STT</th>
+        <th style="width:140px">MSSV</th>
+        <th>Họ và Tên</th>
+        <th style="width:140px">Điểm học tập</th>
+        <th style="width:140px">Xếp loại</th>
+        <th style="width:140px">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      @forelse($data as $i => $r)
+        <tr>
+          <td>{{ $data->firstItem() + $i }}</td>
+          <td>{{ $r->MaSV }}</td>
+          <td>{{ $r->HoTen }}</td>
+          <td>{{ $r->DiemHT ?? '' }}</td>
+          <td>{{ $r->XepLoai ?? '' }}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary me-1"
+                    data-bs-toggle="modal" data-bs-target="#modalEdit"
+                    data-masv="{{ $r->MaSV }}"
+                    data-hk="{{ $hk }}"
+                    data-nh="{{ $nh }}"
+                    data-diem="{{ $r->DiemHT ?? '' }}"
+                    data-xeploai="{{ $r->XepLoai ?? '' }}">Sửa</button>
+
+            <button class="btn btn-sm btn-outline-danger"
+                    data-bs-toggle="modal" data-bs-target="#modalDelete"
+                    data-masv="{{ $r->MaSV }}"
+                    data-hk="{{ $hk }}"
+                    data-nh="{{ $nh }}">Xóa</button>
+          </td>
+        </tr>
+      @empty
+        <tr><td colspan="6" class="text-center">Không có dữ liệu</td></tr>
+      @endforelse
+    </tbody>
+  </table>
+</div>
+
+{{ $data->links() }}
+
+{{-- MODAL SỬA --}}
+<div class="modal fade" id="modalEdit" tabindex="-1">
   <div class="modal-dialog">
-    <form class="modal-content">
+    <form class="modal-content" method="post" action="{{ route('khaothi.gpa.update') }}">
+      @csrf
       <div class="modal-header">
-        <h5 class="modal-title">Thay đổi điểm học tập</h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
+        <h5 class="modal-title">Sửa điểm học tập</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <div class="mb-2">
-          <label class="form-label">MSSV</label>
-          <input class="form-control">
-        </div>
-        <div class="mb-2">
-          <label class="form-label">Họ và Tên</label>
-          <input class="form-control">
-        </div>
-        <div class="mb-2">
-          <label class="form-label">Điểm học tập (GPA)</label>
-          <input class="form-control">
-        </div>
-        <div class="mb-2">
-          <label class="form-label">Xếp loại</label>
-          <input class="form-control">
-        </div>
-        <button class="btn btn-primary">Lưu</button>
+        <div class="mb-2"><label class="form-label">MSSV</label>
+          <input class="form-control" name="MaSV" id="edit_masv" readonly></div>
+        <div class="mb-2"><label class="form-label">Học kỳ</label>
+          <input class="form-control" name="HocKy" id="edit_hk" readonly></div>
+        <div class="mb-2"><label class="form-label">Năm học</label>
+          <input class="form-control" name="NamHoc" id="edit_nh" readonly></div>
+        <div class="mb-2"><label class="form-label">Điểm học tập</label>
+          <input type="number" step="0.01" min="0" max="4" class="form-control" name="DiemHT" id="edit_diem" required></div>
+        <div class="mb-2"><label class="form-label">Xếp loại</label>
+          <input class="form-control" name="XepLoai" id="edit_xeploai"></div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-primary">Lưu</button></div>
+    </form>
+  </div>
+</div>
+
+{{-- MODAL XÓA --}}
+<div class="modal fade" id="modalDelete" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post" action="{{ route('khaothi.gpa.delete') }}">
+      @csrf
+      <div class="modal-header">
+        <h5 class="modal-title">Xóa điểm học tập</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="MaSV" id="del_masv_input">
+        <input type="hidden" name="HocKy" id="del_hk_input">
+        <input type="hidden" name="NamHoc" id="del_nh_input">
+        Bạn chắc chắn muốn xóa GPA của MSSV <b id="del_masv_text"></b>
+        (HK: <b id="del_hk_text"></b>, NH: <b id="del_nh_text"></b>)?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button class="btn btn-danger">Xóa</button>
       </div>
     </form>
   </div>
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Nút Lưu: thông báo rồi quay lại trang chính
+  document.getElementById('btn-refresh')?.addEventListener('click', () => {
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-success position-fixed top-0 end-0 m-3 shadow';
+    alert.style.zIndex = '2000';
+    alert.textContent = '✅ Đã cập nhật thành công! Đang quay lại...';
+    document.body.appendChild(alert);
+    setTimeout(() => { window.location.href = "{{ url('/khaothi/gpa') }}"; }, 1500);
+  });
+
+  // Modal Sửa
+  const editModal = document.getElementById('modalEdit');
+  editModal?.addEventListener('show.bs.modal', ev => {
+    const b = ev.relatedTarget;
+    document.getElementById('edit_masv').value    = b.getAttribute('data-masv');
+    document.getElementById('edit_hk').value      = b.getAttribute('data-hk');
+    document.getElementById('edit_nh').value      = b.getAttribute('data-nh');
+    document.getElementById('edit_diem').value    = b.getAttribute('data-diem') ?? '';
+    document.getElementById('edit_xeploai').value = b.getAttribute('data-xeploai') ?? '';
+  });
+
+  // Modal Xóa
+  const delModal = document.getElementById('modalDelete');
+  delModal?.addEventListener('show.bs.modal', ev => {
+    const b = ev.relatedTarget;
+    const masv = b.getAttribute('data-masv');
+    const hk   = b.getAttribute('data-hk');
+    const nh   = b.getAttribute('data-nh');
+    document.getElementById('del_masv_input').value = masv;
+    document.getElementById('del_hk_input').value   = hk;
+    document.getElementById('del_nh_input').value   = nh;
+    document.getElementById('del_masv_text').textContent = masv;
+    document.getElementById('del_hk_text').textContent   = hk;
+    document.getElementById('del_nh_text').textContent   = nh;
+  });
+});
+</script>
+@endpush
 @endsection
