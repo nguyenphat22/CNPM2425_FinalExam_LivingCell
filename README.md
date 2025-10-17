@@ -52,9 +52,11 @@ _Updating..._
 If you have any questions or would like to collaborate, please open an issue on GitHub.
 <br>------------------------------------------------<br>
 **How to using that?<br>
-Using XAMPP
+Using XAMPP<br>
 Open the terminal:<br>
+
 cd qldemo1<br>
+composer install<br>
 composer require maatwebsite/excel:"3.1.67" --with-all-dependencies
 <br>php artisan config:clear<br>
 php artisan cache:clear<br>
