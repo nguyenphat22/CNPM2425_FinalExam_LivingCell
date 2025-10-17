@@ -182,24 +182,17 @@
 @push('scripts')
 <script>
 // Nút Lưu giả (refresh trang + thông báo)
-document.addEventListener('DOMContentLoaded', () => {
-  // Khi bấm nút "Lưu (Cập nhật)"
-  const refreshBtn = document.getElementById('btn-refresh');
-  refreshBtn?.addEventListener('click', () => {
-    // Hiện thông báo thành công
-    const alert = document.createElement('div');
-    alert.className = 'alert alert-success position-fixed top-0 end-0 m-3 shadow';
-    alert.style.zIndex = '2000';
-    alert.textContent = '✅ Đã cập nhật thành công!';
-    document.body.appendChild(alert);
+document.getElementById('btn-refresh')?.addEventListener('click', () => {
+  const alert = document.createElement('div');
+  alert.className = 'alert alert-success position-fixed top-0 end-0 m-3 shadow';
+  alert.style.zIndex = '2000';
+  alert.textContent = '✅ Đã lưu dữ liệu, đang quay lại trang chính...';
+  document.body.appendChild(alert);
 
-
-    // Tự ẩn sau 50 giây
-    setTimeout(() => alert.remove(), 50000);
-    // Refresh lại trang (tuỳ chọn)
-    location.reload();
-    
-  });
+  // Sau 1.5 giây quay lại trang /ctct/sinhvien
+  setTimeout(() => {
+    window.location.href = "{{ url('/ctct/sinhvien') }}";
+  }, 1500);
 });
 document.addEventListener('DOMContentLoaded', () => {
   // --- SỬA ---

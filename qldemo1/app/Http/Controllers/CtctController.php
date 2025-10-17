@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\SinhVienImport;
+use App\Imports\DrlImport;
+use App\Exports\DrlExport;
 
 class CtctController extends Controller
 {
@@ -134,8 +136,85 @@ class CtctController extends Controller
      * Trang quản lý điểm rèn luyện (placeholder)
      */
 
-    public function drlIndex()
-    {
-        return view('ctct.drl');
+    public function drlIndex(Request $r)
+{
+    $hk = (int) $r->input('hk', 1);
+    $nh = (string) $r->input('nh', '2024-2025');
+    $q  = trim((string)$r->input('q', ''));
+
+    $query = DB::table('BANG_SinhVien as sv')
+        ->leftJoin('BANG_DiemRenLuyen as drl', function($j) use ($hk, $nh) {
+            $j->on('sv.MaSV','=','drl.MaSV')
+              ->where('drl.HocKy', $hk)
+              ->where('drl.NamHoc', $nh);
+        })
+        ->select(
+            'sv.MaSV',
+            'sv.HoTen',
+            'drl.HocKy',
+            'drl.NamHoc',
+            'drl.DiemRL',
+            'drl.XepLoai'
+        );
+
+    if ($q !== '') {
+        $query->where(function($s) use ($q){
+            $s->where('sv.MaSV','like',"%{$q}%")
+              ->orWhere('sv.HoTen','like',"%{$q}%");
+        });
     }
+
+    $data = $query->orderBy('sv.MaSV')->paginate(10)->withQueryString();
+
+    return view('ctct.drl', compact('data','hk','nh','q'));
+}
+public function drlImport(\Illuminate\Http\Request $r)
+{
+    $r->validate([
+        'file' => 'required|file|mimes:xlsx,xls,csv|max:20480',
+    ], [], ['file' => 'Tệp Excel']);
+
+    $import = new DrlImport();
+
+    try {
+        Excel::import($import, $r->file('file'));
+    } catch (\Throwable $e) {
+        return back()->withErrors(['file' => 'Import lỗi: '.$e->getMessage()]);
+    }
+
+    $msg = "Nhập DRL thành công. Thêm mới: {$import->getInserted()}, Cập nhật: {$import->getUpdated()}.";
+    if ($import->failures()->isNotEmpty()) {
+        return back()->with('ok', $msg)->with('failures', $import->failures());
+    }
+    return back()->with('ok', $msg);
+}
+public function drlUpdate(Request $r)
+{
+    $r->validate([
+        'MaSV'    => 'required|string|exists:BANG_SinhVien,MaSV',
+        'HocKy'   => 'required|integer|min:1|max:3',
+        'NamHoc'  => 'required|string|max:9',
+        'DiemRL'  => 'required|integer|min:0|max:100',
+        'XepLoai' => 'nullable|string|max:20',
+    ], [], [
+        'MaSV'=>'MSSV','HocKy'=>'Học kỳ','NamHoc'=>'Năm học',
+        'DiemRL'=>'Điểm rèn luyện','XepLoai'=>'Xếp loại'
+    ]);
+
+    DB::table('BANG_DiemRenLuyen')->updateOrInsert(
+        ['MaSV'=>$r->MaSV,'HocKy'=>$r->HocKy,'NamHoc'=>$r->NamHoc],
+        ['DiemRL'=>$r->DiemRL,'XepLoai'=>$r->XepLoai]
+    );
+
+    return back()->with('ok','Đã lưu điểm rèn luyện.');
+}
+public function drlExport(\Illuminate\Http\Request $r)
+{
+    $hk = (int) $r->input('hk', 1);
+    $nh = (string) $r->input('nh', '2024-2025');
+    $q  = $r->input('q');
+
+    return Excel::download(new DrlExport($hk, $nh, $q), "DRL_HK{$hk}_{$nh}.xlsx");
+}
+
 }
