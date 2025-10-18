@@ -7,7 +7,10 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function admin()    { return view('dash.admin'); }
+    public function admin()
+    {
+        return view('dash.admin');
+    }
     public function sinhvien(Request $r)
     {
         $user = $r->session()->get('user');
@@ -26,14 +29,20 @@ class DashboardController extends Controller
             $goiY = "GPA {$gpa->DiemHe4} ; DRL {$drl->DiemRL}; NTN {$ntn->tong} ngày";
         }
 
-        return view('dash.sinhvien', compact('sv','gpa','drl','ntn','goiY'));
+        return view('dash.sinhvien', compact('sv', 'gpa', 'drl', 'ntn', 'goiY'));
     }
     // app/Http/Controllers/DashboardController.php
-public function ctct()
-{
-    // chuyển thẳng tới trang CTCT -> Danh sách sinh viên
-    return redirect()->route('ctct.sinhvien.index');
-}
-    public function khaothi()  { return redirect()->route('khaothi.sinhvien.index'); }
-    public function doan()     { return redirect()->route('doan.index'); }
+    public function ctct()
+    {
+        // chuyển thẳng tới trang CTCT -> Danh sách sinh viên
+        return redirect()->route('ctct.sinhvien.index');
+    }
+    public function khaothi()
+    {
+        return redirect()->route('khaothi.sinhvien.index');
+    }
+    public function doan()
+    {
+        return redirect()->route('doan.index');
+    }
 }

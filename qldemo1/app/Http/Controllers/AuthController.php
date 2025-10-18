@@ -8,7 +8,10 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function showLogin()  { return view('auth.login'); }
+    public function showLogin()
+    {
+        return view('auth.login');
+    }
 
     public function login(Request $r)
     {
@@ -44,34 +47,37 @@ class AuthController extends Controller
     public function logout(Request $r)
     {
         $r->session()->forget('user');
-        return redirect()->route('login.show')->with('ok','Đã đăng xuất.');
+        return redirect()->route('login.show')->with('ok', 'Đã đăng xuất.');
     }
 
-    public function showForgot() { return view('auth.forgot'); }
+    public function showForgot()
+    {
+        return view('auth.forgot');
+    }
 
     // Bước 1: xác thực tên đăng nhập + email
     public function handleForgot(Request $r)
-{
-    $r->validate([
-        'TenDangNhap' => 'required',
-        'Email'       => 'required|email',
-    ]);
+    {
+        $r->validate([
+            'TenDangNhap' => 'required',
+            'Email'       => 'required|email',
+        ]);
 
-    $u = DB::table('BANG_TaiKhoan')
-        ->where('TenDangNhap', $r->TenDangNhap)
-        ->where('Email', $r->Email)
-        ->first();
+        $u = DB::table('BANG_TaiKhoan')
+            ->where('TenDangNhap', $r->TenDangNhap)
+            ->where('Email', $r->Email)
+            ->first();
 
-    if (!$u) {
-        // KHÔNG dùng withInput() => không giữ lại dữ liệu cũ
-        return back()->withErrors(['login' => 'Tên đăng nhập hoặc mật khẩu không đúng.']);
+        if (!$u) {
+            // KHÔNG dùng withInput() => không giữ lại dữ liệu cũ
+            return back()->withErrors(['login' => 'Tên đăng nhập hoặc mật khẩu không đúng.']);
+        }
+
+        // Nếu xác thực thành công
+        $r->session()->put('reset_ok_user_id', $u->MaTK);
+        return redirect()->route('reset.show')
+            ->with('ok', 'Xác thực thành công, vui lòng đặt mật khẩu mới.');
     }
-
-    // Nếu xác thực thành công
-    $r->session()->put('reset_ok_user_id', $u->MaTK);
-    return redirect()->route('reset.show')
-        ->with('ok', 'Xác thực thành công, vui lòng đặt mật khẩu mới.');
-}
 
 
     public function showReset(Request $r)
@@ -93,6 +99,6 @@ class AuthController extends Controller
             ->update(['MatKhau' => Hash::make($r->MatKhau)]);
 
         $r->session()->forget('reset_ok_user_id');
-        return redirect()->route('login.show')->with('ok','Đổi mật khẩu thành công, hãy đăng nhập lại.');
+        return redirect()->route('login.show')->with('ok', 'Đổi mật khẩu thành công, hãy đăng nhập lại.');
     }
 }

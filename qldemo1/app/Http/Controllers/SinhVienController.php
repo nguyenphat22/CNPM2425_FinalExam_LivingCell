@@ -63,8 +63,11 @@ class SinhVienController extends Controller
         // Định dạng ngày sinh cho view (tùy có/không)
         $ngaySinh = null;
         if (!empty($sv->NgaySinh)) {
-            try { $ngaySinh = Carbon::parse($sv->NgaySinh)->format('Y-m-d'); }
-            catch (\Throwable $e) { $ngaySinh = $sv->NgaySinh; }
+            try {
+                $ngaySinh = Carbon::parse($sv->NgaySinh)->format('Y-m-d');
+            } catch (\Throwable $e) {
+                $ngaySinh = $sv->NgaySinh;
+            }
         }
 
         // Nếu không dùng thì để trống
