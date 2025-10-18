@@ -40,14 +40,6 @@ Route::middleware('auth.session')->group(function () {
 Route::get('/admin', function () {
     return redirect()->route('admin.accounts.index');
 })->name('admin.home');
-// CTCT HSSV routes
-Route::prefix('ctct')
-    ->middleware(['auth.session','role:CTCTHSSV'])
-    ->group(function () {
-        Route::get('/', fn() => redirect()->route('ctct.sinhvien.index'))->name('ctct.home');
-        Route::get('/sinhvien', [CtctController::class,'sinhVienIndex'])->name('ctct.sinhvien.index');
-        Route::get('/drl',      [CtctController::class,'drlIndex'])->name('ctct.drl.index');
-    });
 // Khao Thi routes
 Route::prefix('khaothi')
     ->middleware(['auth.session','role:KhaoThi'])
@@ -116,4 +108,4 @@ Route::prefix('sinhvien')
     ->middleware(['auth.session','role:SinhVien'])
     ->group(function () {
         Route::get('/', [SinhVienController::class, 'index'])->name('sv.home');
-    });
+    }); 

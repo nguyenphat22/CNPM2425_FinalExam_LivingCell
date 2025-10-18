@@ -174,7 +174,7 @@
       <div class="modal-body">
         <div class="mb-2">
           <label class="form-label">MaTK</label>
-          <input class="form-control @error('MaTK','edit') is-invalid @enderror" name="MaTK" value="{{ old('MaTK') }}" required>
+          <input class="form-control @error('MaTK','edit') is-invalid @enderror" name="MaTK" value="{{ old('MaTK') }}" readonly>
           @error('MaTK','edit') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
         <div class="mb-2">

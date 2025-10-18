@@ -10,33 +10,39 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\SinhVienImport;
 use App\Imports\DrlImport;
 use App\Exports\DrlExport;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Carbon\Carbon;
 
 class CtctController extends Controller
 {
     /**
      * Danh sách sinh viên + tìm kiếm + phân trang
      */
-    public function sinhvienIndex(Request $r)
-    {
-        $q = trim((string) $r->input('q'));
+    public function sinhVienIndex(Request $r)
+{
+    $q = trim((string) $r->input('q'));
 
-        $query = DB::table('BANG_SinhVien')
-            ->select('MaSV','HoTen','NgaySinh','Khoa','Lop');
+    $query = DB::table('BANG_SinhVien')
+        ->select('MaSV','HoTen','NgaySinh','Khoa','Lop','MaTK'); // 👈 thêm MaTK
 
-        if ($q !== '') {
-            $query->where(function($s) use ($q){
-                $s->where('MaSV','like',"%{$q}%")
-                  ->orWhere('HoTen','like',"%{$q}%")
-                  ->orWhere('Khoa','like',"%{$q}%")
-                  ->orWhere('Lop','like',"%{$q}%");
-            });
-        }
-
-        // KHÔNG orderBy('id') vì không tồn tại; dùng MaSV
-        $data = $query->orderBy('MaSV')->paginate(10)->withQueryString();
-
-        return view('ctct.sinhvien', compact('data','q'));
+    if ($q !== '') {
+        $query->where(function($s) use ($q){
+            $s->where('MaSV','like',"%{$q}%")
+              ->orWhere('HoTen','like',"%{$q}%")
+              ->orWhere('Khoa','like',"%{$q}%")
+              ->orWhere('Lop','like',"%{$q}%")
+              ->orWhere('MaTK','like',"%{$q}%"); // (tuỳ chọn) cho phép tìm theo MaTK
+        });
     }
+
+    $data = $query->orderBy('MaSV')->paginate(10)->withQueryString();
+
+    return view('ctct.sinhvien', compact('data','q'));
+}
+
 
     /**
      * Thêm sinh viên mới
@@ -112,29 +118,126 @@ class CtctController extends Controller
         return back()->with('ok','Đã xóa sinh viên.');
     }
 
-    public function svImport(Request $r)
+public function svImport(Request $r)
 {
     $r->validate([
         'file' => 'required|file|mimes:xlsx,xls,csv|max:5120',
     ], [], ['file' => 'Tệp Excel']);
 
-    $import = new SinhVienImport();
+    $inserted = 0;
+    $updated  = 0;
+    $failures = collect();
 
     try {
-        Excel::import($import, $r->file('file'));
+        Excel::import(
+            new class($inserted, $updated, $failures) implements ToCollection, WithHeadingRow {
+                private $inserted;
+                private $updated;
+                private $failures;
+
+                public function __construct(&$inserted, &$updated, &$failures)
+                {
+                    $this->inserted = &$inserted;
+                    $this->updated  = &$updated;
+                    $this->failures = &$failures;
+                }
+
+                public function collection(Collection $rows)
+                {
+                    foreach ($rows as $idx => $row) {
+                        // Lấy theo header (không phân biệt hoa thường)
+                        $maSV  = trim((string)($row['masv']     ?? ''));
+                        $hoTen = trim((string)($row['hoten']    ?? ''));
+                        $ngay  = trim((string)($row['ngaysinh'] ?? ''));
+                        $khoa  = trim((string)($row['khoa']     ?? ''));
+                        $lop   = trim((string)($row['lop']      ?? ''));
+                        $maTK  = $row['matk'] ?? null;
+
+                        // Dòng hiển thị = index + 2 (vì có tiêu đề)
+                        $line = $idx + 2;
+
+                        if ($maSV === '' || $hoTen === '') {
+                            $this->failures->push("Dòng {$line}: thiếu MaSV hoặc HoTen.");
+                            continue;
+                        }
+
+                        // Chuẩn hóa/kiểm tra MaTK (nếu có)
+                        if ($maTK !== null && $maTK !== '') {
+                            if (!ctype_digit((string)$maTK)) {
+                                $this->failures->push("Dòng {$line}: MaTK phải là số nguyên.");
+                                continue;
+                            }
+
+                            // Tài khoản tồn tại & là SinhVien
+                            $ok = DB::table('BANG_TaiKhoan')
+                                ->where('MaTK', $maTK)
+                                ->where('VaiTro', 'SinhVien')
+                                ->exists();
+
+                            if (!$ok) {
+                                $this->failures->push("Dòng {$line}: MaTK {$maTK} không tồn tại hoặc không phải tài khoản SinhVien.");
+                                continue;
+                            }
+
+                            // Không bị gán cho SV khác
+                            $used = DB::table('BANG_SinhVien')
+                                ->where('MaTK', $maTK)
+                                ->where('MaSV', '<>', $maSV)
+                                ->exists();
+
+                            if ($used) {
+                                $this->failures->push("Dòng {$line}: MaTK {$maTK} đã gán cho sinh viên khác.");
+                                continue;
+                            }
+                        }
+
+                        // Chuẩn ngày
+                        $ngaySinh = null;
+                        if ($ngay !== '') {
+                            try {
+                                if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $ngay)) {
+                                    $ngaySinh = $ngay; // yyyy-mm-dd
+                                } elseif (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $ngay)) {
+                                    $ngaySinh = Carbon::createFromFormat('d/m/Y', $ngay)->format('Y-m-d');
+                                } else {
+                                    $ngaySinh = Carbon::parse($ngay)->format('Y-m-d');
+                                }
+                            } catch (\Throwable $e) {
+                                // để null nếu không parse được
+                                $ngaySinh = null;
+                            }
+                        }
+
+                        $exists = DB::table('BANG_SinhVien')->where('MaSV', $maSV)->exists();
+
+                        DB::table('BANG_SinhVien')->updateOrInsert(
+                            ['MaSV' => $maSV],
+                            [
+                                'HoTen'    => $hoTen,
+                                'NgaySinh' => $ngaySinh,
+                                'Khoa'     => $khoa,
+                                'Lop'      => $lop,
+                                'MaTK'     => ($maTK === '' ? null : $maTK),
+                            ]
+                        );
+
+                        $exists ? $this->updated++ : $this->inserted++;
+                    }
+                }
+            },
+            $r->file('file')
+        );
     } catch (\Throwable $e) {
         return back()->withErrors(['file' => 'Import lỗi: '.$e->getMessage()]);
     }
 
-    $msg = "Nhập file thành công. Thêm mới: {$import->getInserted()}, Cập nhật: {$import->getUpdated()}.";
-    if ($import->failures()->isNotEmpty()) {
-        return back()->with('ok', $msg)->with('failures', $import->failures());
-    }
-    return back()->with('ok', $msg);
+    $msg = "Nhập file thành công. Thêm mới: {$inserted}, Cập nhật: {$updated}.";
+    return back()->with('ok', $msg)->with('failures', $failures);
 }
-    /**
-     * Trang quản lý điểm rèn luyện (placeholder)
-     */
+
+/**
+ * Trang quản lý điểm rèn luyện (placeholder)
+ */
 
     public function drlIndex(Request $r)
 {
