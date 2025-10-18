@@ -1,79 +1,190 @@
 @extends('layouts.app')
-@section('title','VP Đoàn Trường | Quản lý danh hiệu')
+@section('title','Đoàn Trường | Quản lý danh hiệu')
 
 @section('content')
-<div class="row">
+<h5 class="mb-3">Quản lý danh hiệu</h5>
 
-  <main class="col-md-9">
-    <h5 class="mb-3">Quản lý danh hiệu</h5>
+<div class="d-flex gap-2 mb-3 align-items-center">
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">Thêm (Danh hiệu)</button>
+  {{-- BỎ các nút Sửa, Xóa ở thanh công cụ --}}
 
-    <div class="d-flex gap-2 mb-3">
-      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAward">Thêm (Danh hiệu)</button>
-      <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#editAward">Sửa (Danh hiệu)</button>
-      <button class="btn btn-danger">Xóa</button>
-      <button class="btn btn-warning">Lưu (Cập nhật)</button>
+  <button id="btn-refresh" class="btn btn-warning">Lưu (Cập nhật)</button>
 
-      <div class="ms-auto d-flex gap-2">
-        <select class="form-select">
-          <option>HK1 - 2024-2025</option>
-          <option>HK2 - 2024-2025</option>
-        </select>
-        <input class="form-control" placeholder="Tìm tên danh hiệu / tiêu chí">
-        <button class="btn btn-outline-primary">Tìm</button>
-      </div>
-    </div>
-
-    <div class="table-responsive">
-      <table class="table table-bordered align-middle">
-        <thead class="table-light">
-          <tr>
-            <th style="width:80px">STT</th>
-            <th>Tên tiêu chí / danh hiệu</th>
-            <th>Điều kiện điểm học tập</th>
-            <th>Điều kiện điểm rèn luyện</th>
-            <th>Điều kiện ngày tình nguyện</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td><td>Sinh viên 5 tốt</td><td>GPA ≥ 3.2</td><td>DRL ≥ 80</td><td>≥ 15 ngày</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </main>
+  <form class="ms-auto d-flex gap-2" method="get">
+    <select class="form-select" name="hk" style="width:140px">
+      <option value="1" {{ (int)$hk===1?'selected':'' }}>HK1</option>
+      <option value="2" {{ (int)$hk===2?'selected':'' }}>HK2</option>
+      <option value="3" {{ (int)$hk===3?'selected':'' }}>HK Hè</option>
+    </select>
+    <input class="form-control" name="nh" value="{{ $nh }}" style="width:150px" placeholder="2024-2025">
+    <input class="form-control" name="q" value="{{ $q }}" placeholder="Tìm tên danh hiệu / tiêu chí">
+    <button class="btn btn-outline-primary">Tìm</button>
+  </form>
 </div>
 
-{{-- Modals danh hiệu --}}
-<div class="modal fade" id="addAward" tabindex="-1" aria-hidden="true">
+
+<div class="table-responsive">
+  <table class="table table-bordered align-middle">
+    <thead class="table-light">
+      <tr>
+        <th style="width:60px">STT</th>
+        <th>Tên tiêu chí / danh hiệu</th>
+        <th style="width:160px">Điều kiện điểm học tập</th>
+        <th style="width:160px">Điều kiện điểm rèn luyện</th>
+        <th style="width:200px">Điều kiện ngày tình nguyện</th>
+        <th style="width:140px">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      @forelse($data as $i => $r)
+        <tr>
+          <td>{{ $data->firstItem() + $i }}</td>
+          <td>{{ $r->TenDH }}</td>
+          <td>{{ $r->DieuKienGPA !== null ? 'GPA ≥ '.$r->DieuKienGPA : '' }}</td>
+          <td>{{ $r->DieuKienDRL !== null ? 'DRL ≥ '.$r->DieuKienDRL : '' }}</td>
+          <td>{{ $r->DieuKienNTN !== null ? '≥ '.$r->DieuKienNTN.' ngày' : '' }}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary me-1"
+                    data-bs-toggle="modal" data-bs-target="#modalEdit"
+                    data-madh="{{ $r->MaDH }}"
+                    data-tendh="{{ $r->TenDH }}"
+                    data-gpa="{{ $r->DieuKienGPA }}"
+                    data-drl="{{ $r->DieuKienDRL }}"
+                    data-ntn="{{ $r->DieuKienNTN }}">Sửa</button>
+
+            <button class="btn btn-sm btn-outline-danger"
+                    data-bs-toggle="modal" data-bs-target="#modalDelete"
+                    data-madh="{{ $r->MaDH }}"
+                    data-tendh="{{ $r->TenDH }}">Xóa</button>
+          </td>
+        </tr>
+      @empty
+        <tr><td colspan="6" class="text-center">Không có dữ liệu</td></tr>
+      @endforelse
+    </tbody>
+  </table>
+</div>
+
+{{ $data->links() }}
+
+{{-- MODAL THÊM --}}
+<div class="modal fade" id="modalAdd" tabindex="-1">
   <div class="modal-dialog">
-    <form class="modal-content">
-      <div class="modal-header"><h5 class="modal-title">Thêm danh hiệu</h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button></div>
+    <form class="modal-content" method="post" action="{{ route('doan.danhhieu.store') }}">
+      @csrf
+      <div class="modal-header">
+        <h5 class="modal-title">Thêm danh hiệu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
       <div class="modal-body">
-        <div class="mb-2"><label class="form-label">Tên tiêu chí / Danh hiệu</label><input class="form-control" required></div>
-        <div class="mb-2"><label class="form-label">Điều kiện điểm học tập</label><input class="form-control" required></div>
-        <div class="mb-2"><label class="form-label">Điều kiện điểm rèn luyện</label><input class="form-control" required></div>
-        <div class="mb-2"><label class="form-label">Điều kiện ngày tình nguyện</label><input class="form-control" required></div>
-        <button class="btn btn-primary">Thêm</button>
+        <div class="mb-2">
+          <label class="form-label">Tên danh hiệu</label>
+          <input class="form-control" name="TenDH" required>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Điều kiện GPA (0-4) — để trống nếu không áp dụng</label>
+          <input type="number" step="0.01" min="0" max="4" class="form-control" name="DieuKienGPA">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Điều kiện DRL (0-100)</label>
+          <input type="number" step="1" min="0" max="100" class="form-control" name="DieuKienDRL">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Điều kiện ngày TN (số ngày)</label>
+          <input type="number" step="1" min="0" class="form-control" name="DieuKienNTN">
+        </div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-primary">Lưu</button></div>
+    </form>
+  </div>
+</div>
+
+{{-- MODAL SỬA --}}
+<div class="modal fade" id="modalEdit" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post" action="{{ route('doan.danhhieu.update') }}">
+      @csrf
+      <input type="hidden" name="MaDH" id="edit_madh">
+      <div class="modal-header">
+        <h5 class="modal-title">Sửa danh hiệu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-2">
+          <label class="form-label">Tên danh hiệu</label>
+          <input class="form-control" name="TenDH" id="edit_tendh" required>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Điều kiện GPA</label>
+          <input type="number" step="0.01" min="0" max="4" class="form-control" name="DieuKienGPA" id="edit_gpa">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Điều kiện DRL</label>
+          <input type="number" step="1" min="0" max="100" class="form-control" name="DieuKienDRL" id="edit_drl">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Điều kiện ngày TN</label>
+          <input type="number" step="1" min="0" class="form-control" name="DieuKienNTN" id="edit_ntn">
+        </div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-primary">Lưu</button></div>
+    </form>
+  </div>
+</div>
+
+{{-- MODAL XÓA --}}
+<div class="modal fade" id="modalDelete" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post" action="{{ route('doan.danhhieu.delete') }}">
+      @csrf
+      <input type="hidden" name="MaDH" id="del_madh">
+      <div class="modal-header">
+        <h5 class="modal-title">Xóa danh hiệu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        Bạn chắc chắn muốn xóa danh hiệu: <b id="del_tendh"></b>?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button class="btn btn-danger">Xóa</button>
       </div>
     </form>
   </div>
 </div>
 
-<div class="modal fade" id="editAward" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <form class="modal-content">
-      <div class="modal-header"><h5 class="modal-title">Sửa danh hiệu</h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button></div>
-      <div class="modal-body">
-        <div class="mb-2"><label class="form-label">Tên tiêu chí / Danh hiệu</label><input class="form-control" required></div>
-        <div class="mb-2"><label class="form-label">Điều kiện điểm học tập</label><input class="form-control" required></div>
-        <div class="mb-2"><label class="form-label">Điều kiện điểm rèn luyện</label><input class="form-control" required></div>
-        <div class="mb-2"><label class="form-label">Điều kiện ngày tình nguyện</label><input class="form-control" required></div>
-        <button class="btn btn-primary">Lưu</button>
-      </div>
-    </form>
-  </div>
-</div>
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Nút Lưu: giống các trang trước – thông báo rồi quay lại
+  document.getElementById('btn-refresh')?.addEventListener('click', () => {
+    const alertBox = document.createElement('div');
+    alertBox.className = 'alert alert-success position-fixed top-0 end-0 m-3 shadow';
+    alertBox.style.zIndex = '2000';
+    alertBox.textContent = '✅ Đã cập nhật thành công! Đang quay lại...';
+    document.body.appendChild(alertBox);
+    setTimeout(() => { window.location.href = "{{ route('doan.danhhieu.index') }}"; }, 1500);
+  });
+
+  // Modal Sửa
+  const editModal = document.getElementById('modalEdit');
+  editModal?.addEventListener('show.bs.modal', e => {
+    const b = e.relatedTarget;
+    document.getElementById('edit_madh').value = b.getAttribute('data-madh');
+    document.getElementById('edit_tendh').value = b.getAttribute('data-tendh');
+    document.getElementById('edit_gpa').value  = b.getAttribute('data-gpa') ?? '';
+    document.getElementById('edit_drl').value  = b.getAttribute('data-drl') ?? '';
+    document.getElementById('edit_ntn').value  = b.getAttribute('data-ntn') ?? '';
+  });
+
+  // Modal Xóa
+  const delModal = document.getElementById('modalDelete');
+  delModal?.addEventListener('show.bs.modal', e => {
+    const b = e.relatedTarget;
+    document.getElementById('del_madh').value  = b.getAttribute('data-madh');
+    document.getElementById('del_tendh').textContent = b.getAttribute('data-tendh');
+  });
+});
+</script>
+@endpush
 @endsection

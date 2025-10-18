@@ -4,19 +4,44 @@
 @section('content')
 <h4 class="mb-3">Danh sách sinh viên</h4>
 
-{{-- thanh công cụ: Import + Thêm + Tìm --}}
+{{-- THÔNG BÁO --}}
+@if ($errors->has('file'))
+  <div class="alert alert-danger">{{ $errors->first('file') }}</div>
+@endif
+@if (session('failures') && session('failures')->isNotEmpty())
+  <div class="alert alert-warning">
+    <div class="fw-semibold mb-2">Một số dòng không thể nhập:</div>
+    <ul class="mb-0 ps-3">
+      @foreach(session('failures') as $msg)
+        <li>{{ $msg }}</li>
+      @endforeach
+    </ul>
+  </div>
+@endif
+
+{{-- thanh công cụ: Lưu giả + Import + Thêm + Tìm --}}
 <div class="d-flex gap-2 mb-3 align-items-center">
   {{-- Nút Lưu giả (refresh trang + thông báo) --}}
   <button id="btn-refresh" class="btn btn-success">
     <i class="bi bi-check-circle me-1"></i> Lưu
   </button>
-  <form method="post" action="{{ route('ctct.sv.import') }}" enctype="multipart/form-data" class="d-flex gap-2">
-  @csrf
-  <input type="file" name="file" class="form-control" style="max-width:260px;" accept=".xlsx,.xls,.csv" required>
-  <button class="btn btn-secondary" type="submit">Nhập file Excel ds sinh viên</button>
-</form>
 
-  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">Thêm</button>
+  {{-- *** FORM IMPORT PHẢI CÓ form + POST + enctype + csrf *** --}}
+  <form method="post"
+        action="{{ route('ctct.sv.import') }}"
+        enctype="multipart/form-data"
+        class="d-flex gap-2">
+    @csrf
+    <input type="file" name="file" class="form-control"
+           style="max-width:260px;" accept=".xlsx,.xls,.csv" required>
+    <button class="btn btn-secondary" type="submit">
+      Nhập file Excel ds sinh viên
+    </button>
+  </form>
+
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">
+    Thêm
+  </button>
 
   <form class="ms-auto d-flex" method="get">
     <input class="form-control me-2" name="q" value="{{ $q }}" placeholder="Tìm...">
@@ -34,6 +59,7 @@
         <th style="width:140px">Ngày sinh</th>
         <th style="width:160px">Khoa</th>
         <th style="width:120px">Lớp</th>
+        <th style="width:140px">MaTK</th>
         <th style="width:120px">Thao tác</th>
       </tr>
     </thead>
@@ -51,6 +77,14 @@
         </td>
         <td>{{ $r->Khoa }}</td>
         <td>{{ $r->Lop }}</td>
+        {{-- ✅ Cột MaTK — phải nằm trong foreach này --}}
+    <td>
+      @if ($r->MaTK)
+        <span class="badge text-bg-secondary">{{ $r->MaTK }}</span>
+      @else
+        <span class="text-muted">—</span>
+      @endif
+    </td>
         <td>
           <button type="button"
             class="btn btn-sm btn-outline-primary me-1"

@@ -4,51 +4,48 @@
 
 @section('content')
 <div class="row">
-  {{-- Sidebar bên trái chỉ 1 mục --}}
-
-  <main class="col-md-9">
-    {{-- Thông tin cá nhân --}}
+  <main class="col-md-12">
     <h5 class="mb-3">Thông tin cá nhân</h5>
     <div class="card mb-3">
       <div class="card-body">
         @if($sv)
           <div><b>MSSV:</b> {{ $sv->MaSV }}</div>
           <div><b>Họ và Tên:</b> {{ $sv->HoTen }}</div>
-          <div><b>Ngày sinh:</b> {{ $sv->NgaySinh }}</div>
-          <div><b>Lớp:</b> {{ $sv->Lop }}</div>
-          <div><b>Khoa:</b> {{ $sv->Khoa }}</div>
+          <div><b>Ngày sinh:</b> {{ $ngaySinh ?? '—' }}</div>
+          <div><b>Lớp:</b> {{ $sv->Lop ?? '—' }}</div>
+          <div><b>Khoa:</b> {{ $sv->Khoa ?? '—' }}</div>
         @else
           <em>Chưa liên kết thông tin sinh viên với tài khoản này.</em>
         @endif
       </div>
     </div>
 
-    {{-- Tổng quan học tập / rèn luyện / NTN --}}
-    <h5 class="mb-2">Tổng quan</h5>
     <div class="row g-3">
       <div class="col-md-4">
         <div class="card"><div class="card-body">
           <div class="fw-bold mb-1">Điểm học tập (GPA)</div>
-          <div class="fs-5">{{ $gpa->DiemHe4 ?? '—' }}</div>
+          <div class="fs-5">{{ $gpaVal ?? '—' }}</div>
         </div></div>
       </div>
       <div class="col-md-4">
         <div class="card"><div class="card-body">
           <div class="fw-bold mb-1">Điểm rèn luyện</div>
-          <div class="fs-5">{{ $drl->DiemRL ?? '—' }}</div>
+          <div class="fs-5">{{ $drlVal ?? '—' }}</div>
         </div></div>
       </div>
       <div class="col-md-4">
         <div class="card"><div class="card-body">
           <div class="fw-bold mb-1">Số ngày tình nguyện</div>
-          <div class="fs-5">{{ $ntn->tong ?? 0 }}</div>
+          <div class="fs-5">{{ $ntnTong }}</div>
         </div></div>
       </div>
     </div>
 
-    {{-- Danh sách ngày tình nguyện (nếu muốn show) --}}
-    <h5 class="mt-4 mb-2">Ngày tình nguyện</h5>
-    <div class="table-responsive mb-3">
+    {{-- Nếu KHÔNG muốn hiện chi tiết NTN, dừng tại đây --}}
+    {{-- Nếu muốn bảng chi tiết, bọc đầy đủ <table> --}}
+    {{--
+    <h5 class="mt-4 mb-2">Ngày tình nguyện đã duyệt</h5>
+    <div class="table-responsive">
       <table class="table table-bordered align-middle">
         <thead class="table-light">
           <tr>
@@ -60,13 +57,13 @@
           </tr>
         </thead>
         <tbody>
-          @forelse(($ntn->items ?? []) as $i => $row)
+          @forelse($ntnItems as $i => $row)
             <tr>
               <td>{{ $i+1 }}</td>
               <td>{{ $row->TenHD ?? '' }}</td>
               <td>{{ $row->Ngay ?? '' }}</td>
               <td>{{ $row->SoNgay ?? '' }}</td>
-              <td>{{ $row->TrangThai ?? '' }}</td>
+              <td>{{ $row->TrangThaiDuyet ?? '' }}</td>
             </tr>
           @empty
             <tr><td colspan="5" class="text-center text-muted">Chưa có dữ liệu.</td></tr>
@@ -74,8 +71,8 @@
         </tbody>
       </table>
     </div>
+    --}}
 
-    {{-- Khen thưởng (nếu có) --}}
     <h5 class="mb-2">Khen thưởng</h5>
     <div class="table-responsive mb-3">
       <table class="table table-bordered align-middle">
@@ -90,10 +87,10 @@
         <tbody>
           @forelse($awds as $i => $a)
             <tr>
-              <td>{{ $i+1 }}</td>
-              <td>{{ $a->Ten ?? '' }}</td>
-              <td>{{ $a->SoQD ?? '' }}</td>
-              <td>{{ $a->HocKy ?? '' }}</td>
+              <td>{{ $i + 1 }}</td>
+              <td>{{ $a->Ten   ?? ($a['Ten']   ?? '') }}</td>
+              <td>{{ $a->SoQD  ?? ($a['SoQD']  ?? '') }}</td>
+              <td>{{ $a->HocKy ?? ($a['HocKy'] ?? '') }}</td>
             </tr>
           @empty
             <tr><td colspan="4" class="text-center text-muted">Chưa có khen thưởng.</td></tr>
@@ -102,10 +99,9 @@
       </table>
     </div>
 
-    {{-- Gợi ý danh hiệu --}}
     <h5 class="mt-4 mb-2">Đề xuất danh hiệu</h5>
     <div class="card"><div class="card-body">
-      {{ $goiY ? "Gợi ý: $goiY" : 'Chưa đủ dữ liệu để gợi ý.' }}
+      {{ !empty($goiY) ? "Gợi ý: $goiY" : 'Chưa đủ dữ liệu để gợi ý.' }}
     </div></div>
   </main>
 </div>
