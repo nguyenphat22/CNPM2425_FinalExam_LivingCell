@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\GpaImport;
 use App\Exports\GpaExport;
+use App\Models\DiemHocTap;
 
 class KhaothiController extends Controller
 {
@@ -101,7 +102,7 @@ public function gpaDelete(Request $r)
         ->where('NamHoc',$r->NamHoc)
         ->delete();
 
-    return back()->with('ok','Đã xóa bản ghi.');
+    return back()->with('ok','Đã xóa điểm học tập.');
 }
 
 public function gpaImport(Request $r)

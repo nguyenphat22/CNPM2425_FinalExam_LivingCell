@@ -216,5 +216,20 @@ public function drlExport(\Illuminate\Http\Request $r)
 
     return Excel::download(new DrlExport($hk, $nh, $q), "DRL_HK{$hk}_{$nh}.xlsx");
 }
+public function drlDelete(Request $r)
+{
+    $r->validate([
+        'MaSV'   => 'required|string|exists:BANG_SinhVien,MaSV',
+        'HocKy'  => 'required|integer|min:1|max:3',
+        'NamHoc' => 'required|string|max:9',
+    ], [], ['MaSV'=>'MSSV','HocKy'=>'Học kỳ','NamHoc'=>'Năm học']);
 
+    $deleted = DB::table('BANG_DiemRenLuyen')->where([
+        'MaSV'   => $r->MaSV,
+        'HocKy'  => $r->HocKy,
+        'NamHoc' => $r->NamHoc,
+    ])->delete();
+
+    return back()->with('ok', $deleted ? 'Đã xóa điểm rèn luyện.' : 'Không tìm thấy bản ghi để xóa.');
+}
 }

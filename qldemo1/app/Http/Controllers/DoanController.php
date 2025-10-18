@@ -145,37 +145,40 @@ public function ntnImport(Request $r)
 
     // Thêm danh hiệu
     public function dhStore(Request $r)
-    {
-        // Chuẩn hoá tên (cắt khoảng trắng thừa)
-        $ten = (string) Str::of($r->TenDH)->trim()->replaceMatches('/\s+/u', ' ');
-        $r->merge(['TenDH' => $ten]);
+{
+    $ten = (string) \Illuminate\Support\Str::of($r->TenDH)->trim()->replaceMatches('/\s+/u', ' ');
+    $r->merge(['TenDH' => $ten]);
 
-        $r->validate([
-            'TenDH'       => 'required|string|max:100|unique:bang_danhhieu,TenDH',
-            'DieuKienGPA' => 'nullable|numeric|min:0|max:4',
-            'DieuKienDRL' => 'nullable|integer|min:0|max:100',
-            'DieuKienNTN' => 'nullable|integer|min:0',
-        ], [
-            'TenDH.unique' => 'Tên danh hiệu đã tồn tại.',
-        ], [
-            'TenDH' => 'Tên danh hiệu',
+    $r->validate([
+        'TenDH'       => 'required|string|max:100|unique:bang_danhhieu,TenDH',
+        'DieuKienGPA' => 'nullable|numeric|min:0|max:4',
+        'DieuKienDRL' => 'nullable|integer|min:0|max:100',
+        'DieuKienNTN' => 'nullable|integer|min:0',
+    ], [
+        'TenDH.unique' => 'Tên danh hiệu đã tồn tại.',
+    ], [
+        'TenDH' => 'Tên danh hiệu',
+    ]);
+
+    try {
+        DB::table('bang_danhhieu')->insert([
+            'TenDH'       => $r->TenDH,
+            'DieuKienGPA' => $r->DieuKienGPA,
+            'DieuKienDRL' => $r->DieuKienDRL,
+            'DieuKienNTN' => $r->DieuKienNTN,
         ]);
-
-        try {
-            DB::table('bang_danhhieu')->insert([
-                'TenDH'       => $r->TenDH,
-                'DieuKienGPA' => $r->DieuKienGPA,
-                'DieuKienDRL' => $r->DieuKienDRL,
-                'DieuKienNTN' => $r->DieuKienNTN,
-            ]);
-        } catch (QueryException $e) {
-            // Phòng trường hợp có unique constraint ở DB
-            if ($e->getCode() === '23000') {
-                return back()->withErrors(['TenDH' => 'Tên danh hiệu đã tồn tại.'])->withInput();
-            }
-            throw $e;
+    } catch (\Illuminate\Database\QueryException $e) {
+        if ($e->getCode() === '23000') {
+            return back()->withErrors(['TenDH' => 'Tên danh hiệu đã tồn tại.'])->withInput();
         }
+        throw $e;
     }
+
+    // ✅ QUAN TRỌNG: luôn redirect về trang danh sách sau khi POST
+    return redirect()
+        ->route('doan.danhhieu.index')
+        ->with('ok', 'Đã thêm danh hiệu.');
+}
 
     // Cập nhật danh hiệu
     public function dhUpdate(Request $r)

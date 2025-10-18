@@ -82,7 +82,7 @@ Route::prefix('ctct')
         // Điểm rèn luyện
         Route::get( '/drl',         [CtctController::class,'drlIndex'])->name('drl.index');
         Route::post('/drl/update',  [CtctController::class,'drlUpdate'])->name('drl.update');
-        Route::post('/drl/delete',  [CtctController::class,'drlDestroy'])->name('drl.delete');
+        Route::post('/drl/delete',  [CtctController::class,'drlDelete'])->name('drl.delete');
         Route::post('/drl/import',  [CtctController::class,'drlImport'])->name('drl.import');
         Route::get( '/drl/export',  [CtctController::class,'drlExport'])->name('drl.export'); // <-- export là GET
     });

@@ -64,9 +64,7 @@ class AuthController extends Controller
 
     if (!$u) {
         // KHÔNG dùng withInput() => không giữ lại dữ liệu cũ
-        return back()->withErrors([
-            'credentials' => 'Tên đăng nhập và email công tác không khớp.',
-        ]);
+        return back()->withErrors(['login' => 'Tên đăng nhập hoặc mật khẩu không đúng.']);
     }
 
     // Nếu xác thực thành công

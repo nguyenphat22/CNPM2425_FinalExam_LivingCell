@@ -82,11 +82,10 @@
               data-diem="{{ $r->DiemRL ?? '' }}"
               data-xeploai="{{ $r->XepLoai ?? '' }}">Sửa</button>
 
-      <button class="btn btn-sm btn-outline-danger"
-              data-bs-toggle="modal" data-bs-target="#modalDelete"
-              data-masv="{{ $r->MaSV }}"
-              data-hk="{{ $hk }}"
-              data-nh="{{ $nh }}">Xóa</button>
+      <button type="button" class="btn btn-sm btn-outline-danger"
+          data-bs-toggle="modal" data-bs-target="#modalDelete"
+          data-masv="{{ $r->MaSV }}"
+          data-hk="{{ $hk }}" data-nh="{{ $nh }}">Xóa</button>
     </td>
   </tr>
 @empty
