@@ -18,24 +18,24 @@ class DrlExport implements FromCollection, WithHeadings, WithMapping, ShouldAuto
 
     public function headings(): array
     {
-        return ['MSSV','Họ và Tên','Học kỳ','Năm học','Điểm rèn luyện','Xếp loại'];
+        return ['MSSV', 'Họ và Tên', 'Học kỳ', 'Năm học', 'Điểm rèn luyện', 'Xếp loại'];
     }
 
     public function collection()
     {
         $query = DB::table('BANG_SinhVien as sv')
-            ->leftJoin('BANG_DiemRenLuyen as drl', function($j) {
-                $j->on('sv.MaSV','=','drl.MaSV')
-                  ->where('drl.HocKy', $this->hk)
-                  ->where('drl.NamHoc', $this->nh);
+            ->leftJoin('BANG_DiemRenLuyen as drl', function ($j) {
+                $j->on('sv.MaSV', '=', 'drl.MaSV')
+                    ->where('drl.HocKy', $this->hk)
+                    ->where('drl.NamHoc', $this->nh);
             })
-            ->select('sv.MaSV','sv.HoTen','drl.HocKy','drl.NamHoc','drl.DiemRL','drl.XepLoai');
+            ->select('sv.MaSV', 'sv.HoTen', 'drl.HocKy', 'drl.NamHoc', 'drl.DiemRL', 'drl.XepLoai');
 
         if ($this->q) {
             $q = trim($this->q);
-            $query->where(function($s) use ($q){
-                $s->where('sv.MaSV','like',"%{$q}%")
-                  ->orWhere('sv.HoTen','like',"%{$q}%");
+            $query->where(function ($s) use ($q) {
+                $s->where('sv.MaSV', 'like', "%{$q}%")
+                    ->orWhere('sv.HoTen', 'like', "%{$q}%");
             });
         }
 

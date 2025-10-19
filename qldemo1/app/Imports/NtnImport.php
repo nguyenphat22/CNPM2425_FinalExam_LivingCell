@@ -48,11 +48,11 @@ class NtnImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnFailu
     public function rules(): array
     {
         return [
-            '*.masv'           => ['required','string','max:20'],
-            '*.tenhoatdong'    => ['required','string','max:200'],
-            '*.ngaythamgia'    => ['required','date'],
-            '*.songaytn'       => ['nullable','integer','min:1'],
-            '*.trangthaiduyet' => ['nullable','in:ChuaDuyet,DaDuyet,TuChoi'],
+            '*.masv'           => ['required', 'string', 'max:20'],
+            '*.tenhoatdong'    => ['required', 'string', 'max:200'],
+            '*.ngaythamgia'    => ['required', 'date'],
+            '*.songaytn'       => ['nullable', 'integer', 'min:1'],
+            '*.trangthaiduyet' => ['nullable', 'in:ChuaDuyet,DaDuyet,TuChoi'],
         ];
     }
 

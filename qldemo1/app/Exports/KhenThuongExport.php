@@ -19,17 +19,17 @@ class KhenThuongExport implements FromCollection, WithHeadings, WithTitle
     public function collection()
     {
         // Lấy danh sách sinh viên và danh hiệu như bên controller
-        $sv = DB::table('BANG_SinhVien')->select('MaSV','HoTen')->get();
+        $sv = DB::table('BANG_SinhVien')->select('MaSV', 'HoTen')->get();
         $gpa = DB::table('BANG_DiemHocTap')
             ->select('MaSV', DB::raw('MAX(DiemHe4) as DiemHe4'))
-            ->groupBy('MaSV')->pluck('DiemHe4','MaSV');
+            ->groupBy('MaSV')->pluck('DiemHe4', 'MaSV');
         $drl = DB::table('BANG_DiemRenLuyen')
             ->select('MaSV', DB::raw('MAX(DiemRL) as DiemRL'))
-            ->groupBy('MaSV')->pluck('DiemRL','MaSV');
+            ->groupBy('MaSV')->pluck('DiemRL', 'MaSV');
         $ntn = DB::table('BANG_NgayTinhNguyen')
-            ->where('TrangThaiDuyet','DaDuyet')
+            ->where('TrangThaiDuyet', 'DaDuyet')
             ->select('MaSV', DB::raw('SUM(SoNgayTN) as SoNgayTN'))
-            ->groupBy('MaSV')->pluck('SoNgayTN','MaSV');
+            ->groupBy('MaSV')->pluck('SoNgayTN', 'MaSV');
         $danhhieu = DB::table('BANG_DanhHieu')->get();
 
         $rows = [];
@@ -55,7 +55,7 @@ class KhenThuongExport implements FromCollection, WithHeadings, WithTitle
 
     public function headings(): array
     {
-        return ['MSSV','Họ và Tên','Điểm GPA','Điểm RL','Số ngày TN','Danh hiệu đạt được'];
+        return ['MSSV', 'Họ và Tên', 'Điểm GPA', 'Điểm RL', 'Số ngày TN', 'Danh hiệu đạt được'];
     }
 
     public function title(): string

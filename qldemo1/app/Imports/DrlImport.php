@@ -42,14 +42,14 @@ class DrlImport implements ToCollection, WithHeadingRow, WithValidation, SkipsOn
             ->whereIn('MaSV', array_column($upserts, 'MaSV'))
             ->whereIn('HocKy', array_column($upserts, 'HocKy'))
             ->whereIn('NamHoc', array_column($upserts, 'NamHoc'))
-            ->get(['MaSV','HocKy','NamHoc'])
+            ->get(['MaSV', 'HocKy', 'NamHoc'])
             ->map(fn($r) => "{$r->MaSV}|{$r->HocKy}|{$r->NamHoc}")
             ->flip();
 
         DB::table('BANG_DiemRenLuyen')->upsert(
             $upserts,
-            ['MaSV','HocKy','NamHoc'],                // unique keys
-            ['DiemRL','XepLoai']                      // columns to update
+            ['MaSV', 'HocKy', 'NamHoc'],                // unique keys
+            ['DiemRL', 'XepLoai']                      // columns to update
         );
 
         foreach ($upserts as $r) {
@@ -61,15 +61,24 @@ class DrlImport implements ToCollection, WithHeadingRow, WithValidation, SkipsOn
     public function rules(): array
     {
         return [
-            '*.masv'    => ['required','string','max:20','exists:BANG_SinhVien,MaSV'],
-            '*.hocky'   => ['required','integer','min:1','max:3'],
-            '*.namhoc'  => ['required','string','max:9'],
-            '*.diemrl'  => ['nullable','integer','min:0','max:100'],
-            '*.xeploai' => ['nullable','string','max:20'],
+            '*.masv'    => ['required', 'string', 'max:20', 'exists:BANG_SinhVien,MaSV'],
+            '*.hocky'   => ['required', 'integer', 'min:1', 'max:3'],
+            '*.namhoc'  => ['required', 'string', 'max:9'],
+            '*.diemrl'  => ['nullable', 'integer', 'min:0', 'max:100'],
+            '*.xeploai' => ['nullable', 'string', 'max:20'],
         ];
     }
 
-    public function chunkSize(): int { return 500; }
-    public function getInserted(): int { return $this->inserted; }
-    public function getUpdated(): int  { return $this->updated; }
+    public function chunkSize(): int
+    {
+        return 500;
+    }
+    public function getInserted(): int
+    {
+        return $this->inserted;
+    }
+    public function getUpdated(): int
+    {
+        return $this->updated;
+    }
 }
