@@ -87,13 +87,14 @@
     </td>
         <td>
           <button type="button"
-            class="btn btn-sm btn-outline-primary me-1"
-            data-bs-toggle="modal" data-bs-target="#modalEdit"
-            data-masv="{{ $r->MaSV }}"
-            data-hoten="{{ $r->HoTen }}"
-            data-ngaysinh="{{ $r->NgaySinh }}"
-            data-khoa="{{ $r->Khoa }}"
-            data-lop="{{ $r->Lop }}">Sửa</button>
+  class="btn btn-sm btn-outline-primary me-1"
+  data-bs-toggle="modal" data-bs-target="#modalEdit"
+  data-masv="{{ $r->MaSV }}"
+  data-hoten="{{ $r->HoTen }}"
+  data-ngaysinh="{{ $r->NgaySinh }}"
+  data-khoa="{{ $r->Khoa }}"
+  data-lop="{{ $r->Lop }}"
+  data-matk="{{ $r->MaTK }}">Sửa</button>
 
           <button type="button"
             class="btn btn-sm btn-outline-danger"
@@ -145,6 +146,13 @@
           <input class="form-control @error('Lop') is-invalid @enderror" name="Lop" value="{{ old('Lop') }}">
           @error('Lop')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
+        <div class="mb-2">
+          <label class="form-label">MaTK (tùy chọn)</label>
+          <input class="form-control @error('MaTK') is-invalid @enderror"
+                 name="MaTK" value="{{ old('MaTK') }}"
+                 placeholder="Nhập mã tài khoản (nếu có)">
+          @error('MaTK')<div class="invalid-feedback">{{ $message }}</div>@enderror
+        </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-primary">Lưu</button>
@@ -183,6 +191,10 @@
         <div class="mb-2">
           <label class="form-label">Lớp</label>
           <input class="form-control" name="Lop" id="edit_lop">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">MaTK (tùy chọn)</label>
+          <input class="form-control" name="MaTK" id="edit_matk" placeholder="Nhập mã tài khoản (nếu có)">
         </div>
       </div>
       <div class="modal-footer">
@@ -238,6 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('edit_ngaysinh').value = btn.getAttribute('data-ngaysinh');
     document.getElementById('edit_khoa').value     = btn.getAttribute('data-khoa') ?? '';
     document.getElementById('edit_lop').value      = btn.getAttribute('data-lop') ?? '';
+    document.getElementById('edit_matk').value     = btn.getAttribute('data-matk') ?? '';
   });
 
   // --- XÓA ---

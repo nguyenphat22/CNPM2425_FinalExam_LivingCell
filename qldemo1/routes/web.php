@@ -82,13 +82,17 @@ Route::prefix('ctct')
 // Đoàn Trường routes
 Route::prefix('doantruong')
     ->middleware(['auth.session','role:DoanTruong'])
-    ->name('doan.') // ✅ thêm dòng này để Laravel nhận tên route như doan.danhhieu.store
+    ->name('doan.') //  Thêm dòng này để Laravel nhận tên route như doan.danhhieu.store
     ->group(function () {
         Route::get('/', fn() => redirect()->route('doan.khenthuong.index'))->name('home');
 
         Route::get('/khenthuong', [DoanController::class, 'khenThuongIndex'])->name('khenthuong.index');
         Route::get('/tinhnguyen', [DoanController::class, 'tinhNguyenIndex'])->name('tinhnguyen.index');
         Route::get('/danhhieu',   [DoanController::class, 'danhHieuIndex'])->name('danhhieu.index');
+
+        // Export khen thưởng
+        Route::get('/khenthuong/export', [DoanController::class, 'exportExcel'])
+    ->name('khenthuong.export');
 
         // Thêm 3 route POST cho danh hiệu
         Route::post('/danhhieu/store',  [DoanController::class, 'dhStore'])->name('danhhieu.store');

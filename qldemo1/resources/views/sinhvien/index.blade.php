@@ -72,37 +72,49 @@
       </table>
     </div>
     --}}
+<br> 
+    {{-- Khen thưởng danh hiệu --}}
+<h5 class="mb-2" style= "text-align: center; color: green;">Khen thưởng danh hiệu</h5>
+<div class="table-responsive mb-3">
+  <table class="table table-bordered align-middle">
+    <thead class="table-light">
+      <tr>
+        <th style="width:70px">STT</th>
+        <th style="text-align: center">Danh hiệu đạt được</th>
+        <th style="width:160px">Học kỳ</th> 
+      </tr>
+    </thead>
+    <tbody>
+      @forelse($awds as $i => $a)
+        <tr>
+          <td>{{ $i + 1 }}</td>
+          <td>
+            <span class="badge rounded-pill text-bg-success">{{ $a->Ten }}</span>
+          </td>
+          <td>{{ $a->HocKy ?? '—' }}</td>
+        </tr>
+      @empty
+        <tr>
+          <td colspan="3" class="text-center text-muted">Chưa có khen thưởng.</td>
+        </tr>
+      @endforelse
+    </tbody>
+  </table>
+</div>
 
-    <h5 class="mb-2">Khen thưởng</h5>
-    <div class="table-responsive mb-3">
-      <table class="table table-bordered align-middle">
-        <thead class="table-light">
-          <tr>
-            <th style="width:70px">STT</th>
-            <th>Danh hiệu</th>
-            <th>Số quyết định</th>
-            <th>Học kỳ</th>
-          </tr>
-        </thead>
-        <tbody>
-          @forelse($awds as $i => $a)
-            <tr>
-              <td>{{ $i + 1 }}</td>
-              <td>{{ $a->Ten   ?? ($a['Ten']   ?? '') }}</td>
-              <td>{{ $a->SoQD  ?? ($a['SoQD']  ?? '') }}</td>
-              <td>{{ $a->HocKy ?? ($a['HocKy'] ?? '') }}</td>
-            </tr>
-          @empty
-            <tr><td colspan="4" class="text-center text-muted">Chưa có khen thưởng.</td></tr>
-          @endforelse
-        </tbody>
-      </table>
-    </div>
-
-    <h5 class="mt-4 mb-2">Đề xuất danh hiệu</h5>
-    <div class="card"><div class="card-body">
-      {{ !empty($goiY) ? "Gợi ý: $goiY" : 'Chưa đủ dữ liệu để gợi ý.' }}
-    </div></div>
-  </main>
+    {{-- Gợi ý danh hiệu --}}
+<h5 class="mt-4 mb-2" style = "text-align: center; color: green;">Đề xuất danh hiệu</h5>
+<div class="card">
+  <div class="card-body">
+    @if(!empty($goiY))
+      <ul class="mb-0">
+        @foreach($goiY as $msg)
+          <li>{{ $msg }}</li>
+        @endforeach
+      </ul>
+    @else
+      Hiện tại không có danh hiệu phù hợp, bạn hãy cố gắng hơn nhé!
+    @endif
+  </div>
 </div>
 @endsection

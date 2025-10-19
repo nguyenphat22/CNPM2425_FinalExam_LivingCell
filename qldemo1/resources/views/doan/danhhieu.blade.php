@@ -70,34 +70,87 @@
 {{-- MODAL THÊM --}}
 <div class="modal fade" id="modalAdd" tabindex="-1">
   <div class="modal-dialog">
-    <form class="modal-content" method="post" action="{{ route('doan.danhhieu.store') }}">
+    {{-- TẮT HTML5 validation để không hiện tooltip mặc định --}}
+    <form class="modal-content" method="post" action="{{ route('doan.danhhieu.store') }}" novalidate>
       @csrf
       <div class="modal-header">
         <h5 class="modal-title">Thêm danh hiệu</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
+
       <div class="modal-body">
+        {{-- Tên danh hiệu --}}
         <div class="mb-2">
           <label class="form-label">Tên danh hiệu</label>
-          <input class="form-control" name="TenDH" required>
+          <input
+            class="form-control @error('TenDH') is-invalid @enderror"
+            name="TenDH"
+            value="{{ old('TenDH') }}"
+          >
+          @error('TenDH')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
         </div>
+
+        {{-- GPA --}}
         <div class="mb-2">
-          <label class="form-label">Điều kiện GPA (0-4) — để trống nếu không áp dụng</label>
-          <input type="number" step="0.01" min="0" max="4" class="form-control" name="DieuKienGPA">
+          <label class="form-label">Điều kiện GPA (0-4)</label>
+          <input
+            type="number" step="0.01" min="0" max="4"
+            class="form-control @error('DieuKienGPA') is-invalid @enderror"
+            name="DieuKienGPA"
+            value="{{ old('DieuKienGPA') }}"
+          >
+          @error('DieuKienGPA')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
         </div>
+
+        {{-- DRL --}}
         <div class="mb-2">
           <label class="form-label">Điều kiện DRL (0-100)</label>
-          <input type="number" step="1" min="0" max="100" class="form-control" name="DieuKienDRL">
+          <input
+            type="number" step="1" min="0" max="100"
+            class="form-control @error('DieuKienDRL') is-invalid @enderror"
+            name="DieuKienDRL"
+            value="{{ old('DieuKienDRL') }}"
+          >
+          @error('DieuKienDRL')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
         </div>
+
+        {{-- Ngày TN --}}
         <div class="mb-2">
           <label class="form-label">Điều kiện ngày TN (số ngày)</label>
-          <input type="number" step="1" min="0" class="form-control" name="DieuKienNTN">
+          <input
+            type="number" step="1" min="0"
+            class="form-control @error('DieuKienNTN') is-invalid @enderror"
+            name="DieuKienNTN"
+            value="{{ old('DieuKienNTN') }}"
+          >
+          @error('DieuKienNTN')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
         </div>
       </div>
-      <div class="modal-footer"><button class="btn btn-primary">Lưu</button></div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary">Lưu</button>
+      </div>
     </form>
   </div>
 </div>
+
+{{-- Tự mở lại modal nếu có lỗi validate --}}
+@if ($errors->any())
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var m = new bootstrap.Modal(document.getElementById('modalAdd'));
+      m.show();
+    });
+  </script>
+@endif
 
 {{-- MODAL SỬA --}}
 <div class="modal fade" id="modalEdit" tabindex="-1">
