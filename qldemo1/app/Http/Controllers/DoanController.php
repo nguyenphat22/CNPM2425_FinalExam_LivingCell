@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
 use Illuminate\Database\QueryException;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\KhenThuongExport;
+use App\Models\NgayTinhNguyen;
+use App\Models\DanhHieu;
 
 class DoanController extends Controller
 {
