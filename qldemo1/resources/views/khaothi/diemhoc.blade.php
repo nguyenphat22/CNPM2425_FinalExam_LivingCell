@@ -12,7 +12,7 @@
   </form>
 
   <a class="btn btn-success"
-     href="{{ route('khaothi.gpa.export', ['hk'=>$hk,'nh'=>$nh,'q'=>$q]) }}">
+    href="{{ route('khaothi.gpa.export', ['hk'=>$hk,'nh'=>$nh,'q'=>$q]) }}">
     Xuất báo cáo file Excel
   </a>
 
@@ -25,20 +25,20 @@
       <option value="3" {{ (int)$hk===3?'selected':'' }}>HK Hè</option>
     </select>
     <input class="form-control" name="nh" value="{{ $nh }}" style="width:150px" placeholder="2024-2025">
-    <input class="form-control" name="q"  value="{{ $q }}" placeholder="Tìm MSSV / Họ tên">
+    <input class="form-control" name="q" value="{{ $q }}" placeholder="Tìm MSSV / Họ tên">
     <button class="btn btn-outline-primary">Tìm</button>
   </form>
 </div>
 
 @if (session('failures'))
-  <div class="alert alert-warning">
-    <div class="fw-bold">Một số dòng không hợp lệ:</div>
-    <ul class="mb-0">
-      @foreach (session('failures') as $f)
-        <li>Dòng {{ $f->row() }}: {{ implode('; ', $f->errors()) }}</li>
-      @endforeach
-    </ul>
-  </div>
+<div class="alert alert-warning">
+  <div class="fw-bold">Một số dòng không hợp lệ:</div>
+  <ul class="mb-0">
+    @foreach (session('failures') as $f)
+    <li>Dòng {{ $f->row() }}: {{ implode('; ', $f->errors()) }}</li>
+    @endforeach
+  </ul>
+</div>
 @endif
 
 <div class="table-responsive">
@@ -55,30 +55,32 @@
     </thead>
     <tbody>
       @forelse($data as $i => $r)
-        <tr>
-          <td>{{ $data->firstItem() + $i }}</td>
-          <td>{{ $r->MaSV }}</td>
-          <td>{{ $r->HoTen }}</td>
-          <td>{{ $r->DiemHT ?? '' }}</td>
-          <td>{{ $r->XepLoai ?? '' }}</td>
-          <td>
-            <button class="btn btn-sm btn-outline-primary me-1"
-                    data-bs-toggle="modal" data-bs-target="#modalEdit"
-                    data-masv="{{ $r->MaSV }}"
-                    data-hk="{{ $hk }}"
-                    data-nh="{{ $nh }}"
-                    data-diem="{{ $r->DiemHT ?? '' }}"
-                    data-xeploai="{{ $r->XepLoai ?? '' }}">Sửa</button>
+      <tr>
+        <td>{{ $data->firstItem() + $i }}</td>
+        <td>{{ $r->MaSV }}</td>
+        <td>{{ $r->HoTen }}</td>
+        <td>{{ $r->DiemHT ?? '' }}</td>
+        <td>{{ $r->XepLoai ?? '' }}</td>
+        <td>
+          <button class="btn btn-sm btn-outline-primary me-1"
+            data-bs-toggle="modal" data-bs-target="#modalEdit"
+            data-masv="{{ $r->MaSV }}"
+            data-hk="{{ $hk }}"
+            data-nh="{{ $nh }}"
+            data-diem="{{ $r->DiemHT ?? '' }}"
+            data-xeploai="{{ $r->XepLoai ?? '' }}">Sửa</button>
 
-            <button class="btn btn-sm btn-outline-danger"
-                    data-bs-toggle="modal" data-bs-target="#modalDelete"
-                    data-masv="{{ $r->MaSV }}"
-                    data-hk="{{ $hk }}"
-                    data-nh="{{ $nh }}">Xóa</button>
-          </td>
-        </tr>
+          <button class="btn btn-sm btn-outline-danger"
+            data-bs-toggle="modal" data-bs-target="#modalDelete"
+            data-masv="{{ $r->MaSV }}"
+            data-hk="{{ $hk }}"
+            data-nh="{{ $nh }}">Xóa</button>
+        </td>
+      </tr>
       @empty
-        <tr><td colspan="6" class="text-center">Không có dữ liệu</td></tr>
+      <tr>
+        <td colspan="6" class="text-center">Không có dữ liệu</td>
+      </tr>
       @endforelse
     </tbody>
   </table>
@@ -97,15 +99,20 @@
       </div>
       <div class="modal-body">
         <div class="mb-2"><label class="form-label">MSSV</label>
-          <input class="form-control" name="MaSV" id="edit_masv" readonly></div>
+          <input class="form-control" name="MaSV" id="edit_masv" readonly>
+        </div>
         <div class="mb-2"><label class="form-label">Học kỳ</label>
-          <input class="form-control" name="HocKy" id="edit_hk" readonly></div>
+          <input class="form-control" name="HocKy" id="edit_hk" readonly>
+        </div>
         <div class="mb-2"><label class="form-label">Năm học</label>
-          <input class="form-control" name="NamHoc" id="edit_nh" readonly></div>
+          <input class="form-control" name="NamHoc" id="edit_nh" readonly>
+        </div>
         <div class="mb-2"><label class="form-label">Điểm học tập</label>
-          <input type="number" step="0.01" min="0" max="4" class="form-control" name="DiemHT" id="edit_diem" required></div>
+          <input type="number" step="0.01" min="0" max="4" class="form-control" name="DiemHT" id="edit_diem" required>
+        </div>
         <div class="mb-2"><label class="form-label">Xếp loại</label>
-          <input class="form-control" name="XepLoai" id="edit_xeploai"></div>
+          <input class="form-control" name="XepLoai" id="edit_xeploai">
+        </div>
       </div>
       <div class="modal-footer"><button class="btn btn-primary">Lưu</button></div>
     </form>
@@ -138,43 +145,73 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  // Nút Lưu: thông báo rồi quay lại trang chính
-  document.getElementById('btn-refresh')?.addEventListener('click', () => {
-    const alert = document.createElement('div');
-    alert.className = 'alert alert-success position-fixed top-0 end-0 m-3 shadow';
-    alert.style.zIndex = '2000';
-    alert.textContent = '✅ Đã cập nhật thành công! Đang quay lại...';
-    document.body.appendChild(alert);
-    setTimeout(() => { window.location.href = "{{ url('/khaothi/gpa') }}"; }, 1500);
-  });
+  document.addEventListener('DOMContentLoaded', () => {
+    // Nút Lưu: thông báo rồi quay lại trang chính
+    document.getElementById('btn-refresh')?.addEventListener('click', () => {
+      const alert = document.createElement('div');
+      alert.className = 'alert alert-success position-fixed top-0 end-0 m-3 shadow';
+      alert.style.zIndex = '2000';
+      alert.textContent = '✅ Đã cập nhật thành công! Đang quay lại...';
+      document.body.appendChild(alert);
+      setTimeout(() => {
+        window.location.href = "{{ url('/khaothi/gpa') }}";
+      }, 1500);
+    });
 
-  // Modal Sửa
-  const editModal = document.getElementById('modalEdit');
-  editModal?.addEventListener('show.bs.modal', ev => {
-    const b = ev.relatedTarget;
-    document.getElementById('edit_masv').value    = b.getAttribute('data-masv');
-    document.getElementById('edit_hk').value      = b.getAttribute('data-hk');
-    document.getElementById('edit_nh').value      = b.getAttribute('data-nh');
-    document.getElementById('edit_diem').value    = b.getAttribute('data-diem') ?? '';
-    document.getElementById('edit_xeploai').value = b.getAttribute('data-xeploai') ?? '';
-  });
+    // === Hàm xếp loại theo thang 4 (BẢNG YÊU CẦU) ===
+    function xepLoaiGPA(v) {
+      // v có thể là chuỗi -> đổi sang số
+      const s = Number(v);
+      if (!Number.isFinite(s)) return ''; // chưa nhập -> để trống
+      if (s >= 3.6 && s <= 4.0) return 'Xuất sắc';
+      if (s >= 3.2) return 'Giỏi';
+      if (s >= 2.5) return 'Khá';
+      if (s >= 2.0) return 'Trung bình';
+      if (s >= 1.0) return 'Yếu';
+      if (s >= 0) return 'Kém';
+      return '';
+    }
 
-  // Modal Xóa
-  const delModal = document.getElementById('modalDelete');
-  delModal?.addEventListener('show.bs.modal', ev => {
-    const b = ev.relatedTarget;
-    const masv = b.getAttribute('data-masv');
-    const hk   = b.getAttribute('data-hk');
-    const nh   = b.getAttribute('data-nh');
-    document.getElementById('del_masv_input').value = masv;
-    document.getElementById('del_hk_input').value   = hk;
-    document.getElementById('del_nh_input').value   = nh;
-    document.getElementById('del_masv_text').textContent = masv;
-    document.getElementById('del_hk_text').textContent   = hk;
-    document.getElementById('del_nh_text').textContent   = nh;
+    // Modal Sửa
+    const editModal = document.getElementById('modalEdit');
+    editModal?.addEventListener('show.bs.modal', ev => {
+      const b = ev.relatedTarget;
+
+      // đổ dữ liệu ban đầu
+      document.getElementById('edit_masv').value = b.getAttribute('data-masv');
+      document.getElementById('edit_hk').value = b.getAttribute('data-hk');
+      document.getElementById('edit_nh').value = b.getAttribute('data-nh');
+
+      const diem = b.getAttribute('data-diem') ?? '';
+      document.getElementById('edit_diem').value = diem;
+      // nếu có điểm thì tính xếp loại, nếu trống -> để trống
+      document.getElementById('edit_xeploai').value = diem === '' ? '' : xepLoaiGPA(diem);
+
+      // auto cập nhật xếp loại khi người dùng gõ/chỉnh điểm
+      const onChange = () => {
+        const v = document.getElementById('edit_diem').value;
+        document.getElementById('edit_xeploai').value = (v === '' ? '' : xepLoaiGPA(v));
+      };
+      document.getElementById('edit_diem').removeEventListener('input', onChange);
+      document.getElementById('edit_diem').addEventListener('input', onChange);
+      document.getElementById('edit_diem').addEventListener('change', onChange);
+    });
+
+    // Modal Xóa
+    const delModal = document.getElementById('modalDelete');
+    delModal?.addEventListener('show.bs.modal', ev => {
+      const b = ev.relatedTarget;
+      const masv = b.getAttribute('data-masv');
+      const hk = b.getAttribute('data-hk');
+      const nh = b.getAttribute('data-nh');
+      document.getElementById('del_masv_input').value = masv;
+      document.getElementById('del_hk_input').value = hk;
+      document.getElementById('del_nh_input').value = nh;
+      document.getElementById('del_masv_text').textContent = masv;
+      document.getElementById('del_hk_text').textContent = hk;
+      document.getElementById('del_nh_text').textContent = nh;
+    });
   });
-});
 </script>
 @endpush
 @endsection

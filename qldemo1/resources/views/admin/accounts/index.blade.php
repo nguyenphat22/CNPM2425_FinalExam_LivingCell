@@ -5,11 +5,11 @@
 <h4 class="mb-3">Danh sách tài khoản</h4>
 
 @if ($errors->any() && !$errors->getBag('add')->any() && !$errors->getBag('edit')->any())
-  <div class="alert alert-danger">
-    <ul class="mb-0 ps-3">
-      @foreach ($errors->all() as $e) <li>{{ $e }}</li> @endforeach
-    </ul>
-  </div>
+<div class="alert alert-danger">
+  <ul class="mb-0 ps-3">
+    @foreach ($errors->all() as $e) <li>{{ $e }}</li> @endforeach
+  </ul>
+</div>
 @endif
 
 <div class="d-flex gap-2 mb-3">
@@ -55,27 +55,29 @@
         <td>{{ $r->TrangThai }}</td>
         <td>
           <button type="button"
-        class="btn btn-sm btn-outline-primary me-1"
-        data-bs-toggle="modal" data-bs-target="#modalEdit"
-        data-matk="{{ $r->MaTK }}"
-        data-tendn="{{ $r->TenDangNhap }}"
-        data-vaitro="{{ $r->VaiTro }}"
-        data-trangthai="{{ $r->TrangThai }}"
-        data-email="{{ $r->Email }}">
-  Sửa
-</button>
+            class="btn btn-sm btn-outline-primary me-1"
+            data-bs-toggle="modal" data-bs-target="#modalEdit"
+            data-matk="{{ $r->MaTK }}"
+            data-tendn="{{ $r->TenDangNhap }}"
+            data-vaitro="{{ $r->VaiTro }}"
+            data-trangthai="{{ $r->TrangThai }}"
+            data-email="{{ $r->Email }}">
+            Sửa
+          </button>
 
           <button type="button"
-                  class="btn btn-sm btn-outline-danger"
-                  data-bs-toggle="modal" data-bs-target="#confirmDelete"
-                  data-matk="{{ $r->MaTK }}"
-                  data-tendn="{{ $r->TenDangNhap }}">
+            class="btn btn-sm btn-outline-danger"
+            data-bs-toggle="modal" data-bs-target="#confirmDelete"
+            data-matk="{{ $r->MaTK }}"
+            data-tendn="{{ $r->TenDangNhap }}">
             Xóa
           </button>
         </td>
       </tr>
       @empty
-      <tr><td colspan="8" class="text-center">Không có dữ liệu</td></tr>
+      <tr>
+        <td colspan="8" class="text-center">Không có dữ liệu</td>
+      </tr>
       @endforelse
     </tbody>
   </table>
@@ -101,10 +103,9 @@
             class="form-control @error('TenDangNhap','add') is-invalid @enderror"
             name="TenDangNhap"
             value="{{ old('TenDangNhap') }}"
-            required
-          >
+            required>
           @error('TenDangNhap','add')
-            <div class="invalid-feedback">{{ $message }}</div>
+          <div class="invalid-feedback">{{ $message }}</div>
           @enderror
         </div>
 
@@ -114,10 +115,9 @@
             type="password"
             class="form-control @error('MatKhau','add') is-invalid @enderror"
             name="MatKhau"
-            required
-          >
+            required>
           @error('MatKhau','add')
-            <div class="invalid-feedback">{{ $message }}</div>
+          <div class="invalid-feedback">{{ $message }}</div>
           @enderror
         </div>
 
@@ -126,16 +126,15 @@
           <select
             class="form-select @error('VaiTro','add') is-invalid @enderror"
             name="VaiTro"
-            required
-          >
-            <option value="Admin"      @selected(old('VaiTro')==='Admin')>Admin</option>
-            <option value="SinhVien"   @selected(old('VaiTro')==='SinhVien')>SinhVien</option>
-            <option value="CTCTHSSV"   @selected(old('VaiTro')==='CTCTHSSV')>CTCTHSSV</option>
-            <option value="KhaoThi"    @selected(old('VaiTro')==='KhaoThi')>KhaoThi</option>
-            <option value="DoanTruong" @selected(old('VaiTro')==='DoanTruong')>DoanTruong</option>
+            required>
+            <option value="Admin" @selected(old('VaiTro')==='Admin' )>Admin</option>
+            <option value="SinhVien" @selected(old('VaiTro')==='SinhVien' )>SinhVien</option>
+            <option value="CTCTHSSV" @selected(old('VaiTro')==='CTCTHSSV' )>CTCTHSSV</option>
+            <option value="KhaoThi" @selected(old('VaiTro')==='KhaoThi' )>KhaoThi</option>
+            <option value="DoanTruong" @selected(old('VaiTro')==='DoanTruong' )>DoanTruong</option>
           </select>
           @error('VaiTro','add')
-            <div class="invalid-feedback">{{ $message }}</div>
+          <div class="invalid-feedback">{{ $message }}</div>
           @enderror
         </div>
 
@@ -146,10 +145,9 @@
             class="form-control @error('Email','add') is-invalid @enderror"
             name="Email"
             value="{{ old('Email') }}"
-            placeholder="vd: user@example.com"
-          >
+            placeholder="vd: user@example.com">
           @error('Email','add')
-            <div class="invalid-feedback">{{ $message }}</div>
+          <div class="invalid-feedback">{{ $message }}</div>
           @enderror
         </div>
       </div>
@@ -190,20 +188,20 @@
         <div class="mb-2">
           <label class="form-label">Vai trò</label>
           <select class="form-select @error('VaiTro','edit') is-invalid @enderror" name="VaiTro" required>
-            <option value="Admin"      @selected(old('VaiTro')==='Admin')>Admin</option>
-            <option value="SinhVien"   @selected(old('VaiTro')==='SinhVien')>SinhVien</option>
-            <option value="CTCTHSSV"   @selected(old('VaiTro')==='CTCTHSSV')>CTCTHSSV</option>
-            <option value="KhaoThi"    @selected(old('VaiTro')==='KhaoThi')>KhaoThi</option>
-            <option value="DoanTruong" @selected(old('VaiTro')==='DoanTruong')>DoanTruong</option>
+            <option value="Admin" @selected(old('VaiTro')==='Admin' )>Admin</option>
+            <option value="SinhVien" @selected(old('VaiTro')==='SinhVien' )>SinhVien</option>
+            <option value="CTCTHSSV" @selected(old('VaiTro')==='CTCTHSSV' )>CTCTHSSV</option>
+            <option value="KhaoThi" @selected(old('VaiTro')==='KhaoThi' )>KhaoThi</option>
+            <option value="DoanTruong" @selected(old('VaiTro')==='DoanTruong' )>DoanTruong</option>
           </select>
           @error('VaiTro','edit') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
         <div class="mb-2">
           <label class="form-label">Trạng thái</label>
           <select class="form-select" name="TrangThai">
-            <option @selected(old('TrangThai')==='Active')>Active</option>
-            <option @selected(old('TrangThai')==='Inactive')>Inactive</option>
-            <option @selected(old('TrangThai')==='Locked')>Locked</option>
+            <option @selected(old('TrangThai')==='Active' )>Active</option>
+            <option @selected(old('TrangThai')==='Inactive' )>Inactive</option>
+            <option @selected(old('TrangThai')==='Locked' )>Locked</option>
           </select>
         </div>
         <div class="mb-2">
@@ -228,7 +226,8 @@
       </div>
       <div class="modal-body">
         <p>Bạn chắc chắn muốn xóa tài khoản
-          <strong id="delTen"></strong> (MaTK: <code id="delMa"></code>)?</p>
+          <strong id="delTen"></strong> (MaTK: <code id="delMa"></code>)?
+        </p>
         <input type="hidden" name="MaTK" id="delMaInput">
       </div>
       <div class="modal-footer">
@@ -246,17 +245,21 @@
     const box = document.createElement('div');
     box.className = 'alert alert-success text-center';
     Object.assign(box.style, {
-      position:'fixed', top:'10px', left:'50%',
-      transform:'translateX(-50%)', zIndex:'2000', width:'350px'
+      position: 'fixed',
+      top: '10px',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      zIndex: '2000',
+      width: '350px'
     });
     box.textContent = '✅ Đã lưu thành công, đang chuyển về trang chính...';
     document.body.appendChild(box);
-   setTimeout(()=>{
+    setTimeout(() => {
       box.remove();
       // chuyển về trang danh sách sau khi hiển thị thông báo
       window.location.href = "{{ url('/admin/accounts') }}";
       // hoặc dùng replace để không lưu lịch sử: window.location.replace('http://127.0.0.1:8000/admin/accounts');
-    },1500);
+    }, 1500);
   }
 
   // Khởi tạo các handler khi DOM sẵn sàng
@@ -264,30 +267,30 @@
     // ===== Modal XÁC NHẬN XÓA =====
     const delModal = document.getElementById('confirmDelete');
     if (delModal) {
-      delModal.addEventListener('show.bs.modal', function(ev){
-        const btn   = ev.relatedTarget; // nút Xóa vừa bấm
-        const matk  = btn?.getAttribute('data-matk')  || '';
+      delModal.addEventListener('show.bs.modal', function(ev) {
+        const btn = ev.relatedTarget; // nút Xóa vừa bấm
+        const matk = btn?.getAttribute('data-matk') || '';
         const tendn = btn?.getAttribute('data-tendn') || '';
-        this.querySelector('#delMa').textContent  = matk;
+        this.querySelector('#delMa').textContent = matk;
         this.querySelector('#delTen').textContent = tendn;
-        this.querySelector('#delMaInput').value   = matk;
+        this.querySelector('#delMaInput').value = matk;
       });
     }
 
     // ===== Modal SỬA =====
     const editModal = document.getElementById('modalEdit');
     if (editModal) {
-      editModal.addEventListener('show.bs.modal', function(ev){
+      editModal.addEventListener('show.bs.modal', function(ev) {
         // Trường hợp mở lại modal do lỗi validate (không có relatedTarget) => giữ nguyên old()
         const btn = ev.relatedTarget;
         if (!btn) return;
 
         const f = this.querySelector('form');
-        f.querySelector('input[name="MaTK"]').value        = btn.getAttribute('data-matk')      || '';
-        f.querySelector('input[name="TenDangNhap"]').value = btn.getAttribute('data-tendn')     || '';
-        f.querySelector('select[name="VaiTro"]').value     = btn.getAttribute('data-vaitro')    || 'SinhVien';
-        f.querySelector('select[name="TrangThai"]').value  = btn.getAttribute('data-trangthai') || 'Active';
-        f.querySelector('input[name="Email"]').value       = btn.getAttribute('data-email')     || '';
+        f.querySelector('input[name="MaTK"]').value = btn.getAttribute('data-matk') || '';
+        f.querySelector('input[name="TenDangNhap"]').value = btn.getAttribute('data-tendn') || '';
+        f.querySelector('select[name="VaiTro"]').value = btn.getAttribute('data-vaitro') || 'SinhVien';
+        f.querySelector('select[name="TrangThai"]').value = btn.getAttribute('data-trangthai') || 'Active';
+        f.querySelector('input[name="Email"]').value = btn.getAttribute('data-email') || '';
         // Không tự fill mật khẩu — để trống nghĩa là giữ nguyên
         const pass = f.querySelector('input[name="MatKhau"]');
         if (pass) pass.value = '';

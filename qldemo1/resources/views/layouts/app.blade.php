@@ -7,6 +7,7 @@
 
   {{-- Bootstrap 5 --}}
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
     /* Sidebar trái: cao full màn hình, cố định khi cuộn */
@@ -18,6 +19,28 @@
     .sidebar .nav-link{color:#cfd8dc; border-radius:.6rem; }
     .sidebar .nav-link:hover{color:#fff; background:rgba(255,255,255,.07)}
     .sidebar .nav-link.active{color:#0d6efd; background:#fff}
+    /* Ẩn sidebar thủ công trên desktop */
+.sidebar.collapsed {
+  width: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+main {
+  transition: margin-left 0.3s ease;
+}
+main.expanded {
+  margin-left: 0;
+}
+#btnToggleSidebar {
+  background-color: #1f2a37;
+  opacity: 0.7;
+  transition: opacity 0.2s, background-color 0.2s;
+}
+#btnToggleSidebar:hover {
+  opacity: 1;
+  background-color: #0d6efd;
+}
     @media (max-width: 991.98px){
       .sidebar{position:fixed; z-index:1030; transform:translateX(-100%); transition:.2s}
       .sidebar.show{transform:none}
@@ -30,6 +53,13 @@
   </style>
 </head>
 <body>
+  {{-- Nút 3 chấm toggle sidebar trên desktop --}}
+<button id="btnToggleSidebar"
+  class="btn btn-dark d-none d-lg-flex align-items-center justify-content-center
+         position-fixed top-0 start-0 mt-3"
+  style="width:44px;height:36px;border-top-right-radius:8px;border-bottom-right-radius:8px;z-index:2000;">
+  <i class="bi bi-three-dots fs-5"></i>
+</button>
 
 {{-- Nút mở sidebar trên mobile (tùy chọn) --}}
 <button class="btn btn-dark d-lg-none sidebar-toggler">☰</button>
@@ -39,6 +69,7 @@
 <div class="d-flex app-wrap">
   {{-- SIDEBAR --}}
   <aside class="sidebar bg-dark text-white p-3 d-flex flex-column">
+    <br><br>
     <div class="brand mb-3">QLSV</div>
     {{-- Sidebar theo module --}}
 <div class="mb-auto">
@@ -86,6 +117,12 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+  // Toggle sidebar trên desktop
+const desktopBtn = document.getElementById('btnToggleSidebar');
+desktopBtn?.addEventListener('click', () => {
+  sidebar.classList.toggle('collapsed');
+  document.querySelector('main').classList.toggle('expanded');
+});
   // Toggle sidebar trên mobile
   const sidebar = document.querySelector('.sidebar');
   const backdrop = document.querySelector('.sidebar-backdrop');

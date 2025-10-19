@@ -6,17 +6,17 @@
 
 {{-- THÔNG BÁO --}}
 @if ($errors->has('file'))
-  <div class="alert alert-danger">{{ $errors->first('file') }}</div>
+<div class="alert alert-danger">{{ $errors->first('file') }}</div>
 @endif
 @if (session('failures') && session('failures')->isNotEmpty())
-  <div class="alert alert-warning">
-    <div class="fw-semibold mb-2">Một số dòng không thể nhập:</div>
-    <ul class="mb-0 ps-3">
-      @foreach(session('failures') as $msg)
-        <li>{{ $msg }}</li>
-      @endforeach
-    </ul>
-  </div>
+<div class="alert alert-warning">
+  <div class="fw-semibold mb-2">Một số dòng không thể nhập:</div>
+  <ul class="mb-0 ps-3">
+    @foreach(session('failures') as $msg)
+    <li>{{ $msg }}</li>
+    @endforeach
+  </ul>
+</div>
 @endif
 
 {{-- thanh công cụ: Lưu giả + Import + Thêm + Tìm --}}
@@ -28,12 +28,12 @@
 
   {{-- *** FORM IMPORT PHẢI CÓ form + POST + enctype + csrf *** --}}
   <form method="post"
-        action="{{ route('ctct.sv.import') }}"
-        enctype="multipart/form-data"
-        class="d-flex gap-2">
+    action="{{ route('ctct.sv.import') }}"
+    enctype="multipart/form-data"
+    class="d-flex gap-2">
     @csrf
     <input type="file" name="file" class="form-control"
-           style="max-width:260px;" accept=".xlsx,.xls,.csv" required>
+      style="max-width:260px;" accept=".xlsx,.xls,.csv" required>
     <button class="btn btn-secondary" type="submit">
       Nhập file Excel ds sinh viên
     </button>
@@ -64,37 +64,37 @@
       </tr>
     </thead>
     <tbody>
-    @forelse($data as $i => $r)
+      @forelse($data as $i => $r)
       <tr>
         <td>{{ $data->firstItem() + $i }}</td>
         <td>{{ $r->MaSV }}</td>
         <td>{{ $r->HoTen }}</td>
         <td>
           @php
-            $d = $r->NgaySinh ? \Illuminate\Support\Carbon::parse($r->NgaySinh)->format('Y-m-d') : '';
+          $d = $r->NgaySinh ? \Illuminate\Support\Carbon::parse($r->NgaySinh)->format('Y-m-d') : '';
           @endphp
           {{ $d }}
         </td>
         <td>{{ $r->Khoa }}</td>
         <td>{{ $r->Lop }}</td>
         {{-- ✅ Cột MaTK — phải nằm trong foreach này --}}
-    <td>
-      @if ($r->MaTK)
-        <span class="badge text-bg-secondary">{{ $r->MaTK }}</span>
-      @else
-        <span class="text-muted">—</span>
-      @endif
-    </td>
+        <td>
+          @if ($r->MaTK)
+          <span class="badge text-bg-secondary">{{ $r->MaTK }}</span>
+          @else
+          <span class="text-muted">—</span>
+          @endif
+        </td>
         <td>
           <button type="button"
-  class="btn btn-sm btn-outline-primary me-1"
-  data-bs-toggle="modal" data-bs-target="#modalEdit"
-  data-masv="{{ $r->MaSV }}"
-  data-hoten="{{ $r->HoTen }}"
-  data-ngaysinh="{{ $r->NgaySinh }}"
-  data-khoa="{{ $r->Khoa }}"
-  data-lop="{{ $r->Lop }}"
-  data-matk="{{ $r->MaTK }}">Sửa</button>
+            class="btn btn-sm btn-outline-primary me-1"
+            data-bs-toggle="modal" data-bs-target="#modalEdit"
+            data-masv="{{ $r->MaSV }}"
+            data-hoten="{{ $r->HoTen }}"
+            data-ngaysinh="{{ $r->NgaySinh }}"
+            data-khoa="{{ $r->Khoa }}"
+            data-lop="{{ $r->Lop }}"
+            data-matk="{{ $r->MaTK }}">Sửa</button>
 
           <button type="button"
             class="btn btn-sm btn-outline-danger"
@@ -102,9 +102,11 @@
             data-masv="{{ $r->MaSV }}">Xóa</button>
         </td>
       </tr>
-    @empty
-      <tr><td colspan="7" class="text-center">Không có dữ liệu</td></tr>
-    @endforelse
+      @empty
+      <tr>
+        <td colspan="7" class="text-center">Không có dữ liệu</td>
+      </tr>
+      @endforelse
     </tbody>
   </table>
 </div>
@@ -149,8 +151,8 @@
         <div class="mb-2">
           <label class="form-label">MaTK (tùy chọn)</label>
           <input class="form-control @error('MaTK') is-invalid @enderror"
-                 name="MaTK" value="{{ old('MaTK') }}"
-                 placeholder="Nhập mã tài khoản (nếu có)">
+            name="MaTK" value="{{ old('MaTK') }}"
+            placeholder="Nhập mã tài khoản (nếu có)">
           @error('MaTK')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
       </div>
@@ -227,41 +229,41 @@
 
 @push('scripts')
 <script>
-// Nút Lưu giả (refresh trang + thông báo)
-document.getElementById('btn-refresh')?.addEventListener('click', () => {
-  const alert = document.createElement('div');
-  alert.className = 'alert alert-success position-fixed top-0 end-0 m-3 shadow';
-  alert.style.zIndex = '2000';
-  alert.textContent = '✅ Đã lưu dữ liệu, đang quay lại trang chính...';
-  document.body.appendChild(alert);
+  // Nút Lưu giả (refresh trang + thông báo)
+  document.getElementById('btn-refresh')?.addEventListener('click', () => {
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-success position-fixed top-0 end-0 m-3 shadow';
+    alert.style.zIndex = '2000';
+    alert.textContent = '✅ Đã lưu dữ liệu, đang quay lại trang chính...';
+    document.body.appendChild(alert);
 
-  // Sau 1.5 giây quay lại trang /ctct/sinhvien
-  setTimeout(() => {
-    window.location.href = "{{ url('/ctct/sinhvien') }}";
-  }, 1500);
-});
-document.addEventListener('DOMContentLoaded', () => {
-  // --- SỬA ---
-  const editModal = document.getElementById('modalEdit');
-  editModal?.addEventListener('show.bs.modal', ev => {
-    const btn = ev.relatedTarget;
-    document.getElementById('edit_masv').value     = btn.getAttribute('data-masv');
-    document.getElementById('edit_hoten').value    = btn.getAttribute('data-hoten');
-    document.getElementById('edit_ngaysinh').value = btn.getAttribute('data-ngaysinh');
-    document.getElementById('edit_khoa').value     = btn.getAttribute('data-khoa') ?? '';
-    document.getElementById('edit_lop').value      = btn.getAttribute('data-lop') ?? '';
-    document.getElementById('edit_matk').value     = btn.getAttribute('data-matk') ?? '';
+    // Sau 1.5 giây quay lại trang /ctct/sinhvien
+    setTimeout(() => {
+      window.location.href = "{{ url('/ctct/sinhvien') }}";
+    }, 1500);
   });
+  document.addEventListener('DOMContentLoaded', () => {
+    // --- SỬA ---
+    const editModal = document.getElementById('modalEdit');
+    editModal?.addEventListener('show.bs.modal', ev => {
+      const btn = ev.relatedTarget;
+      document.getElementById('edit_masv').value = btn.getAttribute('data-masv');
+      document.getElementById('edit_hoten').value = btn.getAttribute('data-hoten');
+      document.getElementById('edit_ngaysinh').value = btn.getAttribute('data-ngaysinh');
+      document.getElementById('edit_khoa').value = btn.getAttribute('data-khoa') ?? '';
+      document.getElementById('edit_lop').value = btn.getAttribute('data-lop') ?? '';
+      document.getElementById('edit_matk').value = btn.getAttribute('data-matk') ?? '';
+    });
 
-  // --- XÓA ---
-  const delModal = document.getElementById('modalDelete');
-  delModal?.addEventListener('show.bs.modal', ev => {
-    const btn = ev.relatedTarget;
-    const masv = btn.getAttribute('data-masv');
-    document.getElementById('del_masv_input').value = masv;
-    document.getElementById('del_masv_text').textContent = masv;
+    // --- XÓA ---
+    const delModal = document.getElementById('modalDelete');
+    delModal?.addEventListener('show.bs.modal', ev => {
+      const btn = ev.relatedTarget;
+      const masv = btn.getAttribute('data-masv');
+      document.getElementById('del_masv_input').value = masv;
+      document.getElementById('del_masv_text').textContent = masv;
+    });
   });
-});
 </script>
 @endpush
 @endsection

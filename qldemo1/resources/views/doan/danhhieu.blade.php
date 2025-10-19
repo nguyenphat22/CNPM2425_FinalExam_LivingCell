@@ -37,29 +37,31 @@
     </thead>
     <tbody>
       @forelse($data as $i => $r)
-        <tr>
-          <td>{{ $data->firstItem() + $i }}</td>
-          <td>{{ $r->TenDH }}</td>
-          <td>{{ $r->DieuKienGPA !== null ? 'GPA ≥ '.$r->DieuKienGPA : '' }}</td>
-          <td>{{ $r->DieuKienDRL !== null ? 'DRL ≥ '.$r->DieuKienDRL : '' }}</td>
-          <td>{{ $r->DieuKienNTN !== null ? '≥ '.$r->DieuKienNTN.' ngày' : '' }}</td>
-          <td>
-            <button class="btn btn-sm btn-outline-primary me-1"
-                    data-bs-toggle="modal" data-bs-target="#modalEdit"
-                    data-madh="{{ $r->MaDH }}"
-                    data-tendh="{{ $r->TenDH }}"
-                    data-gpa="{{ $r->DieuKienGPA }}"
-                    data-drl="{{ $r->DieuKienDRL }}"
-                    data-ntn="{{ $r->DieuKienNTN }}">Sửa</button>
+      <tr>
+        <td>{{ $data->firstItem() + $i }}</td>
+        <td>{{ $r->TenDH }}</td>
+        <td>{{ $r->DieuKienGPA !== null ? 'GPA ≥ '.$r->DieuKienGPA : '' }}</td>
+        <td>{{ $r->DieuKienDRL !== null ? 'DRL ≥ '.$r->DieuKienDRL : '' }}</td>
+        <td>{{ $r->DieuKienNTN !== null ? '≥ '.$r->DieuKienNTN.' ngày' : '' }}</td>
+        <td>
+          <button class="btn btn-sm btn-outline-primary me-1"
+            data-bs-toggle="modal" data-bs-target="#modalEdit"
+            data-madh="{{ $r->MaDH }}"
+            data-tendh="{{ $r->TenDH }}"
+            data-gpa="{{ $r->DieuKienGPA }}"
+            data-drl="{{ $r->DieuKienDRL }}"
+            data-ntn="{{ $r->DieuKienNTN }}">Sửa</button>
 
-            <button class="btn btn-sm btn-outline-danger"
-                    data-bs-toggle="modal" data-bs-target="#modalDelete"
-                    data-madh="{{ $r->MaDH }}"
-                    data-tendh="{{ $r->TenDH }}">Xóa</button>
-          </td>
-        </tr>
+          <button class="btn btn-sm btn-outline-danger"
+            data-bs-toggle="modal" data-bs-target="#modalDelete"
+            data-madh="{{ $r->MaDH }}"
+            data-tendh="{{ $r->TenDH }}">Xóa</button>
+        </td>
+      </tr>
       @empty
-        <tr><td colspan="6" class="text-center">Không có dữ liệu</td></tr>
+      <tr>
+        <td colspan="6" class="text-center">Không có dữ liệu</td>
+      </tr>
       @endforelse
     </tbody>
   </table>
@@ -85,10 +87,9 @@
           <input
             class="form-control @error('TenDH') is-invalid @enderror"
             name="TenDH"
-            value="{{ old('TenDH') }}"
-          >
+            value="{{ old('TenDH') }}">
           @error('TenDH')
-            <div class="invalid-feedback">{{ $message }}</div>
+          <div class="invalid-feedback">{{ $message }}</div>
           @enderror
         </div>
 
@@ -99,10 +100,9 @@
             type="number" step="0.01" min="0" max="4"
             class="form-control @error('DieuKienGPA') is-invalid @enderror"
             name="DieuKienGPA"
-            value="{{ old('DieuKienGPA') }}"
-          >
+            value="{{ old('DieuKienGPA') }}">
           @error('DieuKienGPA')
-            <div class="invalid-feedback">{{ $message }}</div>
+          <div class="invalid-feedback">{{ $message }}</div>
           @enderror
         </div>
 
@@ -113,10 +113,9 @@
             type="number" step="1" min="0" max="100"
             class="form-control @error('DieuKienDRL') is-invalid @enderror"
             name="DieuKienDRL"
-            value="{{ old('DieuKienDRL') }}"
-          >
+            value="{{ old('DieuKienDRL') }}">
           @error('DieuKienDRL')
-            <div class="invalid-feedback">{{ $message }}</div>
+          <div class="invalid-feedback">{{ $message }}</div>
           @enderror
         </div>
 
@@ -127,10 +126,9 @@
             type="number" step="1" min="0"
             class="form-control @error('DieuKienNTN') is-invalid @enderror"
             name="DieuKienNTN"
-            value="{{ old('DieuKienNTN') }}"
-          >
+            value="{{ old('DieuKienNTN') }}">
           @error('DieuKienNTN')
-            <div class="invalid-feedback">{{ $message }}</div>
+          <div class="invalid-feedback">{{ $message }}</div>
           @enderror
         </div>
       </div>
@@ -144,12 +142,12 @@
 
 {{-- Tự mở lại modal nếu có lỗi validate --}}
 @if ($errors->any())
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var m = new bootstrap.Modal(document.getElementById('modalAdd'));
-      m.show();
-    });
-  </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var m = new bootstrap.Modal(document.getElementById('modalAdd'));
+    m.show();
+  });
+</script>
 @endif
 
 {{-- MODAL SỬA --}}
@@ -208,36 +206,38 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  // Nút Lưu: giống các trang trước – thông báo rồi quay lại
-  document.getElementById('btn-refresh')?.addEventListener('click', () => {
-    const alertBox = document.createElement('div');
-    alertBox.className = 'alert alert-success position-fixed top-0 end-0 m-3 shadow';
-    alertBox.style.zIndex = '2000';
-    alertBox.textContent = '✅ Đã cập nhật thành công! Đang quay lại...';
-    document.body.appendChild(alertBox);
-    setTimeout(() => { window.location.href = "{{ route('doan.danhhieu.index') }}"; }, 1500);
-  });
+  document.addEventListener('DOMContentLoaded', () => {
+    // Nút Lưu: giống các trang trước – thông báo rồi quay lại
+    document.getElementById('btn-refresh')?.addEventListener('click', () => {
+      const alertBox = document.createElement('div');
+      alertBox.className = 'alert alert-success position-fixed top-0 end-0 m-3 shadow';
+      alertBox.style.zIndex = '2000';
+      alertBox.textContent = '✅ Đã cập nhật thành công! Đang quay lại...';
+      document.body.appendChild(alertBox);
+      setTimeout(() => {
+        window.location.href = "{{ route('doan.danhhieu.index') }}";
+      }, 1500);
+    });
 
-  // Modal Sửa
-  const editModal = document.getElementById('modalEdit');
-  editModal?.addEventListener('show.bs.modal', e => {
-    const b = e.relatedTarget;
-    document.getElementById('edit_madh').value = b.getAttribute('data-madh');
-    document.getElementById('edit_tendh').value = b.getAttribute('data-tendh');
-    document.getElementById('edit_gpa').value  = b.getAttribute('data-gpa') ?? '';
-    document.getElementById('edit_drl').value  = b.getAttribute('data-drl') ?? '';
-    document.getElementById('edit_ntn').value  = b.getAttribute('data-ntn') ?? '';
-  });
+    // Modal Sửa
+    const editModal = document.getElementById('modalEdit');
+    editModal?.addEventListener('show.bs.modal', e => {
+      const b = e.relatedTarget;
+      document.getElementById('edit_madh').value = b.getAttribute('data-madh');
+      document.getElementById('edit_tendh').value = b.getAttribute('data-tendh');
+      document.getElementById('edit_gpa').value = b.getAttribute('data-gpa') ?? '';
+      document.getElementById('edit_drl').value = b.getAttribute('data-drl') ?? '';
+      document.getElementById('edit_ntn').value = b.getAttribute('data-ntn') ?? '';
+    });
 
-  // Modal Xóa
-  const delModal = document.getElementById('modalDelete');
-  delModal?.addEventListener('show.bs.modal', e => {
-    const b = e.relatedTarget;
-    document.getElementById('del_madh').value  = b.getAttribute('data-madh');
-    document.getElementById('del_tendh').textContent = b.getAttribute('data-tendh');
+    // Modal Xóa
+    const delModal = document.getElementById('modalDelete');
+    delModal?.addEventListener('show.bs.modal', e => {
+      const b = e.relatedTarget;
+      document.getElementById('del_madh').value = b.getAttribute('data-madh');
+      document.getElementById('del_tendh').textContent = b.getAttribute('data-tendh');
+    });
   });
-});
 </script>
 @endpush
 @endsection

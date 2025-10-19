@@ -14,10 +14,10 @@
     </select>
     {{-- Khi đổi HK vẫn giữ q nếu đang có --}}
     @if(!empty($q))
-      <input type="hidden" name="q" value="{{ $q }}">
+    <input type="hidden" name="q" value="{{ $q }}">
     @endif
   </form>
-{{-- 👉 Nút xuất Excel --}}
+  {{-- 👉 Nút xuất Excel --}}
   <a href="{{ route('doan.khenthuong.export', ['hk' => $hk]) }}" class="btn btn-success">
     Xuất file Excel
   </a>
@@ -42,20 +42,22 @@
     </thead>
     <tbody>
       @forelse($data as $i => $r)
-        <tr>
-          <td>{{ $i + 1 }}</td>
-          <td>{{ $r->MaSV }}</td>
-          <td>{{ $r->HoTen }}</td>
-          <td>
-            @if ($r->DanhHieu)
-              <span class="badge bg-success">{{ $r->DanhHieu }}</span>
-            @else
-              <span class="text-muted">—</span>
-            @endif
-          </td>
-        </tr>
+      <tr>
+        <td>{{ $i + 1 }}</td>
+        <td>{{ $r->MaSV }}</td>
+        <td>{{ $r->HoTen }}</td>
+        <td>
+          @if ($r->DanhHieu)
+          <span class="badge bg-success">{{ $r->DanhHieu }}</span>
+          @else
+          <span class="text-muted">—</span>
+          @endif
+        </td>
+      </tr>
       @empty
-        <tr><td colspan="4" class="text-center text-muted">Không có dữ liệu.</td></tr>
+      <tr>
+        <td colspan="4" class="text-center text-muted">Không có dữ liệu.</td>
+      </tr>
       @endforelse
     </tbody>
   </table>
