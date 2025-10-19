@@ -9,13 +9,98 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 use Illuminate\Database\QueryException;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\KhenThuongExport;
 
 class DoanController extends Controller
 {
-    public function khenThuongIndex()
-    {
-        return view('doan.khenthuong');
+    // ========================= Khen thưởng danh hiệu =========================
+public function khenThuongIndex(Request $r)
+{
+    $hk = $r->input('hk', 'HK1-2024-2025');
+    $q  = trim((string) $r->input('q', ''));
+
+    // 1) Lọc sinh viên theo MSSV/Họ tên trước (nếu có q)
+    $svQuery = DB::table('BANG_SinhVien')->select('MaSV', 'HoTen');
+    if ($q !== '') {
+        $svQuery->where(function($w) use ($q){
+            $w->where('MaSV', 'like', "%{$q}%")
+              ->orWhere('HoTen', 'like', "%{$q}%");
+        });
     }
+    $sinhvien = $svQuery->orderBy('MaSV')->get();
+
+    // 2) Lấy GPA/DRL/NTN (của toàn bộ SV trong danh sách trên)
+    $listMaSV = $sinhvien->pluck('MaSV')->all();
+
+    $gpa = DB::table('BANG_DiemHocTap')
+        ->whereIn('MaSV', $listMaSV)
+        ->select('MaSV', DB::raw('MAX(DiemHe4) as DiemHe4'))
+        ->groupBy('MaSV')->pluck('DiemHe4', 'MaSV');
+
+    $drl = DB::table('BANG_DiemRenLuyen')
+        ->whereIn('MaSV', $listMaSV)
+        ->select('MaSV', DB::raw('MAX(DiemRL) as DiemRL'))
+        ->groupBy('MaSV')->pluck('DiemRL', 'MaSV');
+
+    $ntn = DB::table('BANG_NgayTinhNguyen')
+        ->whereIn('MaSV', $listMaSV)
+        ->where('TrangThaiDuyet', 'DaDuyet')
+        ->select('MaSV', DB::raw('SUM(SoNgayTN) as SoNgayTN'))
+        ->groupBy('MaSV')->pluck('SoNgayTN', 'MaSV');
+
+    // 3) Điều kiện danh hiệu
+    $danhhieu = DB::table('BANG_DanhHieu')->get();
+
+    // 4) Tính danh hiệu đạt được
+    $rows = [];
+    foreach ($sinhvien as $sv) {
+        $ma = $sv->MaSV;
+        $labels = [];
+
+        foreach ($danhhieu as $d) {
+            $okGPA = ($gpa[$ma] ?? 0) >= ($d->DieuKienGPA ?? 0);
+            $okDRL = ($drl[$ma] ?? 0) >= ($d->DieuKienDRL ?? 0);
+            $okNTN = ($ntn[$ma] ?? 0) >= ($d->DieuKienNTN ?? 0);
+
+            if ($okGPA && $okDRL && $okNTN) {
+                $labels[] = $d->TenDH;
+            }
+        }
+
+        $rows[] = (object)[
+            'MaSV'     => $sv->MaSV,
+            'HoTen'    => $sv->HoTen,
+            'DanhHieu' => $labels ? implode(', ', $labels) : null,
+        ];
+    }
+
+    // 5) Nếu người dùng tìm theo tên danh hiệu → lọc thêm ở PHP
+    if ($q !== '') {
+        $qLower = mb_strtolower($q, 'UTF-8');
+        $rows = array_values(array_filter($rows, function($row) use ($qLower){
+            // Khớp MSSV / Họ tên / Danh hiệu (danh hiệu đã lọc MSSV/Họ tên ở SQL rồi nhưng giữ lại cho đầy đủ)
+            return mb_strpos(mb_strtolower($row->MaSV, 'UTF-8'), $qLower) !== false
+                || mb_strpos(mb_strtolower($row->HoTen, 'UTF-8'), $qLower) !== false
+                || ($row->DanhHieu && mb_strpos(mb_strtolower($row->DanhHieu, 'UTF-8'), $qLower) !== false);
+        }));
+    }
+
+    // Chuyển sang collection cho tiện render
+    $data = collect($rows);
+
+    return view('doan.khenthuong', [
+        'data' => $data,
+        'hk'   => $hk,
+        'q'    => $q,
+    ]);
+}
+public function exportExcel(Request $r)
+{
+    $hk = $r->input('hk', 'HK1-2024-2025');
+    $fileName = "Bao_cao_KhenThuong_{$hk}.xlsx";
+    return Excel::download(new KhenThuongExport($hk), $fileName);
+}
+
     // ========================= Ngày tình nguyện =========================
 
     public function tinhNguyenIndex(Request $r)
@@ -155,15 +240,17 @@ class DoanController extends Controller
         $r->merge(['TenDH' => $ten]);
 
         $r->validate([
-            'TenDH'       => 'required|string|max:100|unique:bang_danhhieu,TenDH',
-            'DieuKienGPA' => 'nullable|numeric|min:0|max:4',
-            'DieuKienDRL' => 'nullable|integer|min:0|max:100',
-            'DieuKienNTN' => 'nullable|integer|min:0',
-        ], [
-            'TenDH.unique' => 'Tên danh hiệu đã tồn tại.',
-        ], [
-            'TenDH' => 'Tên danh hiệu',
-        ]);
+    'TenDH'       => 'required|string|max:100|unique:bang_danhhieu,TenDH',
+    'DieuKienGPA' => 'required|numeric|min:0|max:4',
+    'DieuKienDRL' => 'required|integer|min:0|max:100',
+    'DieuKienNTN' => 'required|integer|min:0',
+], [
+    'TenDH.required'       => 'Vui lòng nhập Tên danh hiệu.',
+    'TenDH.unique'         => 'Tên danh hiệu đã tồn tại.',
+    'DieuKienGPA.required' => 'Vui lòng nhập GPA.',
+    'DieuKienDRL.required' => 'Vui lòng nhập điểm rèn luyện.',
+    'DieuKienNTN.required' => 'Vui lòng nhập số ngày tình nguyện.',
+]);
 
         try {
             DB::table('bang_danhhieu')->insert([
