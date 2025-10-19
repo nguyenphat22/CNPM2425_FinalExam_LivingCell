@@ -23,16 +23,18 @@
     </thead>
     <tbody>
       @forelse ($data as $i => $r)
-        <tr>
-          <td>{{ $data->firstItem() + $i }}</td>
-          <td>{{ $r->MaSV }}</td>
-          <td>{{ $r->HoTen }}</td>
-          <td>{{ $r->NgaySinh }}</td>
-          <td>{{ $r->Khoa }}</td>
-          <td>{{ $r->Lop }}</td>
-        </tr>
+      <tr>
+        <td>{{ $data->firstItem() + $i }}</td>
+        <td>{{ $r->MaSV }}</td>
+        <td>{{ $r->HoTen }}</td>
+        <td>{{ $r->NgaySinh }}</td>
+        <td>{{ $r->Khoa }}</td>
+        <td>{{ $r->Lop }}</td>
+      </tr>
       @empty
-        <tr><td colspan="6" class="text-center">Không có dữ liệu</td></tr>
+      <tr>
+        <td colspan="6" class="text-center">Không có dữ liệu</td>
+      </tr>
       @endforelse
     </tbody>
   </table>

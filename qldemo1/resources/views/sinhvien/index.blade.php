@@ -4,15 +4,15 @@
 
 @section('content')
 @php
-  // Chuẩn hoá số liệu hiển thị
-  $gpaNow = (float)($gpaVal ?? 0);
-  $drlNow = (int)($drlVal ?? 0);
-  // Ngày tình nguyện quy về thang 100 (để vẽ tiến độ); ntnTong đã là tổng ngày đã duyệt
-  $ntnNow = min((int)($ntnTong ?? 0), 100);
+// Chuẩn hoá số liệu hiển thị
+$gpaNow = (float)($gpaVal ?? 0);
+$drlNow = (int)($drlVal ?? 0);
+// Ngày tình nguyện quy về thang 100 (để vẽ tiến độ); ntnTong đã là tổng ngày đã duyệt
+$ntnNow = min((int)($ntnTong ?? 0), 100);
 
-  $gpaPct = max(0, min(100, round(($gpaNow/4) * 100)));
-  $drlPct = max(0, min(100, round(($drlNow/100) * 100)));
-  $ntnPct = max(0, min(100, round(($ntnNow/100) * 100)));
+$gpaPct = max(0, min(100, round(($gpaNow/4) * 100)));
+$drlPct = max(0, min(100, round(($drlNow/100) * 100)));
+$ntnPct = max(0, min(100, round(($ntnNow/100) * 100)));
 @endphp
 
 <div class="row">
@@ -21,35 +21,41 @@
     <div class="card mb-3">
       <div class="card-body">
         @if($sv)
-          <div><b>MSSV:</b> {{ $sv->MaSV }}</div>
-          <div><b>Họ và Tên:</b> {{ $sv->HoTen }}</div>
-          <div><b>Ngày sinh:</b> {{ $ngaySinh ?? '—' }}</div>
-          <div><b>Lớp:</b> {{ $sv->Lop ?? '—' }}</div>
-          <div><b>Khoa:</b> {{ $sv->Khoa ?? '—' }}</div>
+        <div><b>MSSV:</b> {{ $sv->MaSV }}</div>
+        <div><b>Họ và Tên:</b> {{ $sv->HoTen }}</div>
+        <div><b>Ngày sinh:</b> {{ $ngaySinh ?? '—' }}</div>
+        <div><b>Lớp:</b> {{ $sv->Lop ?? '—' }}</div>
+        <div><b>Khoa:</b> {{ $sv->Khoa ?? '—' }}</div>
         @else
-          <em>Chưa liên kết thông tin sinh viên với tài khoản này.</em>
+        <em>Chưa liên kết thông tin sinh viên với tài khoản này.</em>
         @endif
       </div>
     </div>
 
     <div class="row g-3">
       <div class="col-md-4">
-        <div class="card"><div class="card-body">
-          <div class="fw-bold mb-1">Điểm học tập (GPA)</div>
-          <div class="fs-5">{{ $gpaVal ?? '—' }}</div>
-        </div></div>
+        <div class="card">
+          <div class="card-body">
+            <div class="fw-bold mb-1">Điểm học tập (GPA)</div>
+            <div class="fs-5">{{ $gpaVal ?? '—' }}</div>
+          </div>
+        </div>
       </div>
       <div class="col-md-4">
-        <div class="card"><div class="card-body">
-          <div class="fw-bold mb-1">Điểm rèn luyện</div>
-          <div class="fs-5">{{ $drlVal ?? '—' }}</div>
-        </div></div>
+        <div class="card">
+          <div class="card-body">
+            <div class="fw-bold mb-1">Điểm rèn luyện</div>
+            <div class="fs-5">{{ $drlVal ?? '—' }}</div>
+          </div>
+        </div>
       </div>
       <div class="col-md-4">
-        <div class="card"><div class="card-body">
-          <div class="fw-bold mb-1">Số ngày tình nguyện</div>
-          <div class="fs-5">{{ $ntnTong }}</div>
-        </div></div>
+        <div class="card">
+          <div class="card-body">
+            <div class="fw-bold mb-1">Số ngày tình nguyện</div>
+            <div class="fs-5">{{ $ntnTong }}</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -66,15 +72,17 @@
         </thead>
         <tbody>
           @forelse($awds as $i => $a)
-            <tr>
-              <td>{{ $i + 1 }}</td>
-              <td class="text-center">
-                <span class="badge rounded-pill text-bg-success">{{ $a->Ten }}</span>
-              </td>
-              <td>{{ $a->HocKy ?? '—' }}</td>
-            </tr>
+          <tr>
+            <td>{{ $i + 1 }}</td>
+            <td class="text-center">
+              <span class="badge rounded-pill text-bg-success">{{ $a->Ten }}</span>
+            </td>
+            <td>{{ $a->HocKy ?? '—' }}</td>
+          </tr>
           @empty
-            <tr><td colspan="3" class="text-center text-muted">Chưa có khen thưởng.</td></tr>
+          <tr>
+            <td colspan="3" class="text-center text-muted">Chưa có khen thưởng.</td>
+          </tr>
           @endforelse
         </tbody>
       </table>
@@ -85,18 +93,18 @@
     <div class="card mb-3">
       <div class="card-body">
         @if(!empty($goiY))
-          <ul class="mb-0">
-            @foreach($goiY as $msg)
-              <li>{{ $msg }}</li>
-            @endforeach
-          </ul>
+        <ul class="mb-0">
+          @foreach($goiY as $msg)
+          <li>{{ $msg }}</li>
+          @endforeach
+        </ul>
         @else
-          Hiện tại không có danh hiệu phù hợp, bạn hãy cố gắng hơn nhé!
+        Hiện tại không có danh hiệu phù hợp, bạn hãy cố gắng hơn nhé!
         @endif
       </div>
     </div>
 
-    {{-- TIẾN ĐỘ: thanh progress + doughnut (đã thu nhỏ, vừa màn hình) --}}
+    {{-- TIẾN ĐỘ: thanh progress + doughnut --}}
     <h5 class="mt-2 mb-3 text-center text-primary">Xem tiến độ</h5>
     <div class="row g-4 align-items-center justify-content-center">
       {{-- Cột progress --}}
@@ -123,14 +131,14 @@
           </div>
         </div>
 
-        {{-- NTN (chuẩn 100) --}}
+        {{-- NTN --}}
         <div class="mb-3">
           <div class="d-flex justify-content-between small mb-1">
             <span>Ngày tình nguyện: {{ $ntnNow }} / 100</span>
             <span class="fw-semibold">{{ $ntnPct }}%</span>
           </div>
           <div class="progress" style="height:18px">
-            <div class="progress-bar bg-warning js-w" data-w="{{ $ntnPct }}"></div>
+            <div class="progress-bar bg-success js-w" data-w="{{ $ntnPct }}"></div>
           </div>
         </div>
       </div>
@@ -141,10 +149,10 @@
           <div class="card-body text-center">
             <h6 class="mb-3 text-primary fw-bold">Biểu đồ tiến độ</h6>
             <canvas id="svProgressDonut"
-                    data-gpa="{{ $gpaPct }}"
-                    data-drl="{{ $drlPct }}"
-                    data-ntn="{{ $ntnPct }}"
-                    height="160"></canvas>
+              data-gpa="{{ $gpaPct }}"
+              data-drl="{{ $drlPct }}"
+              data-ntn="{{ $ntnPct }}"
+              height="160"></canvas>
           </div>
         </div>
       </div>
@@ -158,7 +166,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   /* Transition mượt cho progress-bar */
-  .progress-bar.js-w { width:0; transition:width .8s ease; }
+  .progress-bar.js-w {
+    width: 0;
+    transition: width .8s ease;
+  }
 </style>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
@@ -191,11 +202,16 @@
           plugins: {
             legend: {
               position: 'bottom',
-              labels: { boxWidth: 18, usePointStyle: true }
+              labels: {
+                boxWidth: 18,
+                usePointStyle: true
+              }
             },
-            tooltip: { enabled: true }
+            tooltip: {
+              enabled: true
+            }
           }
-        } 
+        }
       });
     }
   });
