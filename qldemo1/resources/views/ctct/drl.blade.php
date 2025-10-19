@@ -163,21 +163,45 @@
 
 @push('scripts')
 <script>
+/* === Quy tắc xếp loại theo điểm DRL === */
+function rankFromScore(s) {
+  s = Number(s);
+  if (Number.isNaN(s)) return '';
+  s = Math.max(0, Math.min(100, s));          // chặn ngoài 0..100
+  if (s >= 90) return 'Xuất sắc';
+  if (s >= 80) return 'Tốt';
+  if (s >= 65) return 'Khá';
+  if (s >= 50) return 'Trung bình';
+  if (s >= 35) return 'Yếu';
+  return 'Kém';
+}
+
+/* Cập nhật xếp loại trong modal SỬA */
+function applyEditRank() {
+  const scoreEl = document.getElementById('edit_diem');
+  const rankEl  = document.getElementById('edit_xeploai');
+  if (!scoreEl || !rankEl) return;
+
+  const val = scoreEl.value.trim();
+  // Nếu chưa nhập gì → để trống xếp loại
+  if (val === '') {
+    rankEl.value = '';
+    return;
+  }
+
+  rankEl.value = rankFromScore(val);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  // Nút Lưu: hiển thị thông báo ngắn rồi quay lại trang chính
-document.getElementById('btn-refresh')?.addEventListener('click', () => {
-  const alert = document.createElement('div');
-  alert.className = 'alert alert-success position-fixed top-0 end-0 m-3 shadow';
-  alert.style.zIndex = '2000';
-  alert.textContent = '✅ Đã lưu dữ liệu, đang quay lại trang chính...';
-  document.body.appendChild(alert);
-
-  // Sau 1.5 giây quay lại trang /ctct/drl
-  setTimeout(() => {
-    window.location.href = "{{ url('/ctct/drl') }}";
-  }, 1500);
-});
-
+  // Nút Lưu giả
+  document.getElementById('btn-refresh')?.addEventListener('click', () => {
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-success position-fixed top-0 end-0 m-3 shadow';
+    alert.style.zIndex = '2000';
+    alert.textContent = '✅ Đã lưu dữ liệu, đang quay lại trang chính...';
+    document.body.appendChild(alert);
+    setTimeout(() => { window.location.href = "{{ url('/ctct/drl') }}"; }, 1500);
+  });
 
   // Modal SỬA
   const editModal = document.getElementById('modalEdit');
@@ -188,6 +212,16 @@ document.getElementById('btn-refresh')?.addEventListener('click', () => {
     document.getElementById('edit_nh').value       = b.getAttribute('data-nh');
     document.getElementById('edit_diem').value     = b.getAttribute('data-diem') ?? '';
     document.getElementById('edit_xeploai').value  = b.getAttribute('data-xeploai') ?? '';
+
+    // Khi mở modal, tính lại xếp loại từ điểm hiện có
+    applyEditRank();
+
+    // Gắn sự kiện thay đổi điểm -> tự tính xếp loại
+    const scoreEl = document.getElementById('edit_diem');
+    scoreEl.removeEventListener('input',  applyEditRank);  // tránh gắn trùng
+    scoreEl.removeEventListener('change', applyEditRank);
+    scoreEl.addEventListener('input',  applyEditRank);
+    scoreEl.addEventListener('change', applyEditRank);
   });
 
   // Modal XÓA

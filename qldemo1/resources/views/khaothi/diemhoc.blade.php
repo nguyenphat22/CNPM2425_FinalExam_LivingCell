@@ -149,15 +149,43 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => { window.location.href = "{{ url('/khaothi/gpa') }}"; }, 1500);
   });
 
+  // === Hàm xếp loại theo thang 4 (BẢNG YÊU CẦU) ===
+  function xepLoaiGPA(v) {
+    // v có thể là chuỗi -> đổi sang số
+    const s = Number(v);
+    if (!Number.isFinite(s)) return '';           // chưa nhập -> để trống
+    if (s >= 3.6 && s <= 4.0) return 'Xuất sắc';
+    if (s >= 3.2)              return 'Giỏi';
+    if (s >= 2.5)              return 'Khá';
+    if (s >= 2.0)              return 'Trung bình';
+    if (s >= 1.0)              return 'Yếu';
+    if (s >= 0)                return 'Kém';
+    return '';
+  }
+
   // Modal Sửa
   const editModal = document.getElementById('modalEdit');
   editModal?.addEventListener('show.bs.modal', ev => {
     const b = ev.relatedTarget;
+
+    // đổ dữ liệu ban đầu
     document.getElementById('edit_masv').value    = b.getAttribute('data-masv');
     document.getElementById('edit_hk').value      = b.getAttribute('data-hk');
     document.getElementById('edit_nh').value      = b.getAttribute('data-nh');
-    document.getElementById('edit_diem').value    = b.getAttribute('data-diem') ?? '';
-    document.getElementById('edit_xeploai').value = b.getAttribute('data-xeploai') ?? '';
+
+    const diem = b.getAttribute('data-diem') ?? '';
+    document.getElementById('edit_diem').value    = diem;
+    // nếu có điểm thì tính xếp loại, nếu trống -> để trống
+    document.getElementById('edit_xeploai').value = diem === '' ? '' : xepLoaiGPA(diem);
+
+    // auto cập nhật xếp loại khi người dùng gõ/chỉnh điểm
+    const onChange = () => {
+      const v = document.getElementById('edit_diem').value;
+      document.getElementById('edit_xeploai').value = (v === '' ? '' : xepLoaiGPA(v));
+    };
+    document.getElementById('edit_diem').removeEventListener('input', onChange);
+    document.getElementById('edit_diem').addEventListener('input', onChange);
+    document.getElementById('edit_diem').addEventListener('change', onChange);
   });
 
   // Modal Xóa
