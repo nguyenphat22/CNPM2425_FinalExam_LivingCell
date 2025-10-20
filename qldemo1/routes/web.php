@@ -42,7 +42,7 @@ Route::get('/admin', function () {
 })->name('admin.home');
 // Khao Thi routes
 Route::prefix('khaothi')
-    ->middleware(['auth.session','role:KhaoThi'])
+    ->middleware(['auth.session', 'role:KhaoThi'])
     ->name('khaothi.')
     ->group(function () {
         Route::get('/', fn() => redirect()->route('khaothi.sinhvien.index'))->name('home');
@@ -53,35 +53,35 @@ Route::prefix('khaothi')
         Route::post('/gpa/update', [KhaothiController::class, 'gpaUpdate'])->name('gpa.update');
         Route::post('/gpa/delete', [KhaothiController::class, 'gpaDelete'])->name('gpa.delete');
         Route::post('/gpa/import', [KhaothiController::class, 'gpaImport'])->name('gpa.import'); // ✅ thêm dòng này
-        Route::get ('/gpa/export', [KhaothiController::class, 'gpaExport'])->name('gpa.export');
+        Route::get('/gpa/export', [KhaothiController::class, 'gpaExport'])->name('gpa.export');
     });
 // CTCT HSSV routes
 Route::prefix('ctct')
-    ->middleware(['auth.session','role:CTCTHSSV'])
+    ->middleware(['auth.session', 'role:CTCTHSSV'])
     ->name('ctct.')                      // <-- mọi route bên trong sẽ có tiền tố ctct.
     ->group(function () {
 
-        Route::get('/', fn () => redirect()->route('ctct.sinhvien.index'))
+        Route::get('/', fn() => redirect()->route('ctct.sinhvien.index'))
             ->name('home');
 
         // Danh sách sinh viên
-        Route::get('/sinhvien',         [CtctController::class,'sinhVienIndex'])->name('sinhvien.index');
-        Route::post('/sinhvien/store',  [CtctController::class,'svStore'])->name('sv.store');
-        Route::post('/sinhvien/update', [CtctController::class,'svUpdate'])->name('sv.update');
-        Route::post('/sinhvien/delete', [CtctController::class,'svDelete'])->name('sv.delete');
-        Route::post('/sinhvien/import', [CtctController::class,'svImport'])->name('sv.import');
+        Route::get('/sinhvien',         [CtctController::class, 'sinhVienIndex'])->name('sinhvien.index');
+        Route::post('/sinhvien/store',  [CtctController::class, 'svStore'])->name('sv.store');
+        Route::post('/sinhvien/update', [CtctController::class, 'svUpdate'])->name('sv.update');
+        Route::post('/sinhvien/delete', [CtctController::class, 'svDelete'])->name('sv.delete');
+        Route::post('/sinhvien/import', [CtctController::class, 'svImport'])->name('sv.import');
 
         // Điểm rèn luyện
-        Route::get( '/drl',         [CtctController::class,'drlIndex'])->name('drl.index');
-        Route::post('/drl/update',  [CtctController::class,'drlUpdate'])->name('drl.update');
-        Route::post('/drl/delete',  [CtctController::class,'drlDelete'])->name('drl.delete');
-        Route::post('/drl/import',  [CtctController::class,'drlImport'])->name('drl.import');
-        Route::get( '/drl/export',  [CtctController::class,'drlExport'])->name('drl.export'); // <-- export là GET
+        Route::get('/drl',         [CtctController::class, 'drlIndex'])->name('drl.index');
+        Route::post('/drl/update',  [CtctController::class, 'drlUpdate'])->name('drl.update');
+        Route::post('/drl/delete',  [CtctController::class, 'drlDelete'])->name('drl.delete');
+        Route::post('/drl/import',  [CtctController::class, 'drlImport'])->name('drl.import');
+        Route::get('/drl/export',  [CtctController::class, 'drlExport'])->name('drl.export'); // <-- export là GET
     });
 
 // Đoàn Trường routes
 Route::prefix('doantruong')
-    ->middleware(['auth.session','role:DoanTruong'])
+    ->middleware(['auth.session', 'role:DoanTruong'])
     ->name('doan.') //  Thêm dòng này để Laravel nhận tên route như doan.danhhieu.store
     ->group(function () {
         Route::get('/', fn() => redirect()->route('doan.khenthuong.index'))->name('home');
@@ -92,24 +92,24 @@ Route::prefix('doantruong')
 
         // Export khen thưởng
         Route::get('/khenthuong/export', [DoanController::class, 'exportExcel'])
-    ->name('khenthuong.export');
+            ->name('khenthuong.export');
 
         // Thêm 3 route POST cho danh hiệu
         Route::post('/danhhieu/store',  [DoanController::class, 'dhStore'])->name('danhhieu.store');
         Route::post('/danhhieu/update', [DoanController::class, 'dhUpdate'])->name('danhhieu.update');
         Route::post('/danhhieu/delete', [DoanController::class, 'dhDelete'])->name('danhhieu.delete');
         // Ngày tình nguyện
-        Route::post('/tinhnguyen/store',  [DoanController::class,'ntnStore'])->name('tinhnguyen.store');
-        Route::post('/tinhnguyen/update', [DoanController::class,'ntnUpdate'])->name('tinhnguyen.update');
-        Route::post('/tinhnguyen/delete', [DoanController::class,'ntnDelete'])->name('tinhnguyen.delete');
-        
+        Route::post('/tinhnguyen/store',  [DoanController::class, 'ntnStore'])->name('tinhnguyen.store');
+        Route::post('/tinhnguyen/update', [DoanController::class, 'ntnUpdate'])->name('tinhnguyen.update');
+        Route::post('/tinhnguyen/delete', [DoanController::class, 'ntnDelete'])->name('tinhnguyen.delete');
+
         // Import Excel
-        Route::post('/tinhnguyen/import', [DoanController::class,'ntnImport'])->name('tinhnguyen.import');
+        Route::post('/tinhnguyen/import', [DoanController::class, 'ntnImport'])->name('tinhnguyen.import');
     });
 
 // Sinh Viên routes
 Route::prefix('sinhvien')
-    ->middleware(['auth.session','role:SinhVien'])
+    ->middleware(['auth.session', 'role:SinhVien'])
     ->group(function () {
         Route::get('/', [SinhVienController::class, 'index'])->name('sv.home');
-    }); 
+    });

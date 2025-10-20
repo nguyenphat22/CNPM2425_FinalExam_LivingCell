@@ -9,7 +9,15 @@
       <div class="card-body">
         <form method="POST" action="{{ route('forgot.handle') }}" novalidate>
           @csrf
-
+          @if ($errors->any())
+          <div class="alert alert-danger">
+            <ul class="mb-0 ps-3">
+              @foreach ($errors->all() as $e)
+              <li>{{ $e }}</li>
+              @endforeach
+            </ul>
+          </div>
+          @endif
           <div class="mb-3">
             <label class="form-label">Tên đăng nhập</label>
             <input
@@ -39,11 +47,11 @@
           </div>
 
           {{-- Lỗi xác thực cặp tài khoản + email không khớp --}}
-          @if ($errors->has('credentials'))
-          <div class="invalid-feedback d-block mb-2">
-            {{ $errors->first('credentials') }}
+          @error('credentials')
+          <div class="invalid-feedback d-block">
+            {{ $message }}
           </div>
-          @endif
+          @enderror
 
           <button class="btn btn-primary w-100">Xác nhận</button>
         </form>

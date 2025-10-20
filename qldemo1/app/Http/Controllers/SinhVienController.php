@@ -77,9 +77,9 @@ class SinhVienController extends Controller
 
         // Chuẩn hoá cho Blade: collection object có field Ten
         $awds = collect($labels)->map(fn($ten) => (object)[
-    'Ten'   => $ten,
-    'HocKy' => 'HK1'
-]);
+            'Ten'   => $ten,
+            'HocKy' => 'HK1'
+        ]);
 
         // (Tuỳ chọn) gợi ý danh hiệu, nếu có logic thì set, không thì null
         $goiY = null;
@@ -87,8 +87,8 @@ class SinhVienController extends Controller
         // 8) GỢI Ý DANH HIỆU — chỉ dựa trên NGÀY TÌNH NGUYỆN còn thiếu (1–3 ngày)
         //    Điều kiện: GPA và DRL đã đạt, NTN chưa đạt nhưng thiếu <= 3 ngày.
         $danhhieu = DB::table('BANG_DanhHieu')
-        ->select('TenDH','DieuKienGPA','DieuKienDRL','DieuKienNTN')
-        ->get();
+            ->select('TenDH', 'DieuKienGPA', 'DieuKienDRL', 'DieuKienNTN')
+            ->get();
         $goiY = [];
         foreach ($danhhieu as $dh) {
             $reqGpa = (float)($dh->DieuKienGPA ?? 0);
@@ -110,31 +110,31 @@ class SinhVienController extends Controller
         }
 
         $danhhieu = DB::table('BANG_DanhHieu')
-        ->select('TenDH', 'DieuKienNTN')
-        ->orderBy('TenDH')
-        ->get();
+            ->select('TenDH', 'DieuKienNTN')
+            ->orderBy('TenDH')
+            ->get();
 
-    $awardProgress = $danhhieu->map(function ($dh) use ($ntnTong) {
-        $req = (int)($dh->DieuKienNTN ?? 0);
-        // tránh chia cho 0: nếu không quy định NTN, coi như đạt 100
-        if ($req <= 0) {
+        $awardProgress = $danhhieu->map(function ($dh) use ($ntnTong) {
+            $req = (int)($dh->DieuKienNTN ?? 0);
+            // tránh chia cho 0: nếu không quy định NTN, coi như đạt 100
+            if ($req <= 0) {
+                return (object)[
+                    'ten'  => $dh->TenDH,
+                    'req'  => 0,
+                    'cur'  => (int)$ntnTong,
+                    'pct'  => 100,
+                ];
+            }
+            $pct = min(100, (int) round($ntnTong * 100 / $req));
             return (object)[
                 'ten'  => $dh->TenDH,
-                'req'  => 0,
+                'req'  => $req,
                 'cur'  => (int)$ntnTong,
-                'pct'  => 100,
+                'pct'  => $pct,
             ];
-        }
-        $pct = min(100, (int) round($ntnTong * 100 / $req));
-        return (object)[
-            'ten'  => $dh->TenDH,
-            'req'  => $req,
-            'cur'  => (int)$ntnTong,
-            'pct'  => $pct,
-        ];
-    });
+        });
 
-    return view('sinhvien.index', [
+        return view('sinhvien.index', [
             'sv'       => $sv,
             'gpaVal'   => $gpaVal,
             'drlVal'   => $drlVal,
@@ -147,7 +147,7 @@ class SinhVienController extends Controller
         ]);
     }
     /**
-        * Hàm tính danh hiệu đạt được của sinh viên
+     * Hàm tính danh hiệu đạt được của sinh viên
      */
     private function DanhHieuDatDuoc(string $maSV): array
     {
@@ -185,4 +185,3 @@ class SinhVienController extends Controller
         return $labels;
     }
 }
-
