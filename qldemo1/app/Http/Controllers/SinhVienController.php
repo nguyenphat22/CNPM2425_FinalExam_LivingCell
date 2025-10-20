@@ -109,7 +109,32 @@ class SinhVienController extends Controller
             }
         }
 
-        return view('sinhvien.index', [
+        $danhhieu = DB::table('BANG_DanhHieu')
+        ->select('TenDH', 'DieuKienNTN')
+        ->orderBy('TenDH')
+        ->get();
+
+    $awardProgress = $danhhieu->map(function ($dh) use ($ntnTong) {
+        $req = (int)($dh->DieuKienNTN ?? 0);
+        // tránh chia cho 0: nếu không quy định NTN, coi như đạt 100
+        if ($req <= 0) {
+            return (object)[
+                'ten'  => $dh->TenDH,
+                'req'  => 0,
+                'cur'  => (int)$ntnTong,
+                'pct'  => 100,
+            ];
+        }
+        $pct = min(100, (int) round($ntnTong * 100 / $req));
+        return (object)[
+            'ten'  => $dh->TenDH,
+            'req'  => $req,
+            'cur'  => (int)$ntnTong,
+            'pct'  => $pct,
+        ];
+    });
+
+    return view('sinhvien.index', [
             'sv'       => $sv,
             'gpaVal'   => $gpaVal,
             'drlVal'   => $drlVal,
@@ -118,6 +143,7 @@ class SinhVienController extends Controller
             'ntnItems' => $ntnItems ?? collect(),
             'awds'     => $awds ?? collect(),
             'goiY'     => $goiY,
+            'awardProgress' => $awardProgress,
         ]);
     }
     /**

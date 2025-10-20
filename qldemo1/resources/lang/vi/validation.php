@@ -9,13 +9,6 @@ return [
     'max'      => [
         'string' => ':attribute không được vượt quá :max ký tự.',
     ],
-
-    // Tuỳ chỉnh tên hiển thị
-    'attributes' => [
-        'TenDangNhap' => 'Tên đăng nhập',
-        'MatKhau'     => 'Mật khẩu',
-        'Email'       => 'Email công tác',
-    ],
     /*
     |--------------------------------------------------------------------------
     | Dòng thông báo xác thực
@@ -91,5 +84,8 @@ return [
         'Lop' => 'Lớp',
         'MaTK' => 'Mã tài khoản',
         'file' => 'Tệp Excel',
+        'TenDangNhap' => 'Tên đăng nhập',
+        'MatKhau'     => 'Mật khẩu',
+        'Email'       => 'Email công tác',
     ],
 ];

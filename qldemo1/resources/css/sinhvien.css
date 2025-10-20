@@ -1,0 +1,25 @@
+/* === CSS cho trang Sinh viên === */
+
+.height-22 {
+  height: 22px !important;
+}
+
+.progress-bar {
+  transition: width 0.8s ease;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.card {
+  border-radius: 10px;
+}
+
+.table th,
+.table td {
+  vertical-align: middle;
+}
+
+.text-success {
+  color: green !important;
+}

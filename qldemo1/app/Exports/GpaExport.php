@@ -18,24 +18,24 @@ class GpaExport implements FromCollection, WithHeadings, WithMapping, ShouldAuto
 
     public function headings(): array
     {
-        return ['MSSV','Họ và Tên','Học kỳ','Năm học','Điểm học tập','Xếp loại'];
+        return ['MSSV', 'Họ và Tên', 'Học kỳ', 'Năm học', 'Điểm học tập', 'Xếp loại'];
     }
 
     public function collection()
     {
         $query = DB::table('BANG_SinhVien as sv')
-    ->leftJoin('BANG_DiemHocTap as gpa', function($j){
-        $j->on('sv.MaSV','=','gpa.MaSV')
-          ->where('gpa.HocKy', $this->hk)
-          ->where('gpa.NamHoc', $this->nh);
-    })
-    ->select('sv.MaSV','sv.HoTen', DB::raw('gpa.DiemHe4 as DiemHT'), 'gpa.XepLoai');
+            ->leftJoin('BANG_DiemHocTap as gpa', function ($j) {
+                $j->on('sv.MaSV', '=', 'gpa.MaSV')
+                    ->where('gpa.HocKy', $this->hk)
+                    ->where('gpa.NamHoc', $this->nh);
+            })
+            ->select('sv.MaSV', 'sv.HoTen', DB::raw('gpa.DiemHe4 as DiemHT'), 'gpa.XepLoai');
 
         if ($this->q) {
             $q = trim($this->q);
-            $query->where(function($s) use ($q){
-                $s->where('sv.MaSV','like',"%{$q}%")
-                  ->orWhere('sv.HoTen','like',"%{$q}%");
+            $query->where(function ($s) use ($q) {
+                $s->where('sv.MaSV', 'like', "%{$q}%")
+                    ->orWhere('sv.HoTen', 'like', "%{$q}%");
             });
         }
 

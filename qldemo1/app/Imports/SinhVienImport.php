@@ -103,16 +103,25 @@ class SinhVienImport implements ToCollection, WithHeadingRow, WithValidation, Sk
         // Không ép unique/exists ở đây để tránh vướng case update;
         // đã kiểm tra ở trong collection() rồi.
         return [
-            '*.masv'     => ['required','string','max:20'],
-            '*.hoten'    => ['required','string','max:100'],
+            '*.masv'     => ['required', 'string', 'max:20'],
+            '*.hoten'    => ['required', 'string', 'max:100'],
             '*.ngaysinh' => ['nullable'],
-            '*.khoa'     => ['nullable','string','max:100'],
-            '*.lop'      => ['nullable','string','max:50'],
-            '*.matk'     => ['nullable','integer'], // <-- NEW
+            '*.khoa'     => ['nullable', 'string', 'max:100'],
+            '*.lop'      => ['nullable', 'string', 'max:50'],
+            '*.matk'     => ['nullable', 'integer'], // <-- NEW
         ];
     }
 
-    public function getInserted(): int { return $this->inserted; }
-    public function getUpdated(): int  { return $this->updated; }
-    public function chunkSize(): int   { return 500; }
+    public function getInserted(): int
+    {
+        return $this->inserted;
+    }
+    public function getUpdated(): int
+    {
+        return $this->updated;
+    }
+    public function chunkSize(): int
+    {
+        return 500;
+    }
 }
