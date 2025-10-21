@@ -262,6 +262,7 @@ $data = new LengthAwarePaginator(
 }
 
     // Trang danh sách danh hiệu
+Fch danh hiệu
     public function danhHieuIndex(Request $r)
     {
         $hk = (int) $r->input('hk', 1);
@@ -343,24 +344,4 @@ $data = new LengthAwarePaginator(
         DB::table('bang_danhhieu')
             ->where('MaDH', $r->MaDH)
             ->update([
-                'TenDH'       => $r->TenDH,
-                'DieuKienGPA' => $r->DieuKienGPA,
-                'DieuKienDRL' => $r->DieuKienDRL,
-                'DieuKienNTN' => $r->DieuKienNTN,
-            ]);
-
-        return redirect()->route('doan.danhhieu.index')->with('ok', 'Đã cập nhật danh hiệu.');
-    }
-
-    // Xoá danh hiệu
-    public function dhDelete(Request $r)
-    {
-        $r->validate([
-            'MaDH' => 'required|integer|exists:bang_danhhieu,MaDH',
-        ]);
-
-        DB::table('bang_danhhieu')->where('MaDH', $r->MaDH)->delete();
-
-        return redirect()->route('doan.danhhieu.index')->with('ok', 'Đã xóa danh hiệu.');
-    }
-}
+                'TenDH'

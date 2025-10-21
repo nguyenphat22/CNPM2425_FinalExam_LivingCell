@@ -2,7 +2,7 @@
 
 ## Giới thiệu nhóm 🚀
 Chào mừng đến với kho lưu trữ của nhóm **Living Cells**! 
-Đây là nơi lưu trữ các dự án, bài tập và tài liệu liên quan đến môn Nhập Môn Công nghệ Phần Mềm.
+Đây là nơi lưu trữ các dự án, bài tập và tài liệu liên quan đến môn Nhập Môn Công nghệ Phần Mềm. Hy vọng cái này không vô dụng cho lắm.
 
 
 ## Thành viên 👥
@@ -14,21 +14,21 @@ Chào mừng đến với kho lưu trữ của nhóm **Living Cells**!
 - 🧑‍💻 **Nguyễn Thị Thanh Trà** - Thành viên
 
 ## Nền tảng & Công cụ 🛠️
-- **Ngôn ngữ lập trình**: PHP
-- **Database**: SQL Server
-- **Công cụ**: Git, GitHub, VS Code
+- **Ngôn ngữ lập trình**: PHP 
+- **Database**: MySQL
+- **Công cụ**: Git, GitHub, VS Code, ChatGPT, Cursor, BlackBox, Stackoverflow, Google,... 
 
 ## Dự án 📂
-_Đang cập nhật..._
+_Đang cập nhật, hoặc sẽ không bao giờ cập nhật nữa..._
 
 ## Liên hệ 📧
-Nếu bạn có câu hỏi hoặc muốn hợp tác, hãy tạo issue trên GitHub.
+Nếu bạn có câu hỏi hoặc muốn hợp tác, hãy tạo issue trên GitHub; hoặc nếu bạn thích ai đó trong nhóm, hãy gặp họ trực tiếp, nhóm chúng tôi không giải quyết được.
 
 ------------------------------------------------
-##Team Introduction 🚀
+## Team Introduction 🚀
 
 Welcome to the repository of Living Cells!
-This is where we store projects, assignments, and documents related to the Introduction to Software Engineering course.
+This is where we store projects, assignments, and documents related to the Introduction to Software Engineering course. We hope this isn’t completely useless.
 
 ## Members 👥
 - 🧑‍💻 Dương Thị Thu Diểm – Team Leader
@@ -40,15 +40,13 @@ This is where we store projects, assignments, and documents related to the Intro
 
 ## Technologies & Tools 🛠️
 - Programming Language: PHP
-- Database: SQL Server
-- Tools: Git, GitHub, VS Code
+- Database: MySQL
+- Tools: Git, GitHub, VS Code, ChatGPT, Cursor, BlackBox, Stackoverflow, Google,...
 
 ## Projects 📂
-
-_Updating..._
+_Updating... or maybe never updating again..._
 
 ## Contact 📧
-
-If you have any questions or would like to collaborate, please open an issue on GitHub.
+If you have any questions or want to collaborate, please create an issue on GitHub; or if you fell in love at first sight someone in the team, just meet them in person — our team can’t help with that.
 
 
