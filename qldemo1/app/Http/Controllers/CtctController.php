@@ -49,57 +49,28 @@ class CtctController extends Controller
      * Thêm sinh viên mới
      */
     public function svStore(Request $r)
-{
-    $r->validate([
-        'MaSV'     => ['required','string','max:20', Rule::unique('BANG_SinhVien','MaSV')],
-        'HoTen'    => ['required','string','max:100'],
-        'NgaySinh' => ['required','date'],
-        'Khoa'     => ['nullable','string','max:100'],
-        'Lop'      => ['nullable','string','max:50'],
-        'MaTK'     => [
-            'nullable','integer',
-            Rule::exists('BANG_TaiKhoan','MaTK')->where(fn($q)=>$q->where('VaiTro','SinhVien')),
-            Rule::unique('BANG_SinhVien','MaTK'), // không trùng với SV khác
-        ],
-    ],[],[
-        'MaSV'=>'MSSV','HoTen'=>'Họ và tên','NgaySinh'=>'Ngày sinh','MaTK'=>'Mã tài khoản'
-    ]);
+    {
+        $r->validate([
+            'MaSV'     => ['required', 'string', 'max:20', Rule::unique('BANG_SinhVien', 'MaSV')],
+            'HoTen'    => ['required', 'string', 'max:100'],
+            'NgaySinh' => ['required', 'date'],
+            'Khoa'     => ['nullable', 'string', 'max:100'],
+            'Lop'      => ['nullable', 'string', 'max:50'],
+            'MaTK'     => [
+                'nullable',
+                'integer',
+                Rule::exists('BANG_TaiKhoan', 'MaTK')->where(fn($q) => $q->where('VaiTro', 'SinhVien')),
+                Rule::unique('BANG_SinhVien', 'MaTK'), // không trùng với SV khác
+            ],
+        ], [], [
+            'MaSV' => 'MSSV',
+            'HoTen' => 'Họ và tên',
+            'NgaySinh' => 'Ngày sinh',
+            'MaTK' => 'Mã tài khoản'
+        ]);
 
-    DB::table('BANG_SinhVien')->insert([
-        'MaSV'     => $r->MaSV,
-        'HoTen'    => $r->HoTen,
-        'NgaySinh' => $r->NgaySinh,
-        'Khoa'     => $r->Khoa,
-        'Lop'      => $r->Lop,
-        'MaTK'     => $r->MaTK ?: null,
-    ]);
-
-    return back()->with('ok','Đã thêm sinh viên.');
-}
-
-    /**
-     * Cập nhật thông tin sinh viên (không đổi MaSV)
-     */
-    public function svUpdate(Request $r)
-{
-    $r->validate([
-        'MaSV'     => ['required', Rule::exists('BANG_SinhVien','MaSV')],
-        'HoTen'    => ['required','string','max:100'],
-        'NgaySinh' => ['required','date'],
-        'Khoa'     => ['nullable','string','max:100'],
-        'Lop'      => ['nullable','string','max:50'],
-        'MaTK'     => [
-            'nullable','integer',
-            Rule::exists('BANG_TaiKhoan','MaTK')->where(fn($q)=>$q->where('VaiTro','SinhVien')),
-            Rule::unique('BANG_SinhVien','MaTK')->ignore($r->MaSV,'MaSV'),
-        ],
-    ],[],[
-        'MaSV'=>'MSSV','HoTen'=>'Họ và tên','NgaySinh'=>'Ngày sinh','MaTK'=>'Mã tài khoản'
-    ]);
-
-    DB::table('BANG_SinhVien')
-        ->where('MaSV',$r->MaSV)
-        ->update([
+        DB::table('BANG_SinhVien')->insert([
+            'MaSV'     => $r->MaSV,
             'HoTen'    => $r->HoTen,
             'NgaySinh' => $r->NgaySinh,
             'Khoa'     => $r->Khoa,
@@ -107,8 +78,45 @@ class CtctController extends Controller
             'MaTK'     => $r->MaTK ?: null,
         ]);
 
-    return back()->with('ok','Đã cập nhật sinh viên.');
-}
+        return back()->with('ok', 'Đã thêm sinh viên.');
+    }
+
+    /**
+     * Cập nhật thông tin sinh viên (không đổi MaSV)
+     */
+    public function svUpdate(Request $r)
+    {
+        $r->validate([
+            'MaSV'     => ['required', Rule::exists('BANG_SinhVien', 'MaSV')],
+            'HoTen'    => ['required', 'string', 'max:100'],
+            'NgaySinh' => ['required', 'date'],
+            'Khoa'     => ['nullable', 'string', 'max:100'],
+            'Lop'      => ['nullable', 'string', 'max:50'],
+            'MaTK'     => [
+                'nullable',
+                'integer',
+                Rule::exists('BANG_TaiKhoan', 'MaTK')->where(fn($q) => $q->where('VaiTro', 'SinhVien')),
+                Rule::unique('BANG_SinhVien', 'MaTK')->ignore($r->MaSV, 'MaSV'),
+            ],
+        ], [], [
+            'MaSV' => 'MSSV',
+            'HoTen' => 'Họ và tên',
+            'NgaySinh' => 'Ngày sinh',
+            'MaTK' => 'Mã tài khoản'
+        ]);
+
+        DB::table('BANG_SinhVien')
+            ->where('MaSV', $r->MaSV)
+            ->update([
+                'HoTen'    => $r->HoTen,
+                'NgaySinh' => $r->NgaySinh,
+                'Khoa'     => $r->Khoa,
+                'Lop'      => $r->Lop,
+                'MaTK'     => $r->MaTK ?: null,
+            ]);
+
+        return back()->with('ok', 'Đã cập nhật sinh viên.');
+    }
 
     /**
      * Xóa sinh viên theo MaSV
