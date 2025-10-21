@@ -24,7 +24,7 @@
 
 
       {{-- Nút Lưu (hiển thị toast + refresh) --}}
-      <button id="btn-refresh" class="btn btn-warning">Lưu</button>
+      <button id="btn-refresh" class="btn btn-warning">✅Lưu</button>
 
       {{-- Bộ lọc + tìm kiếm --}}
       <form class="ms-auto d-flex gap-2" method="get">
