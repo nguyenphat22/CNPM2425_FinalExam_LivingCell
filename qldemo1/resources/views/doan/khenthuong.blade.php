@@ -5,22 +5,20 @@
 <h5 class="mb-3">Danh sách khen thưởng sinh viên</h5>
 
 <div class="d-flex mb-3 gap-2">
-  {{-- Học kỳ (giữ lại giá trị khi submit) --}}
+  {{-- Học kỳ --}}
   <form id="hk-form" class="d-flex gap-2" method="get" action="{{ route('doan.khenthuong.index') }}">
     <select class="form-select" style="width:180px" name="hk" onchange="document.getElementById('hk-form').submit()">
       <option value="HK1-2024-2025" {{ $hk==='HK1-2024-2025' ? 'selected':'' }}>HK1-2024-2025</option>
       <option value="HK2-2024-2025" {{ $hk==='HK2-2024-2025' ? 'selected':'' }}>HK2-2024-2025</option>
-      {{-- ... nếu có thêm học kỳ khác --}}
     </select>
-    {{-- Khi đổi HK vẫn giữ q nếu đang có --}}
     @if(!empty($q))
-    <input type="hidden" name="q" value="{{ $q }}">
+      <input type="hidden" name="q" value="{{ $q }}">
     @endif
   </form>
-  {{-- 👉 Nút xuất Excel --}}
+
   <a href="{{ route('doan.khenthuong.export', ['hk' => $hk]) }}" class="btn btn-success">
-    Xuất file Excel
-  </a>
+  <i class="bi bi-file-earmark-excel me-1"></i> Xuất file Excel
+</a>
 
   {{-- Form tìm kiếm --}}
   <form class="ms-auto d-flex" method="get" action="{{ route('doan.khenthuong.index') }}">
@@ -43,14 +41,14 @@
     <tbody>
       @forelse($data as $i => $r)
       <tr>
-        <td>{{ $i + 1 }}</td>
+        <td>{{ ($data->firstItem() ?? 0) + $i }}</td>
         <td>{{ $r->MaSV }}</td>
         <td>{{ $r->HoTen }}</td>
         <td>
           @if ($r->DanhHieu)
-          <span class="badge bg-success">{{ $r->DanhHieu }}</span>
+            <span class="badge bg-success">{{ $r->DanhHieu }}</span>
           @else
-          <span class="text-muted">—</span>
+            <span class="text-muted">—</span>
           @endif
         </td>
       </tr>
@@ -61,5 +59,10 @@
       @endforelse
     </tbody>
   </table>
+</div>
+
+{{-- Phân trang: đặt sau bảng --}}
+<div class="mt-3">
+  {{ $data->links('pagination::bootstrap-5') }}
 </div>
 @endsection

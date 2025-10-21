@@ -34,14 +34,14 @@
     @csrf
     <input type="file" name="file" class="form-control"
       style="max-width:260px;" accept=".xlsx,.xls,.csv" required>
-    <button class="btn btn-secondary" type="submit">
-      Nhập file Excel ds sinh viên
-    </button>
+    <button class="btn btn-secondary">
+  <i class="bi bi-cloud-upload me-1"></i> Upload file
+</button>
   </form>
 
-  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">
-    Thêm
-  </button>
+<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">
+  <i class="bi bi-plus-circle me-1"></i> Thêm
+</button>
 
   <form class="ms-auto d-flex" method="get">
     <input class="form-control me-2" name="q" value="{{ $q }}" placeholder="Tìm...">

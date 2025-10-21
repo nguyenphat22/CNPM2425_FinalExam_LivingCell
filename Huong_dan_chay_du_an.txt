@@ -1,0 +1,23 @@
+Các bước chạy đồ án:
+1. Clone dự án về
+2. Copy file vào xampp/htdocs/
+3. Bật visual studio code 
+4. Mở terminal
+5. cd ten_du_an
+6.1 composer update
+6.2 composer install --> Tạo file vendor
+// Nếu chưa có file .env --> 7. Sau khi thành công tạo file vendor thì vào .env example tạo 1 cái nx rồi đổi tên thành .env. Nếu APP_KEY chưa có thì gõ lệnh php artisan key:generate
+8. Bật Xampp Control Panel ( Bật Mysql, Apache )
+9. Vào Phpmyadmin --> Vào cột chọn SQL để tạo database --> Copy sql của sql_qldemo1 --> thực hiện
+10. Vào Terminal --> cd ten_du_an --> Nhập php artisan migrate ( Sau khi liên kết thành công )
+11. Nhập php artisan serve --> Bấm vào link --> Tiếp tục đến các bước tạo tài khoản
+
+Các bước tạo tài khoản:
+1. php artisan tinker
+2. Hash::make('123456') --> Mã Hash --> Copy Mã
+3. Vào phpmyadmin. 
+4. Vào database ( bang_taikhoan ) --> Nhập:
+INSERT INTO BANG_TaiKhoan (MaTK, TenDangNhap, MatKhau, VaiTro, TrangThai, Email)
+VALUES
+(1, 'admin',     '$2y$12$1nxiCvPr84E0Su8R2C1jNedHsw0JCeZyCcwKcuc3xP5Bbl8cxK6WS(Dán MÃ TỪ TERMINAL VÀO)', 'Admin',      'Active', 'admin@example.com')
+5. Vào Trang admin để tạo các tài khoản ctcthssv, khaothi, doantruong

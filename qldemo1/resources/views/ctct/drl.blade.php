@@ -13,18 +13,22 @@
       <form method="post" action="{{ route('ctct.drl.import') }}" enctype="multipart/form-data" class="d-flex gap-2">
         @csrf
         <input type="file" name="file" class="form-control" style="max-width:260px;" accept=".xlsx,.xls,.csv" required>
-        <button class="btn btn-secondary" type="submit">Nhập file Excel</button>
+        <button class="btn btn-secondary">
+  <i class="bi bi-cloud-upload me-1"></i> Upload file
+</button>
       </form>
 
       {{-- Xuất báo cáo (gắn route nếu có) --}}
       <a class="btn btn-success"
-        href="{{ route('ctct.drl.export', ['hk'=>$hk, 'nh'=>$nh, 'q'=>$q]) }}">
-        Xuất báo cáo file Excel
-      </a>
+   href="{{ route('ctct.drl.export', ['hk'=>$hk, 'nh'=>$nh, 'q'=>$q]) }}">
+  <i class="bi bi-file-earmark-excel me-1"></i> Xuất báo cáo Excel
+</a>
 
 
       {{-- Nút Lưu (hiển thị toast + refresh) --}}
-      <button id="btn-refresh" class="btn btn-warning">✅Lưu</button>
+        <button id="btn-refresh" class="btn btn-warning" type="button" onclick="showSaveMessage()">
+  <i class="bi-check-circle"></i> Lưu
+</button>
 
       {{-- Bộ lọc + tìm kiếm --}}
       <form class="ms-auto d-flex gap-2" method="get">
@@ -38,7 +42,7 @@
         <button class="btn btn-outline-primary">Tìm</button>
       </form>
     </div>
-    {{-- ⚠️ THÊM ĐOẠN NÀY Ở ĐÂY --}}
+
     @if(session('failures'))
     <div class="alert alert-warning mt-2">
       <div class="fw-bold">Một số dòng không hợp lệ:</div>
@@ -49,7 +53,7 @@
       </ul>
     </div>
     @endif
-    {{-- ⚠️ HẾT PHẦN THÊM --}}
+
 
     {{-- Bảng dữ liệu --}}
     <div class="table-responsive">

@@ -63,7 +63,7 @@ class GpaImport implements ToCollection, WithHeadingRow, WithValidation, SkipsOn
             '*.masv'    => ['required', 'string', 'max:20', 'exists:BANG_SinhVien,MaSV'],
             '*.hocky'   => ['required', 'integer', 'min:1', 'max:3'],
             '*.namhoc'  => ['required', 'string', 'max:9'],
-            '*.diemht'  => ['nullable', 'numeric', 'min:0', 'max:4'], // đổi max nếu thang khác
+            '*.diemht'  => ['nullable', 'numeric', 'min:0', 'max:4'], 
             '*.xeploai' => ['nullable', 'string', 'max:20'],
         ];
     }

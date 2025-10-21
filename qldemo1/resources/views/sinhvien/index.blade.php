@@ -14,13 +14,13 @@
     <div class="card mb-3">
       <div class="card-body">
         @if($sv)
-        <div><b>MSSV:</b> {{ $sv->MaSV }}</div>
-        <div><b>Họ và Tên:</b> {{ $sv->HoTen }}</div>
-        <div><b>Ngày sinh:</b> {{ $ngaySinh ?? '—' }}</div>
-        <div><b>Lớp:</b> {{ $sv->Lop ?? '—' }}</div>
-        <div><b>Khoa:</b> {{ $sv->Khoa ?? '—' }}</div>
+          <div><b>MSSV:</b> {{ $sv->MaSV }}</div>
+          <div><b>Họ và Tên:</b> {{ $sv->HoTen }}</div>
+          <div><b>Ngày sinh:</b> {{ $ngaySinh ?? '—' }}</div>
+          <div><b>Lớp:</b> {{ $sv->Lop ?? '—' }}</div>
+          <div><b>Khoa:</b> {{ $sv->Khoa ?? '—' }}</div>
         @else
-        <em>Chưa liên kết thông tin sinh viên với tài khoản này.</em>
+          <em>Chưa liên kết thông tin sinh viên với tài khoản này.</em>
         @endif
       </div>
     </div>
@@ -28,28 +28,22 @@
     {{-- Ba cột thông tin điểm --}}
     <div class="row g-3">
       <div class="col-md-4">
-        <div class="card">
-          <div class="card-body">
-            <div class="fw-bold mb-1">Điểm học tập (GPA)</div>
-            <div class="fs-5">{{ $gpaVal ?? '—' }}</div>
-          </div>
-        </div>
+        <div class="card"><div class="card-body">
+          <div class="fw-bold mb-1">Điểm học tập (GPA)</div>
+          <div class="fs-5">{{ $gpaVal ?? '—' }}</div>
+        </div></div>
       </div>
       <div class="col-md-4">
-        <div class="card">
-          <div class="card-body">
-            <div class="fw-bold mb-1">Điểm rèn luyện</div>
-            <div class="fs-5">{{ $drlVal ?? '—' }}</div>
-          </div>
-        </div>
+        <div class="card"><div class="card-body">
+          <div class="fw-bold mb-1">Điểm rèn luyện</div>
+          <div class="fs-5">{{ $drlVal ?? '—' }}</div>
+        </div></div>
       </div>
       <div class="col-md-4">
-        <div class="card">
-          <div class="card-body">
-            <div class="fw-bold mb-1">Số ngày tình nguyện</div>
-            <div class="fs-5">{{ $ntnTong }}</div>
-          </div>
-        </div>
+        <div class="card"><div class="card-body">
+          <div class="fw-bold mb-1">Số ngày tình nguyện</div>
+          <div class="fs-5">{{ $ntnTong }}</div>
+        </div></div>
       </div>
     </div>
 
@@ -66,15 +60,13 @@
         </thead>
         <tbody>
           @forelse($awds as $i => $a)
-          <tr>
-            <td>{{ $i + 1 }}</td>
-            <td class="text-center"><span class="badge rounded-pill text-bg-success">{{ $a->Ten }}</span></td>
-            <td>{{ $a->HocKy ?? '—' }}</td>
-          </tr>
+            <tr>
+              <td>{{ $i + 1 }}</td>
+              <td class="text-center"><span class="badge rounded-pill text-bg-success">{{ $a->Ten }}</span></td>
+              <td>{{ $a->HocKy ?? '—' }}</td>
+            </tr>
           @empty
-          <tr>
-            <td colspan="3" class="text-center text-muted">Chưa có khen thưởng.</td>
-          </tr>
+            <tr><td colspan="3" class="text-center text-muted">Chưa có khen thưởng.</td></tr>
           @endforelse
         </tbody>
       </table>
@@ -85,13 +77,13 @@
     <div class="card mb-3">
       <div class="card-body">
         @if(!empty($goiY))
-        <ul class="mb-0">
-          @foreach($goiY as $msg)
-          <li>{{ $msg }}</li>
-          @endforeach
-        </ul>
+          <ul class="mb-0">
+            @foreach($goiY as $msg)
+              <li>{{ $msg }}</li>
+            @endforeach
+          </ul>
         @else
-        Hiện tại không có danh hiệu phù hợp, bạn hãy cố gắng hơn nhé!
+          Hiện tại không có danh hiệu phù hợp, bạn hãy cố gắng hơn nhé!
         @endif
       </div>
     </div>
@@ -102,29 +94,29 @@
     <div class="card">
       <div class="card-body">
         @forelse($awardProgress as $ap)
-        <div class="mb-3">
-          <div class="d-flex justify-content-between small mb-1">
-            <span>{{ $ap->ten }}</span>
-            @if($ap->req > 0)
-            <span class="fw-semibold">{{ $ap->cur }} / {{ $ap->req }} ngày</span>
-            @else
-            <span class="fw-semibold">Không yêu cầu ngày tình nguyện</span>
-            @endif
-          </div>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between small mb-1">
+              <span>{{ $ap->ten }}</span>
+              @if($ap->req > 0)
+                <span class="fw-semibold">{{ $ap->cur }} / {{ $ap->req }} ngày</span>
+              @else
+                <span class="fw-semibold">Không yêu cầu ngày tình nguyện</span>
+              @endif
+            </div>
 
-          {{-- Thanh tiến độ --}}
-          <div class="progress height-22">
-            <div
-              class="progress-bar {{ $ap->pct >= 100 ? 'bg-success' : 'bg-warning' }}"
-              role="progressbar"
-              data-width="{{ $ap->pct }}"
-              aria-valuenow="{{ $ap->pct }}" aria-valuemin="0" aria-valuemax="100">
-              {{ $ap->pct }}%
+            {{-- Thanh tiến độ --}}
+            <div class="progress height-22">
+              <div 
+                class="progress-bar {{ $ap->pct >= 100 ? 'bg-success' : 'bg-warning' }}"
+                role="progressbar"
+                data-width="{{ $ap->pct }}"
+                aria-valuenow="{{ $ap->pct }}" aria-valuemin="0" aria-valuemax="100">
+                {{ $ap->pct }}%
+              </div>
             </div>
           </div>
-        </div>
         @empty
-        <em class="text-muted">Chưa có danh hiệu nào được cấu hình.</em>
+          <em class="text-muted">Chưa có danh hiệu nào được cấu hình.</em>
         @endforelse
       </div>
     </div>
