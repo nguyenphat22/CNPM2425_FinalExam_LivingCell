@@ -1,0 +1,168 @@
+/* ==============================================
+   GIAO DIỆN TRANG ĐĂNG NHẬP HCMUE (FINAL VERSION)
+   ============================================== */
+
+/* Reset & Cơ bản */
+* { box-sizing: border-box; }
+body, html {
+  margin: 0; padding: 0; height: 100%;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: #0f2e47;
+}
+
+/* ===== Layout tổng ===== */
+.auth-wrapper {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* ===== CỘT TRÁI ===== */
+.auth-left {
+  width: 360px;
+  background: linear-gradient(180deg, #184c73 0%, #0e2d44 100%);
+  color: #eaf3ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 20px;
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.1);
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
+
+/* ===== LOGO TRƯỜNG (ẢNH NGANG DÀI) ===== */
+.brand-combo {
+  width: 100%;
+  text-align: center;
+  overflow: visible;
+  margin-bottom: 10px;
+}
+
+.brand-combo img {
+  max-width: 100%;        /* logo chiếm tối đa 95% chiều ngang khung */
+  height: auto;          /* tự co theo tỉ lệ thật */
+  display: inline-block; /* căn giữa dễ hơn */
+  object-fit: contain;   /* luôn hiển thị đủ */
+  margin: 6px auto 14px; /* khoảng cách đều trên dưới */
+}
+
+
+
+/* --- Logo Đoàn & Hội --- */
+.club {
+  display: flex;
+  gap: 10px;
+  margin: 6px 0 12px;
+}
+/* Căn chung cho cả hai logo */
+.club img {
+  height: 50px;
+  object-fit: contain;
+  margin: 0 4px;
+}
+
+/* --- Tiêu đề hệ thống --- */
+.title {
+  font-weight: 700;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 13.5px;
+  line-height: 1.45;
+  letter-spacing: 0.3px;
+  margin-bottom: 16px;
+}
+
+/* --- Khung form đăng nhập --- */
+.card-box {
+  width: 270px;
+  max-width: 90%;
+  background: #fff;
+  color: #0f2e47;
+  border-radius: 8px;
+  padding: 16px 14px 18px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+/* --- Label & Input --- */
+.card-box .form-label {
+  font-weight: 600;
+  font-size: 12.5px;
+  color: #0f2e47;
+  margin-bottom: 4px;
+}
+.card-box .form-control {
+  height: 34px;
+  border: 1px solid #cbd3db;
+  border-radius: 6px;
+  font-size: 13.5px;
+  padding: 0 10px;
+}
+.card-box .form-control::placeholder {
+  color: #b5c2cf;
+}
+.card-box .form-control:focus {
+  border-color: #184c73;
+  box-shadow: 0 0 0 0.15rem rgba(24, 76, 115, 0.25);
+}
+
+/* --- Nút đăng nhập --- */
+.card-box .btn.btn-primary {
+  background: #184c73;
+  border: none;
+  border-radius: 4px;
+  height: 34px;
+  font-weight: 600;
+  font-size: 13.5px;
+  color: #fff;
+  transition: 0.2s;
+}
+.card-box .btn.btn-primary:hover {
+  background: #1f5f90;
+  transform: translateY(-1px);
+}
+
+/* --- Link quên mật khẩu --- */
+.forgot-link {
+  color: #184c73;
+  font-size: 12.5px;
+  text-decoration: none;
+  font-weight: 500;
+}
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+/* --- Dòng bản quyền --- */
+.footer-note {
+  margin-top: auto;
+  font-size: 12px;
+  opacity: 0.9;
+  text-align: left;
+  padding-top: 12px;
+}
+
+/* ===== CỘT PHẢI ===== */
+.auth-right {
+  flex: 1;
+  position: relative;
+  background: url("/assets/images/background_truong.png") center right / cover no-repeat;
+  background-color: #ffffff; /* 👉 chỉnh phông xanh tại đây */
+  background-blend-mode: multiply; /* pha màu nền với ảnh */
+  filter: brightness(1.02);
+}
+
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 992px) {
+  .auth-left { width: 320px; }
+}
+
+@media (max-width: 768px) {
+  .auth-wrapper { flex-direction: column; }
+  .auth-left { width: 100%; height: auto; box-shadow: none; }
+  .auth-right { display: none; }
+  .title { text-align: center; }
+}

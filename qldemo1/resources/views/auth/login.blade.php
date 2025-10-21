@@ -2,57 +2,71 @@
 @section('title','Đăng nhập')
 
 @section('content')
-<div class="row justify-content-center">
-  <div class="col-md-5">
-    <div class="card shadow-sm">
-      <div class="card-header text-center fw-bold">ĐĂNG NHẬP</div>
-      <div class="card-body">
-        @if(session('ok')) <div class="alert alert-success">{{ session('ok') }}</div> @endif
+<div class="auth-wrapper">
+  {{-- CỘT TRÁI --}}
+  <div class="auth-left">
+    {{-- Logo trường + tên trường (1 ảnh gộp) --}}
+    <div class="brand-combo">
+      <img src="{{ asset('assets/images/logo_truong.png') }}" alt="HCMUE Logo & Name">
+    </div>
 
-        <form method="POST" action="{{ route('login.submit') }}" novalidate>
-          @csrf
+    {{-- Logo Đoàn & Hội --}}
+    <div class="club">
+      <img src="{{ asset('assets/images/logo_doan.png') }}" alt="Logo Đoàn">
+      <img src="{{ asset('assets/images/logo_hoi.png') }}" alt="Logo Hội SV">
+    </div>
 
-          <div class="mb-3">
-            <label class="form-label">Tên đăng nhập</label>
-            <input type="text"
-              name="TenDangNhap"
-              value="{{ old('TenDangNhap') }}"
-              class="form-control @error('TenDangNhap') is-invalid @enderror"
-              placeholder="Nhập tên đăng nhập"
-              required>
-            @error('TenDangNhap')
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-          </div>
+    {{-- Tiêu đề hệ thống --}}
+    <div class="title">
+      HỆ THỐNG NGHIỆP VỤ<br>
+      CÔNG TÁC RÈN LUYỆN SINH VIÊN
+    </div>
 
-          <div class="mb-3">
-            <label class="form-label">Mật khẩu</label>
-            <input type="password"
-              name="MatKhau"
-              class="form-control @error('MatKhau') is-invalid @enderror"
-              placeholder="Nhập mật khẩu"
-              required>
-            @error('MatKhau')
-            <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
+    {{-- Khung đăng nhập --}}
+    <div class="card-box">
+      @if(session('ok'))
+        <div class="alert alert-success mb-3 py-2">{{ session('ok') }}</div>
+      @endif
 
-            {{-- Nếu có lỗi đăng nhập sai tên/mật khẩu --}}
-            @if ($errors->any() && !$errors->has('TenDangNhap') && !$errors->has('MatKhau'))
-            <div class="invalid-feedback d-block">
-              {{ $errors->first() }}
-            </div>
-            @endif
-          </div>
-
-          <button class="btn btn-primary w-100">Đăng nhập</button>
-        </form>
-
-
-        <div class="text-center mt-3">
-          <a href="{{ route('forgot.show') }}">Quên mật khẩu?</a>
+      <form method="POST" action="{{ route('login.submit') }}">
+        @csrf
+        <div class="mb-3">
+          <label class="form-label">Tên đăng nhập</label>
+          <input type="text" name="TenDangNhap" value="{{ old('TenDangNhap') }}"
+                 class="form-control @error('TenDangNhap') is-invalid @enderror"
+                 placeholder="Username" required>
+          @error('TenDangNhap')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+          @enderror
         </div>
-      </div>
+
+        <div class="mb-3">
+          <label class="form-label">Mật khẩu</label>
+          <input type="password" name="MatKhau"
+                 class="form-control @error('MatKhau') is-invalid @enderror"
+                 placeholder="Password" required>
+          @error('MatKhau')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+          @enderror
+          @if ($errors->any() && !$errors->has('TenDangNhap') && !$errors->has('MatKhau'))
+            <div class="invalid-feedback d-block mt-1">{{ $errors->first() }}</div>
+          @endif
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
+
+        <div class="text-center mt-3 mb-1">
+          <a href="{{ route('forgot.show') }}" class="forgot-link">Quên mật khẩu?</a>
+        </div>
+      </form>
+    </div>
+
+    <div class="footer-note">
+      All Rights <b>NOT</b> Reserved Developed by PSC
     </div>
   </div>
+
+  {{-- CỘT PHẢI --}}
+  <div class="auth-right"></div>
 </div>
 @endsection
