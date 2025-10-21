@@ -12,6 +12,9 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\KhenThuongExport;
 use App\Models\NgayTinhNguyen;
 use App\Models\DanhHieu;
+use Illuminate\Pagination\LengthAwarePaginator;
+use App\Imports\NtnImport;
+
 
 class DoanController extends Controller
 {
@@ -89,12 +92,30 @@ class DoanController extends Controller
 
         // Chuyển sang collection cho tiện render
         $data = collect($rows);
+$page = max(1, (int)$r->input('page', 1));
+$per  = 10; // số dòng mỗi trang (có thể đổi)
+$total = $data->count();
 
+// Lấy item cho trang hiện tại
+$items = $data->slice(($page - 1) * $per, $per)->values();
+
+// Tạo đối tượng LengthAwarePaginator từ Collection
+$data = new LengthAwarePaginator(
+    $items,      // dữ liệu trang hiện tại
+    $total,      // tổng số dòng
+    $per,        // số dòng/trang
+    $page,       // trang hiện tại
+    [
+        'path'  => $r->url(),     // giữ nguyên URL
+        'query' => $r->query(),   // giữ các tham số tìm kiếm
+    ]
+);
         return view('doan.khenthuong', [
             'data' => $data,
             'hk'   => $hk,
             'q'    => $q,
         ]);
+        
     }
     public function exportExcel(Request $r)
     {
@@ -202,21 +223,43 @@ class DoanController extends Controller
 
     // ========== Import Excel (.xlsx/.xls/.csv) ==========
     public function ntnImport(Request $r)
-    {
-        $r->validate([
-            'file' => 'required|file|mimes:xlsx,xls,csv|max:5120',
-        ]);
+{
+    $r->validate([
+        'file' => 'required|file|mimes:xlsx,xls,csv|max:5120',
+    ]);
 
-        try {
-            Excel::import(new \App\Imports\NtnImport, $r->file('file'));
-        } catch (QueryException $e) {
-            return back()->withErrors('Import lỗi: ' . $e->getMessage());
-        } catch (\Throwable $e) {
-            return back()->withErrors('Import lỗi: ' . $e->getMessage());
+    try {
+        $import = new NtnImport();
+        Excel::import($import, $r->file('file'));
+
+        $inserted = $import->insertedCount();
+        $fails    = $import->failures();
+
+        if ($fails->isNotEmpty()) {
+            $errs = [];
+            foreach ($fails as $f) {
+                $errs[] = "Dòng {$f->row()}: " . implode(', ', $f->errors());
+            }
+            return back()
+                ->with('ok', "Đã nhập: {$inserted} dòng. Bỏ qua: {$fails->count()} dòng.")
+                ->withErrors($errs);
         }
 
-        return redirect()->route('doan.tinhnguyen.index')->with('ok', 'Nhập danh sách hoạt động TN thành công.');
+        if ($inserted === 0) {
+            return back()->withErrors(
+                'Không có dòng nào được nhập. Hãy kiểm tra lại tiêu đề cột: masv, tenhoatdong, ngaythamgia, songaytn, trangthaiduyet.'
+            );
+        }
+
+        return redirect()
+            ->route('doan.tinhnguyen.index')
+            ->with('ok', "Nhập danh sách hoạt động TN thành công. Thêm mới: {$inserted} dòng.");
+    } catch (QueryException $e) {
+        return back()->withErrors('Import lỗi DB: ' . $e->getMessage());
+    } catch (\Throwable $e) {
+        return back()->withErrors('Import lỗi: ' . $e->getMessage());
     }
+}
 
     // Trang danh sách danh hiệu
     public function danhHieuIndex(Request $r)

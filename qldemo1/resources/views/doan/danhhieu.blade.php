@@ -5,10 +5,13 @@
 <h5 class="mb-3">Quản lý danh hiệu</h5>
 
 <div class="d-flex gap-2 mb-3 align-items-center">
-  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">Thêm (Danh hiệu)</button>
-  {{-- BỎ các nút Sửa, Xóa ở thanh công cụ --}}
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">
+  <i class="bi bi-plus-circle me-1"></i> Thêm
+</button>
 
-  <button id="btn-refresh" class="btn btn-warning">Lưu (Cập nhật)</button>
+  <button id="btn-refresh" class="btn btn-warning" type="button" onclick="showSaveMessage()">
+  <i class="bi-check-circle"></i> Lưu
+</button>
 
   <form class="ms-auto d-flex gap-2" method="get">
     <select class="form-select" name="hk" style="width:140px">

@@ -8,15 +8,19 @@
   <form method="post" action="{{ route('khaothi.gpa.import') }}" enctype="multipart/form-data" class="d-flex gap-2">
     @csrf
     <input type="file" name="file" class="form-control" style="max-width:260px;" accept=".xlsx,.xls,.csv" required>
-    <button class="btn btn-secondary" type="submit">Nhập file Excel</button>
+    <button class="btn btn-secondary">
+  <i class="bi bi-cloud-upload me-1"></i> Upload file
+</button>
   </form>
 
   <a class="btn btn-success"
     href="{{ route('khaothi.gpa.export', ['hk'=>$hk,'nh'=>$nh,'q'=>$q]) }}">
-    Xuất báo cáo file Excel
+     <i class="bi bi-file-earmark-excel me-1"></i> Xuất báo cáo Excel
   </a>
 
-  <button id="btn-refresh" class="btn btn-warning">Lưu (Cập nhật)</button>
+  <button id="btn-refresh" class="btn btn-warning" type="button" onclick="showSaveMessage()">
+  <i class="bi-check-circle"></i> Lưu
+</button>
 
   <form class="ms-auto d-flex gap-2" method="get">
     <select class="form-select" name="hk" style="width:140px">

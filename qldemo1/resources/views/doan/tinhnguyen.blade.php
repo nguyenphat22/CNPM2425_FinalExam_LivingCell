@@ -10,12 +10,18 @@
       <form method="post" action="{{ route('doan.tinhnguyen.import') }}" enctype="multipart/form-data" class="d-flex gap-2">
         @csrf
         <input type="file" name="file" class="form-control" style="max-width:260px" accept=".xlsx,.xls,.csv" required>
-        <button class="btn btn-secondary">Nhập file Excel</button>
+        <button class="btn btn-secondary">
+  <i class="bi bi-cloud-upload me-1"></i> Upload file
+</button>
       </form>
 
-      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNTN">Thêm</button>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNTN">
+  <i class="bi bi-plus-circle me-1"></i> Thêm
+</button>
 
-      <button id="btn-refresh" class="btn btn-warning">Lưu (Cập nhật)</button>
+      <button id="btn-refresh" class="btn btn-warning" type="button" onclick="showSaveMessage()">
+  <i class="bi-check-circle"></i> Lưu
+</button>
 
       <div class="ms-auto d-flex gap-2">
         <form method="GET" action="{{ route('doan.tinhnguyen.index') }}" class="d-flex gap-2">

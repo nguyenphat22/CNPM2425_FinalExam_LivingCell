@@ -13,15 +13,21 @@
 @endif
 
 <div class="d-flex gap-2 mb-3">
-  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">Thêm</button>
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">
+  <i class="bi bi-plus-circle me-1"></i> Thêm
+</button>
 
   <form method="post" action="{{ route('admin.accounts.import') }}" enctype="multipart/form-data" class="d-flex gap-2">
     @csrf
     <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv" required style="max-width:280px;">
-    <button class="btn btn-secondary">Upload file</button>
+    <button class="btn btn-secondary">
+  <i class="bi bi-cloud-upload me-1"></i> Upload file
+</button>
   </form>
 
-  <button class="btn btn-warning" type="button" onclick="showSaveMessage()">Lưu</button>
+  <button class="btn btn-warning" type="button" onclick="showSaveMessage()">
+  <i class="bi-check-circle"></i> Lưu
+</button>
 
   <form class="ms-auto d-flex" method="get">
     <input class="form-control me-2" name="q" value="{{ $q }}" placeholder="Tìm...">
@@ -153,7 +159,7 @@
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-primary">✅Lưu</button>
+        <button class="btn btn-primary">Lưu</button>
       </div>
     </form>
   </div>
