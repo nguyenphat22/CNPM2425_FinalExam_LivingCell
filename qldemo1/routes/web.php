@@ -22,7 +22,7 @@ Route::get('/reset',        [AuthController::class, 'showReset'])->name('reset.s
 Route::post('/reset',       [AuthController::class, 'handleReset'])->name('reset.handle');
 
 // Dashboards theo vai trò (chỉ UI)
-Route::middleware('auth.session')->group(function () {
+Route::middleware(['auth.session', 'active'])->group(function () {
     Route::get('/admin',        [DashboardController::class, 'admin'])->name('admin.home');
     Route::get('/sinhvien',     [DashboardController::class, 'sinhvien'])->name('sv.home');
     Route::get('/ctct-hssv',    [DashboardController::class, 'ctct'])->name('ctct.home');
@@ -42,7 +42,7 @@ Route::get('/admin', function () {
 })->name('admin.home');
 // Khao Thi routes
 Route::prefix('khaothi')
-    ->middleware(['auth.session','role:KhaoThi'])
+    ->middleware(['auth.session', 'active', 'role:KhaoThi'])
     ->name('khaothi.')
     ->group(function () {
         Route::get('/', fn() => redirect()->route('khaothi.sinhvien.index'))->name('home');
@@ -57,7 +57,7 @@ Route::prefix('khaothi')
     });
 // CTCT HSSV routes
 Route::prefix('ctct')
-    ->middleware(['auth.session','role:CTCTHSSV'])
+    ->middleware(['auth.session', 'active', 'role:CTCTHSSV'])
     ->name('ctct.')                      // <-- mọi route bên trong sẽ có tiền tố ctct.
     ->group(function () {
 
@@ -81,7 +81,7 @@ Route::prefix('ctct')
 
 // Đoàn Trường routes
 Route::prefix('doantruong')
-    ->middleware(['auth.session','role:DoanTruong'])
+    ->middleware(['auth.session', 'active', 'role:DoanTruong'])
     ->name('doan.') //  Thêm dòng này để Laravel nhận tên route như doan.danhhieu.store
     ->group(function () {
         Route::get('/', fn() => redirect()->route('doan.khenthuong.index'))->name('home');
@@ -109,7 +109,7 @@ Route::prefix('doantruong')
 
 // Sinh Viên routes
 Route::prefix('sinhvien')
-    ->middleware(['auth.session','role:SinhVien'])
+    ->middleware(['auth.session', 'active', 'role:SinhVien'])
     ->group(function () {
         Route::get('/', [SinhVienController::class, 'index'])->name('sv.home');
     }); 

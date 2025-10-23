@@ -14,35 +14,47 @@ class AuthController extends Controller
     }
 
     public function login(Request $r)
-    {
-        $r->validate([
-            'TenDangNhap' => 'required',
-            'MatKhau'     => 'required',
-        ]);
+{
+    $r->validate([
+        'TenDangNhap' => 'required',
+        'MatKhau'     => 'required',
+    ]);
 
-        $user = DB::table('BANG_TaiKhoan')->where('TenDangNhap', $r->TenDangNhap)->first();
+    $user = DB::table('BANG_TaiKhoan')->where('TenDangNhap', $r->TenDangNhap)->first();
 
-        if (!$user || !Hash::check($r->MatKhau, $user->MatKhau)) {
-            return back()->withErrors('Tên đăng nhập hoặc mật khẩu không đúng.');
-        }
-
-        // Lưu session
-        $r->session()->put('user', [
-            'MaTK'   => $user->MaTK,
-            'name'   => $user->TenDangNhap,
-            'role'   => $user->VaiTro,
-        ]);
-
-        // Điều hướng theo vai trò
-        return match ($user->VaiTro) {
-            'Admin'      => redirect()->route('admin.home'),
-            'SinhVien'   => redirect()->route('sv.home'),
-            'CTCTHSSV'   => redirect()->route('ctct.home'),
-            'KhaoThi'    => redirect()->route('khaothi.home'),
-            'DoanTruong' => redirect()->route('doan.home'),
-            default      => redirect()->route('login.show'),
-        };
+    // Sai tài khoản/mật khẩu
+    if (!$user || !Hash::check($r->MatKhau, $user->MatKhau)) {
+        return back()->withErrors('Tên đăng nhập hoặc mật khẩu không đúng.');
     }
+
+    // CHẶN THEO TRẠNG THÁI
+    if ($user->TrangThai !== 'Active') {
+        $msg = match ($user->TrangThai) {
+            'Inactive' => 'Tài khoản chưa được kích hoạt.',
+            'Locked'   => 'Tài khoản đã bị khóa. Vui lòng liên hệ quản trị.',
+            default    => 'Tài khoản không hợp lệ.',
+        };
+        return back()->withErrors($msg);
+    }
+
+    // Lưu session
+    $r->session()->put('user', [
+        'MaTK'   => $user->MaTK,
+        'name'   => $user->TenDangNhap,
+        'role'   => $user->VaiTro,
+        'status' => $user->TrangThai,
+    ]);
+
+    // Điều hướng theo vai trò
+    return match ($user->VaiTro) {
+        'Admin'      => redirect()->route('admin.home'),
+        'SinhVien'   => redirect()->route('sv.home'),
+        'CTCTHSSV'   => redirect()->route('ctct.home'),
+        'KhaoThi'    => redirect()->route('khaothi.home'),
+        'DoanTruong' => redirect()->route('doan.home'),
+        default      => redirect()->route('login.show'),
+    };
+}
 
     public function logout(Request $r)
     {
