@@ -4,13 +4,6 @@
 @section('content')
 <h4 class="mb-3">Danh sách tài khoản</h4>
 
-@if ($errors->any() && !$errors->getBag('add')->any() && !$errors->getBag('edit')->any())
-<div class="alert alert-danger">
-  <ul class="mb-0 ps-3">
-    @foreach ($errors->all() as $e) <li>{{ $e }}</li> @endforeach
-  </ul>
-</div>
-@endif
 
 <div class="d-flex gap-2 mb-3">
   <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">

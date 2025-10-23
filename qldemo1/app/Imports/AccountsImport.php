@@ -2,47 +2,92 @@
 
 namespace App\Imports;
 
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Row;
-use Maatwebsite\Excel\Concerns\OnEachRow;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Concerns\SkipsOnFailure;
+use Maatwebsite\Excel\Concerns\SkipsFailures;
 
-class AccountsImport implements OnEachRow, WithHeadingRow
+class AccountsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnFailure
 {
-    // File phải có hàng tiêu đề (heading row) như: MaTK, TenDangNhap, MatKhau, VaiTro, TrangThai, Email
-    public function onRow(Row $row)
+    use SkipsFailures;
+
+    public int $total = 0;
+    public int $inserted = 0;
+    public int $updated = 0;
+
+    /** Các cột bắt buộc trong file Excel */
+    public static array $requiredHeaders = ['matk', 'tendangnhap', 'matkhau', 'vaitro', 'email'];
+
+    public static function missingHeaders(array $headers): array
     {
-        $r = $row->toArray();
-
-        // Chuẩn hóa key theo đúng tên cột DB của T
-        $MaTK        = $r['matk']        ?? null;
-        $TenDangNhap = $r['tendangnhap'] ?? null;
-        $MatKhau     = $r['matkhau']     ?? null;  // cho phép plain -> mình sẽ hash
-        $VaiTro      = $r['vaitro']      ?? null;
-        $TrangThai   = $r['trangthai']   ?? 'Active';
-        $Email       = $r['email']       ?? null;
-
-        if (!$MaTK || !$TenDangNhap || !$MatKhau || !$VaiTro) {
-            // Bỏ qua dòng thiếu dữ liệu quan trọng
-            return;
-        }
-
-        DB::table('BANG_TaiKhoan')->updateOrInsert(
-            ['MaTK' => $MaTK],
-            [
-                'TenDangNhap' => $TenDangNhap,
-                'MatKhau'     => self::needsRehash($MatKhau) ? Hash::make($MatKhau) : $MatKhau,
-                'VaiTro'      => $VaiTro,
-                'TrangThai'   => $TrangThai ?: 'Active',
-                'Email'       => $Email,
-            ]
-        );
+        $headers = array_map('strtolower', $headers);
+        return array_values(array_diff(self::$requiredHeaders, $headers));
     }
 
-    // Nếu user đưa vào là hash bcrypt sẵn thì giữ nguyên; nếu là plain text thì hash
-    private static function needsRehash(string $value): bool
+    public function model(array $row)
     {
-        return !preg_match('/^\$2y\$\d+\$/', $value); // rất thô, chỉ để nhận diện bcrypt $2y$
+        $this->total++;
+
+        // chuẩn hoá key
+        $row = array_change_key_case($row, CASE_LOWER);
+
+        $maTK        = trim((string)($row['matk'] ?? ''));
+        $tenDangNhap = trim((string)($row['tendangnhap'] ?? ''));
+        $matKhau     = trim((string)($row['matkhau'] ?? ''));
+        $vaiTro      = trim((string)($row['vaitro'] ?? ''));
+        $email       = trim((string)($row['email'] ?? ''));
+
+        if (!$maTK || !$tenDangNhap || !$vaiTro) {
+            return null; // bỏ qua dòng trống hoặc thiếu dữ liệu chính
+        }
+
+        $exist = DB::table('BANG_TaiKhoan')->where('MaTK', $maTK)->first();
+
+        $data = [
+            'TenDangNhap' => $tenDangNhap,
+            'VaiTro'      => $vaiTro,
+            'TrangThai'   => 'Active',
+            'Email'       => $email ?: null,
+        ];
+        if ($matKhau) {
+            $data['MatKhau'] = Hash::make($matKhau);
+        }
+
+        if ($exist) {
+            DB::table('BANG_TaiKhoan')->where('MaTK', $maTK)->update($data);
+            $this->updated++;
+        } else {
+            $data['MaTK'] = $maTK;
+            DB::table('BANG_TaiKhoan')->insert($data);
+            $this->inserted++;
+        }
+
+        return null;
+    }
+
+    public function rules(): array
+    {
+        return [
+            '*.matk'        => ['required', 'max:50'],
+            '*.tendangnhap' => ['required', 'max:50'],
+            '*.matkhau'     => ['nullable', 'regex:/^.{6,}$/'], // >=6 ký tự
+            '*.vaitro'      => ['required', Rule::in(['Admin','SinhVien','KhaoThi','CTCTHSSV','DoanTruong'])],
+            '*.email'       => ['nullable', 'email', 'max:100'],
+        ];
+    }
+
+    public function customValidationAttributes()
+    {
+        return [
+            'matk'        => 'MaTK',
+            'tendangnhap' => 'Tên đăng nhập',
+            'matkhau'     => 'Mật khẩu',
+            'vaitro'      => 'Vai trò',
+            'email'       => 'Email',
+        ];
     }
 }

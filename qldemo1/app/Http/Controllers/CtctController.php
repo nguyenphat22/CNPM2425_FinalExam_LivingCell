@@ -51,7 +51,7 @@ class CtctController extends Controller
     public function svStore(Request $r)
     {
         $r->validate([
-            'MaSV'     => ['required', 'string', 'max:20', Rule::unique('BANG_SinhVien', 'MaSV')],
+            'MaSV'     => ['required', 'string', 'min:13', 'max:20', Rule::unique('BANG_SinhVien', 'MaSV')],
             'HoTen'    => ['required', 'string', 'max:100'],
             'NgaySinh' => ['required', 'date'],
             'Khoa'     => ['nullable', 'string', 'max:100'],
@@ -87,7 +87,7 @@ class CtctController extends Controller
     public function svUpdate(Request $r)
     {
         $r->validate([
-            'MaSV'     => ['required', Rule::exists('BANG_SinhVien', 'MaSV')],
+            'MaSV'     => ['required', 'min:13', Rule::exists('BANG_SinhVien', 'MaSV')],
             'HoTen'    => ['required', 'string', 'max:100'],
             'NgaySinh' => ['required', 'date'],
             'Khoa'     => ['nullable', 'string', 'max:100'],
@@ -124,7 +124,7 @@ class CtctController extends Controller
     public function svDelete(Request $r)
     {
         $r->validate([
-            'MaSV' => 'required|string|exists:BANG_SinhVien,MaSV',
+            'MaSV' => 'required|string|min:13|exists:BANG_SinhVien,MaSV',
         ], [], ['MaSV' => 'Mã sinh viên']);
 
         DB::table('BANG_SinhVien')->where('MaSV', $r->MaSV)->delete();
@@ -171,7 +171,11 @@ class CtctController extends Controller
                             $line = $idx + 2;
 
                             if ($maSV === '' || $hoTen === '') {
-                                $this->failures->push("Dòng {$line}: thiếu MaSV hoặc HoTen.");
+                                $this->failures->push("Dòng {$line}: thiếu MSSV hoặc HoTen.");
+                                continue;
+                            }
+                            if (mb_strlen($maSV) < 13) {
+                                $this->failures->push("Dòng {$line}: MSSV phải có tối thiểu 13 ký tự.");
                                 continue;
                             }
 
@@ -181,6 +185,7 @@ class CtctController extends Controller
                                     $this->failures->push("Dòng {$line}: MaTK phải là số nguyên.");
                                     continue;
                                 }
+
 
                                 // Tài khoản tồn tại & là SinhVien
                                 $ok = DB::table('BANG_TaiKhoan')

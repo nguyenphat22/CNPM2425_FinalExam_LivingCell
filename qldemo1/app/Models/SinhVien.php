@@ -8,29 +8,31 @@ class SinhVien extends Model
 {
     protected $table = 'BANG_SinhVien';
     protected $primaryKey = 'MaSV';
-    public $incrementing = false;       // MaSV là VARCHAR
-    protected $keyType = 'string';
     public $timestamps = false;
 
-    protected $fillable = ['MaSV','HoTen','NgaySinh','Khoa','Lop'];
-    protected $casts = ['NgaySinh' => 'date'];
+    // Nếu MaSV là chuỗi (MSSV)
+    public $incrementing = false;
+    protected $keyType = 'string';
 
-    // Quan hệ DRL
-    public function drls()
+    protected $fillable = ['MaSV', 'HoTen', 'NgaySinh', 'Khoa', 'Lop'];
+
+    /** Quan hệ: 1 SV có nhiều bản ghi điểm học tập */
+    public function diemHocTap()
     {
-        return $this->hasMany(DiemRenLuyen::class, 'MaSV', 'MaSV');
+        return $this->hasMany(DiemHocTap::class, 'MaSV', 'MaSV');
     }
 
-    // Scope tìm kiếm nhanh
-    public function scopeSearch($q, $term)
+    /** Scope tìm kiếm nhanh theo q (MSSV/Họ tên/Khoa/Lớp) */
+    public function scopeSearch($q, ?string $term)
     {
-        $term = trim((string)$term);
+        $term = trim((string) $term);
         if ($term === '') return $q;
-        return $q->where(function($s) use ($term){
-            $s->where('MaSV','like',"%{$term}%")
-              ->orWhere('HoTen','like',"%{$term}%")
-              ->orWhere('Khoa','like',"%{$term}%")
-              ->orWhere('Lop','like',"%{$term}%");
+
+        return $q->where(function($s) use ($term) {
+            $s->where('MaSV', 'like', "%{$term}%")
+              ->orWhere('HoTen', 'like', "%{$term}%")
+              ->orWhere('Khoa', 'like', "%{$term}%")
+              ->orWhere('Lop', 'like', "%{$term}%");
         });
     }
 }

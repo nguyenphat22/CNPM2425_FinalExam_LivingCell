@@ -62,7 +62,7 @@
     </div>
 
     <div class="footer-note">
-      All Rights <b>NOT</b> Reserved Developed by PSC
+      © 2025 Hệ thống QLRLKTSV. Developed by <a href="https://github.com/nguyenphat22/CNPM2425_FinalExam_LivingCell">Living Cell</a>
     </div>
   </div>
 
