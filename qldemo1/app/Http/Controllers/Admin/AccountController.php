@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\HeadingRowImport;
 use App\Imports\AccountsImport;
 
 class AccountController extends Controller
@@ -112,18 +113,65 @@ class AccountController extends Controller
         return back()->with('ok', 'Đã xóa tài khoản.');
     }
 
-    public function import(\Illuminate\Http\Request $r)
+    public function import(Request $r)
     {
         $r->validate([
-            'file' => 'required|file|mimes:xlsx,xls,csv|max:5120', // <=5MB
+            'file' => 'required|file|mimes:xlsx,xls,csv|max:5120',
         ]);
+        $file = $r->file('file');
 
+        // Đọc hàng tiêu đề 1 cách “an toàn”
+        $arr = (new HeadingRowImport)->toArray($file);
+
+        // Sheet đầu, dòng đầu
+        $firstRow = $arr[0][0] ?? [];
+
+        // Hỗ trợ cả 2 dạng: assoc (key=header) hoặc numeric (value=header)
+        $headers = [];
+        foreach ((array)$firstRow as $k => $v) {
+            $headers[] = is_string($k) ? $k : $v;
+        }
+
+        // Chuẩn hoá: bỏ khoảng trắng, xuống dòng, về lowercase
+        $headers = array_map(function ($h) {
+            $h = is_string($h) ? $h : '';
+            $h = trim($h);
+            $h = preg_replace('/\s+/u', '', $h);   // xoá mọi khoảng trắng
+            return mb_strtolower($h, 'UTF-8');
+        }, $headers);
+
+        // Required headers
+        $required = ['matk', 'tendangnhap', 'matkhau', 'vaitro', 'email'];
+
+        // Tính cột thiếu
+        $missing = array_values(array_diff($required, $headers));
+        if (!empty($missing)) {
+            return back()->withErrors('File Excel thiếu cột: ' . implode(', ', $missing));
+        }
+
+        // ===== Import dữ liệu =====
+        $import = new \App\Imports\AccountsImport();
         try {
-            Excel::import(new AccountsImport, $r->file('file'));
+            \Maatwebsite\Excel\Facades\Excel::import($import, $file);
         } catch (\Throwable $e) {
             return back()->withErrors('Import lỗi: ' . $e->getMessage());
         }
 
-        return back()->with('ok', 'Nhập danh sách tài khoản thành công.');
+        if ($import->failures()->isNotEmpty()) {
+            $msg = [];
+            foreach ($import->failures()->take(5) as $f) {
+                $msg[] = 'Dòng ' . $f->row() . ': ' . implode('; ', $f->errors());
+            }
+            return back()->withErrors("Import lỗi dữ liệu:\n" . implode("\n", $msg));
+        }
+
+        if ($import->total === 0) {
+            return back()->withErrors('File không có dữ liệu hợp lệ để import.');
+        }
+
+        return back()->with(
+            'ok',
+            "Nhập thành công: Tổng {$import->total}, Thêm {$import->inserted}, Cập nhật {$import->updated}"
+        );
     }
 }

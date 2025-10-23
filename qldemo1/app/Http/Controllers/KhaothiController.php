@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\GpaImport;
 use App\Exports\GpaExport;
 use App\Models\DiemHocTap;
+use App\Models\SinhVien;
 
 class KhaothiController extends Controller
 {
