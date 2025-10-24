@@ -22,6 +22,8 @@ class SinhVienController extends Controller
                 'ntnTong'  => 0,
                 'awds'     => collect(),
                 'goiY'     => null,
+                'ntnItems'      => collect(),     
+                'awardProgress' => collect(),     
             ]);
         }
 
@@ -35,7 +37,9 @@ class SinhVienController extends Controller
                 'ntnTong'  => 0,
                 'awds'     => collect(),
                 'goiY'     => null,
-            ]);
+                'ntnItems'      => collect(),     
+        'awardProgress' => collect(),     
+    ]);
         }
 
         $masv = $sv->MaSV;
