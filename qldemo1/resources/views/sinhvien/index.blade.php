@@ -95,6 +95,7 @@
 
     <div class="card">
       <div class="card-body">
+        @php($awardProgress = $awardProgress ?? collect())
         @forelse($awardProgress as $ap)
           <div class="mb-3">
             <div class="d-flex justify-content-between small mb-1">

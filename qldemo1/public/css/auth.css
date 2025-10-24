@@ -166,3 +166,29 @@ body, html {
   .auth-right { display: none; }
   .title { text-align: center; }
 }
+.footer-note {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #e0e0e0;
+  margin-top: 20px;
+}
+
+.footer-note .dev-logo img {
+  height: 38px;
+  width: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-left: 6px;
+  vertical-align: middle;
+
+  /* Làm nền trong & tăng độ sáng + tương phản */
+  background-color: transparent;
+  filter: brightness(2.2) contrast(1.8) saturate(1.5);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+  transition: transform 0.25s, filter 0.25s;
+}
+
+.footer-note .dev-logo img:hover {
+  transform: scale(1.1);
+  filter: brightness(2.5) contrast(2) saturate(1.7);
+}
