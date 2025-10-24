@@ -66,7 +66,7 @@
             <th>Họ và Tên</th>
             <th style="width:160px">Điểm rèn luyện</th>
             <th style="width:160px">Xếp loại</th>
-            <th style="width:140px">Thao tác</th> {{-- cột mới --}}
+            <th style="width:140px">Thao tác</th>
           </tr>
         </thead>
         <tbody>

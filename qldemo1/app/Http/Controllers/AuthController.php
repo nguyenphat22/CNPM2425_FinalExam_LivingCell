@@ -113,4 +113,4 @@ class AuthController extends Controller
         $r->session()->forget('reset_ok_user_id');
         return redirect()->route('login.show')->with('ok', 'Đổi mật khẩu thành công, hãy đăng nhập lại.');
     }
-}
+}   
