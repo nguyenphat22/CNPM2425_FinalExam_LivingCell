@@ -2,6 +2,7 @@
 @section('title','VP Đoàn Trường | Quản lý ngày tình nguyện')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/doan-tinhnguyen.css') }}">
 <div class="row">
   <main class="col-md-12">
     <h5>Quản lý ngày tình nguyện</h5>
@@ -54,7 +55,20 @@
             <td>{{ $r->TenHoatDong ?? '— Chưa có —' }}</td>
             <td>{{ $r->NgayThamGia ?? '—' }}</td>
             <td>{{ $r->SoNgayTN ?? '—' }}</td>
-            <td>{{ $r->TrangThaiDuyet ?? '—' }}</td>
+           <td>
+  @php
+    $st = strtolower($r->TrangThaiDuyet ?? '');
+    $color = match($st){
+      'daduye'  => 'success',
+      'dachoduyet','chuaduyet' => 'warning',
+      'tuchoi' => 'danger',
+      default => 'secondary'
+    };
+  @endphp
+  <span class="badge text-bg-{{ $color }}">
+    {{ $r->TrangThaiDuyet ?? '—' }}
+  </span>
+</td>
             <td class="text-nowrap">
               @if($r->MaNTN)
               <button type="button"

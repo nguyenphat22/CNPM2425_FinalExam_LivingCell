@@ -2,6 +2,7 @@
 @section('title','Đoàn Trường | Quản lý danh hiệu')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/doan-danhhieu.css') }}">
 <h5 class="mb-3">Quản lý danh hiệu</h5>
 
 <div class="d-flex gap-2 mb-3 align-items-center">
@@ -27,7 +28,7 @@
 
 
 <div class="table-responsive">
-  <table class="table table-bordered align-middle">
+  <table class="table table-bordered table-hover align-middle">
     <thead class="table-light">
       <tr>
         <th style="width:60px">STT</th>
@@ -43,9 +44,21 @@
       <tr>
         <td>{{ $data->firstItem() + $i }}</td>
         <td>{{ $r->TenDH }}</td>
-        <td>{{ $r->DieuKienGPA !== null ? 'GPA ≥ '.$r->DieuKienGPA : '' }}</td>
-        <td>{{ $r->DieuKienDRL !== null ? 'DRL ≥ '.$r->DieuKienDRL : '' }}</td>
-        <td>{{ $r->DieuKienNTN !== null ? '≥ '.$r->DieuKienNTN.' ngày' : '' }}</td>
+        <td>
+  @if(!is_null($r->DieuKienGPA))
+    <span class="badge text-bg-primary badge-req">GPA ≥ {{ $r->DieuKienGPA }}</span>
+  @endif
+</td>
+<td>
+  @if(!is_null($r->DieuKienDRL))
+    <span class="badge text-bg-success badge-req">DRL ≥ {{ $r->DieuKienDRL }}</span>
+  @endif
+</td>
+<td>
+  @if(!is_null($r->DieuKienNTN))
+    <span class="badge text-bg-warning badge-req">≥ {{ $r->DieuKienNTN }} ngày</span>
+  @endif
+</td>
         <td>
           <button class="btn btn-sm btn-outline-primary me-1"
             data-bs-toggle="modal" data-bs-target="#modalEdit"

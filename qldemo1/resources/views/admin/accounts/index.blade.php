@@ -2,34 +2,36 @@
 @section('title','Danh sách tài khoản')
 
 @section('content')
-<h4 class="mb-3">Danh sách tài khoản</h4>
+<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+<h4 class="page-title">Danh sách tài khoản</h4>
 
+<div class="admin-toolbar card mb-3">
+  <div class="card-body py-2 d-flex flex-wrap gap-2 align-items-center">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">
+      <i class="bi bi-plus-circle"></i> Thêm
+    </button>
 
-<div class="d-flex gap-2 mb-3">
-  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">
-  <i class="bi bi-plus-circle me-1"></i> Thêm
-</button>
+    <form method="post" action="{{ route('admin.accounts.import') }}" enctype="multipart/form-data" class="d-flex gap-2">
+      @csrf
+      <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv" required style="max-width:280px;">
+      <button class="btn btn-secondary">
+        <i class="bi bi-cloud-upload"></i> Upload file
+      </button>
+    </form>
 
-  <form method="post" action="{{ route('admin.accounts.import') }}" enctype="multipart/form-data" class="d-flex gap-2">
-    @csrf
-    <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv" required style="max-width:280px;">
-    <button class="btn btn-secondary">
-  <i class="bi bi-cloud-upload me-1"></i> Upload file
-</button>
-  </form>
+    <button class="btn btn-warning" type="button" onclick="showSaveMessage()">
+      <i class="bi bi-check-circle"></i> Lưu
+    </button>
 
-  <button class="btn btn-warning" type="button" onclick="showSaveMessage()">
-  <i class="bi-check-circle"></i> Lưu
-</button>
-
-  <form class="ms-auto d-flex" method="get">
-    <input class="form-control me-2" name="q" value="{{ $q }}" placeholder="Tìm...">
-    <button class="btn btn-outline-primary">Tìm</button>
-  </form>
+    <form class="ms-auto d-flex" method="get">
+      <input class="form-control me-2" name="q" value="{{ $q }}" placeholder="Tìm...">
+      <button class="btn btn-outline-primary"><i class="bi bi-search"></i> Tìm</button>
+    </form>
+  </div>
 </div>
 
 <div class="table-responsive">
-  <table class="table table-bordered align-middle">
+  <table class="table table-bordered table-hover align-middle">
     <thead class="table-light">
       <tr>
         <th style="width:80px">STT</th>
@@ -50,8 +52,19 @@
         <td>{{ $r->TenDangNhap }}</td>
         <td>{{ $r->Email }}</td>
         <td><code>••••••</code></td>
-        <td>{{ $r->VaiTro }}</td>
-        <td>{{ $r->TrangThai }}</td>
+        <td>
+  @php $role = strtolower($r->VaiTro); @endphp
+  <span class="badge rounded-pill text-white badge-role {{ $role }}">
+    {{ $r->VaiTro }}
+  </span>
+</td>
+
+<td>
+  @php $st = strtolower($r->TrangThai); @endphp
+  <span class="badge rounded-pill text-white badge-state {{ $st }}">
+    {{ $r->TrangThai }}
+  </span>
+</td>
         <td>
           <button type="button"
             class="btn btn-sm btn-outline-primary me-1"

@@ -3,6 +3,7 @@
 @section('title','CTCT-HSSV | Quản lý điểm rèn luyện')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/ctct-drl.css') }}">
 <div class="row">
   <main class="col-md-12">
     <h5 class="mb-3">Quản lý điểm rèn luyện</h5>
@@ -57,7 +58,7 @@
 
     {{-- Bảng dữ liệu --}}
     <div class="table-responsive">
-      <table class="table table-bordered align-middle">
+      <table class="table table-bordered table-hover align-middle">
         <thead class="table-light">
           <tr>
             <th style="width:80px">STT</th>

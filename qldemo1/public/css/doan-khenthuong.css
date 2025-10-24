@@ -1,0 +1,75 @@
+/* ===== Đoàn Trường | Danh sách khen thưởng SV ===== */
+
+/* Tiêu đề trang */
+h5.mb-3{
+  font-weight:700;
+  color:#164B71;
+  border-left:5px solid #0d6efd;
+  padding-left:10px;
+  letter-spacing:.3px;
+  margin-bottom:.75rem;
+}
+
+/* Thanh công cụ (dùng đúng selector hiện có) */
+.d-flex.mb-3.gap-2{
+  padding:.5rem .75rem;
+  background:#fff;
+  border:1px solid #e3e6ea;
+  border-radius:12px;
+  box-shadow:0 1px 3px rgba(0,0,0,.05);
+}
+.d-flex.mb-3.gap-2 .btn{
+  display:inline-flex; align-items:center; gap:.35rem;
+  white-space:nowrap;
+}
+
+/* Bảng */
+.table{
+  background:#fff;
+  border-radius:10px;
+  overflow:hidden;
+}
+.table thead{
+  background:#eef3f8;
+  color:#164B71;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:.3px;
+}
+.table td,.table th{ vertical-align:middle; }
+.table tbody tr:hover{ background:#fcfdff; }
+
+/* Vùng bảng cuộn + header dính (desktop) */
+.table-responsive{
+  max-height: calc(100vh - 260px);
+  overflow:auto;
+}
+.table thead th{
+  position:sticky; top:0; z-index:2;
+}
+
+/* Badge danh hiệu */
+.badge-award{ margin-right:.35rem; margin-bottom:.25rem; }
+.badge-award:last-child{ margin-right:0; }
+
+/* Phân trang căn phải */
+.pagination{ justify-content:flex-end; }
+
+/* ===== Responsive ===== */
+@media (max-width: 991.98px){
+  .d-flex.mb-3.gap-2{
+    display:grid !important;
+    grid-template-columns: 1fr 1fr;   /* tablet: 2 cột */
+    gap:.5rem .75rem;
+  }
+  .d-flex.mb-3.gap-2 > *,
+  .d-flex.mb-3.gap-2 form > *{
+    width:100% !important; max-width:none !important;
+  }
+  .table-responsive{ max-height:none; }
+  .table thead th{ position:static; }
+  h5.mb-3{ font-size:1.35rem; }
+}
+@media (max-width: 575.98px){
+  .d-flex.mb-3.gap-2{ grid-template-columns: 1fr; } /* mobile: 1 cột */
+}

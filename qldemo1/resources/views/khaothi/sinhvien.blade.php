@@ -2,6 +2,7 @@
 @section('title', 'Phòng Khảo thí | Danh sách sinh viên')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/khaothi.css') }}">
 <h5 class="mb-3">Danh sách sinh viên</h5>
 
 <form method="get" class="d-flex mb-3">
@@ -10,7 +11,7 @@
 </form>
 
 <div class="table-responsive">
-  <table class="table table-bordered align-middle">
+  <table class="table table-bordered table-hover align-middle">
     <thead class="table-light">
       <tr>
         <th style="width:60px">STT</th>

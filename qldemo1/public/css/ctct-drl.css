@@ -1,0 +1,111 @@
+/* ===== CTCT-HSSV | Quản lý điểm rèn luyện ===== */
+
+/* Tiêu đề */
+h5.mb-3{
+  font-weight:700;
+  color:#164B71;
+  border-left:5px solid #0d6efd;
+  padding-left:10px;
+  letter-spacing:.3px;
+  margin-bottom:.75rem;
+}
+
+/* Thanh công cụ (dựa đúng selector hiện có, không thêm class mới) */
+.d-flex.gap-2.mb-3.align-items-center{
+  padding:.5rem .75rem;
+  background:#fff;
+  border:1px solid #e3e6ea;
+  border-radius:12px;
+  box-shadow:0 1px 3px rgba(0,0,0,.05);
+}
+.d-flex.gap-2.mb-3.align-items-center .btn{
+  display:inline-flex; align-items:center; gap:.35rem;
+}
+.d-flex.gap-2.mb-3.align-items-center input[type="file"]{
+  height:36px; padding:.375rem .5rem;
+}
+
+/* Bảng */
+.table{
+  background:#fff;
+  border-radius:10px;
+  overflow:hidden;
+}
+.table thead{
+  background:#eef3f8;
+  color:#164B71;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:.3px;
+}
+.table td,.table th{ vertical-align:middle; }
+.table tbody tr:hover{ background:#fcfdff; }
+
+/* Header dính khi cuộn trong vùng bảng */
+.table-responsive{
+  max-height: calc(100vh - 260px);   /* chừa chỗ cho header + toolbar */
+  overflow:auto;
+}
+.table thead th{
+  position:sticky; top:0; z-index:2;
+}
+
+/* Nút nhỏ gọn */
+.btn.btn-sm{ min-width:58px; }
+
+/* Phân trang căn phải */
+.pagination{ justify-content:flex-end; }
+
+/* Modal dịu mắt */
+.modal-header{
+  background:#f7fafc;
+  border-bottom-color:#eef3f8;
+}
+.modal-title{ color:#164B71; font-weight:700; }
+
+/* Nhẹ nhàng cho cảnh báo lỗi import */
+.alert-warning{
+  background:#fff7e6;
+  border-color:#ffe1a6;
+}
+/* ====== Responsive fix cho màn hình hẹp ====== */
+@media (max-width: 991.98px){
+  /* Cho thanh công cụ tự xuống hàng và giãn cách đẹp */
+  .d-flex.gap-2.mb-3.align-items-center{
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;   /* 2 cột trên tablet */
+    gap: .5rem .75rem;
+  }
+  /* Mọi nút/link/form-control chiếm full chiều ngang theo ô */
+  .d-flex.gap-2.mb-3.align-items-center > *,
+  .d-flex.gap-2.mb-3.align-items-center form > *{
+    width: 100% !important;
+    max-width: none !important;
+  }
+  /* File input không bị bó cứng */
+  .d-flex.gap-2.mb-3.align-items-center input[type="file"]{
+    height: 40px;
+  }
+  /* Giữ text nút 1 dòng, không bể bố cục */
+  .d-flex.gap-2.mb-3.align-items-center .btn{
+    white-space: nowrap;
+    justify-content: center;
+  }
+
+  /* Tiêu đề nhỏ lại chút cho mobile */
+  h5.mb-3{ font-size: 1.35rem; }
+
+  /* Bảng: bỏ sticky header & giới hạn chiều cao để tránh cấn */
+  .table-responsive{
+    max-height: none;
+    overflow: auto;
+  }
+  .table thead th{ position: static; }
+}
+
+/* Rất nhỏ (điện thoại ≤ 576px): 1 cột cho toolbar */
+@media (max-width: 575.98px){
+  .d-flex.gap-2.mb-3.align-items-center{
+    grid-template-columns: 1fr;      /* 1 cột */
+  }
+}

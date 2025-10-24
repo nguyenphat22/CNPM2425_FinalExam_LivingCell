@@ -2,6 +2,7 @@
 @section('title','Khảo thí | Quản lý điểm học tập')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/khaothi-gpa.css') }}">
 <h5 class="mb-3">Quản lý điểm học tập</h5>
 
 <div class="d-flex gap-2 mb-3 align-items-center">
@@ -46,7 +47,7 @@
 @endif
 
 <div class="table-responsive">
-  <table class="table table-bordered align-middle">
+  <table class="table table-bordered table-hover align-middle">
     <thead class="table-light">
       <tr>
         <th style="width:60px">STT</th>
