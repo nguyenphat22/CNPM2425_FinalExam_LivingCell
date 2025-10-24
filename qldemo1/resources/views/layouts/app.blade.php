@@ -30,6 +30,16 @@
       .sidebar-backdrop.show{ display:block; }
       .sidebar-toggler{ position:fixed; top:12px; left:12px; z-index:1031; }
     }
+    @media (min-width: 992px){
+    .app-wrap{ align-items: flex-start; }        /* để sticky hoạt động đúng */
+    .sidebar{
+      position: sticky;   /* quan trọng */
+      top: 0;             /* mốc bám */
+      height: 100vh;      /* cao full màn hình */
+      overflow-y: auto;   /* nếu menu dài thì chỉ sidebar tự cuộn */
+      flex: 0 0 260px;    /* giữ bề rộng cố định */
+    }
+  }
   </style>
     <style>
     /* Nền của sidebar và text */
