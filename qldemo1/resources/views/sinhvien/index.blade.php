@@ -1,7 +1,6 @@
 {{-- resources/views/sinhvien/index.blade.php --}}
 @extends('layouts.app')
 @section('title','Sinh viên')
-
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/sinhvien.css') }}">
 
@@ -75,21 +74,24 @@
     {{-- Đề xuất --}}
     <h5 class="mt-4 mb-2 text-center text-success">Đề xuất danh hiệu</h5>
     <div class="card mb-3">
-      <div class="card-body">
-        @if(!empty($goiY))
-          <ul class="mb-0">
-            @foreach($goiY as $msg)
-              <li>{{ $msg }}</li>
-            @endforeach
-          </ul>
-        @else
-          Hiện tại không có danh hiệu phù hợp, bạn hãy cố gắng hơn nhé!
-        @endif
+  <div class="card-body">
+    @if(!empty($goiY))
+      <ul class="mb-0">
+        @foreach($goiY as $msg)
+          <li>{{ $msg }}</li>
+        @endforeach
+      </ul>
+    @else
+      <div class="no-award-box">
+        Hiện tại không có danh hiệu phù hợp, bạn hãy cố gắng hơn nhé!
       </div>
-    </div>
+    @endif
+  </div>
+</div>
 
     {{-- ===== XEM TIẾN ĐỘ ===== --}}
     <h5 class="mt-4 mb-3 text-center text-primary fw-semibold">Xem tiến độ</h5>
+<a href="#" class="btn-view-progress">Xem tiến độ</a>
 
     <div class="card">
       <div class="card-body">

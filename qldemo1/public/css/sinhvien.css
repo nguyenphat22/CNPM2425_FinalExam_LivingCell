@@ -23,3 +23,128 @@
 .text-success {
   color: green !important;
 }
+/* ======== TOÀN TRANG SINH VIÊN ======== */
+body {
+  background-color: #f8fafc;
+  color: #222;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* ======== TIÊU ĐỀ CHÍNH ======== */
+h5.mb-3 {
+  font-weight: 700;
+  color: #164B71;
+  border-left: 5px solid #0d6efd;
+  padding-left: 10px;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
+
+/* ======== KHUNG THÔNG TIN SINH VIÊN ======== */
+.card {
+  border: 1px solid #e3e6ea;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.card-body b {
+  color: #164B71;
+}
+
+/* ======== CÁC NHÃN NHỎ ======== */
+.fw-bold {
+  color: #164B71;
+}
+
+/* ======== TIÊU ĐỀ PHẦN ======== */
+h5.text-success, h5.text-primary {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+h5.text-success {
+  color: #0a7b34 !important; /* Xanh lá nhẹ */
+}
+
+h5.text-primary {
+  color: #0d6efd !important; /* Xanh dương chuẩn Bootstrap */
+}
+
+/* ======== BẢNG KẾT QUẢ ======== */
+.table {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table thead {
+  background: #eef3f8;
+  color: #164B71;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
+
+.table td, .table th {
+  vertical-align: middle;
+}
+
+/* ======== THÔNG BÁO KHÔNG CÓ DANH HIỆU ======== */
+.card-body {
+  line-height: 1.5;
+}
+
+.card-body ul {
+  padding-left: 1.2rem;
+}
+
+.card-body em, .text-muted {
+  color: #6c757d !important;
+}
+
+/* ======== THANH TIẾN ĐỘ ======== */
+.progress {
+  height: 18px;
+  border-radius: 10px;
+  background-color: #e9ecef;
+}
+
+.progress-bar {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #222;
+  transition: width 1s ease;
+}
+
+.bg-success {
+  background-color: #28a745 !important;
+}
+
+.bg-warning {
+  background-color: #ffc107 !important;
+}
+
+/* ======== KHUNG “HIỆN TẠI KHÔNG CÓ DANH HIỆU” ======== */
+.no-award-box {
+  background: #f8f9fa;
+  color: #555;
+  border-left: 4px solid #ccc;
+  padding: 10px 15px;
+  border-radius: 6px;
+  text-align: center;
+  font-style: italic;
+}
+
+/* ======== LIÊN KẾT XEM TIẾN ĐỘ ======== */
+a.btn-view-progress {
+  display: inline-block;
+  color: #0d6efd;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color .2s;
+}
+
+a.btn-view-progress:hover {
+  color: #084298;
+  text-decoration: underline;
+}

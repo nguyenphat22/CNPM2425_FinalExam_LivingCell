@@ -2,6 +2,7 @@
 @section('title','Danh sách sinh viên')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/ctct.css') }}">
 <h4 class="mb-3">Danh sách sinh viên</h4>
 
 {{-- THÔNG BÁO --}}
@@ -50,7 +51,7 @@
 </div>
 
 <div class="table-responsive">
-  <table class="table table-bordered align-middle">
+  <table class="table table-bordered table-hover align-middle">
     <thead class="table-light">
       <tr>
         <th style="width:80px">STT</th>

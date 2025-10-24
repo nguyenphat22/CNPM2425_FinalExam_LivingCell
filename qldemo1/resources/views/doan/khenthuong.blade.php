@@ -2,6 +2,7 @@
 @section('title','Danh sách khen thưởng sinh viên')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/doan-khenthuong.css') }}">
 <h5 class="mb-3">Danh sách khen thưởng sinh viên</h5>
 
 <div class="d-flex mb-3 gap-2">
@@ -29,7 +30,8 @@
 </div>
 
 <div class="table-responsive">
-  <table class="table table-bordered align-middle">
+  <table class="table table-bordered table-hover align-middle">
+
     <thead class="table-light">
       <tr>
         <th style="width:70px">STT</th>
@@ -45,12 +47,32 @@
         <td>{{ $r->MaSV }}</td>
         <td>{{ $r->HoTen }}</td>
         <td>
-          @if ($r->DanhHieu)
-            <span class="badge bg-success">{{ $r->DanhHieu }}</span>
-          @else
-            <span class="text-muted">—</span>
-          @endif
-        </td>
+  @php
+    $raw = $r->DanhHieu ?? '';
+    $items = array_filter(array_map('trim', preg_split('/[,;]+/', $raw)));
+    // map tên -> màu bootstrap
+    $map = [
+      'đoàn viên ưu tú' => 'success',
+      'sinh viên 5 tốt' => 'primary',
+      'hội nhập tốt'    => 'teal',   // dùng màu "info" gần nhất
+      'gương mặt tiêu biểu' => 'warning',
+    ];
+  @endphp
+
+  @if (count($items))
+    @foreach ($items as $it)
+      @php
+        $key = mb_strtolower($it, 'UTF-8');
+        $color = $map[$key] ?? 'secondary';
+        // "teal" không có sẵn -> dùng info
+        if ($color === 'teal') $color = 'info';
+      @endphp
+      <span class="badge text-bg-{{ $color }} badge-award">{{ $it }}</span>
+    @endforeach
+  @else
+    <span class="text-muted">—</span>
+  @endif
+</td>
       </tr>
       @empty
       <tr>
