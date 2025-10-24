@@ -72,12 +72,14 @@
       </form>
     </div>
 
-   <div class="footer-note">
-  © 2025 Hệ thống QLRLKTSV. Developed by 
-  <a href="https://github.com/nguyenphat22/CNPM2425_FinalExam_LivingCell" target="_blank" class="dev-logo">
-    <img src="{{ asset('assets/images/logo_dark.png') }}" alt="Living Cell Logo">
-  </a>
-</div>
+    <div class="footer-note">
+      ©2025 Hệ thống QLRLKTSV. Developed by
+      <a href="https://github.com/nguyenphat22/CNPM2425_FinalExam_LivingCell" target="_blank">
+        <img src="{{ asset('assets/images/logo_dark.png') }}" alt="Living Cell Logo">
+      </a>
+    </div>
+  </div>
+
 
   {{-- CỘT PHẢI --}}
   <div class="auth-right"></div>

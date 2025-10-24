@@ -62,7 +62,7 @@
     </div>
 
    <div class="footer-note">
-  © 2025 Hệ thống QLRLKTSV. Developed by 
+  ©2025 Hệ thống QLRLKTSV. Developed by 
   <a href="https://github.com/nguyenphat22/CNPM2425_FinalExam_LivingCell" target="_blank" class="dev-logo">
     <img src="{{ asset('assets/images/logo_dark.png') }}" alt="Living Cell Logo">
   </a>
