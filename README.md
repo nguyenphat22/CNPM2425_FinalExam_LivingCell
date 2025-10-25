@@ -31,9 +31,9 @@ Dự án **Hệ thống Quản lý Rèn luyện và Khen thưởng Sinh viên** 
 - **Quản lý sinh viên**: Thông tin cá nhân, điểm học tập, rèn luyện, và ngày tình nguyện.
 - **Gợi ý danh hiệu**: Sinh viên nhận gợi ý danh hiệu dựa trên các chỉ tiêu (GPA, điểm rèn luyện, ngày tình nguyện).
 
-### 7.4. Hướng dẫn cài đặt và chạy
+###  Hướng dẫn cài đặt và chạy
 
-#### 7.4.1. Chạy trên nội bộ (localhost)
+#### Chạy trên nội bộ (localhost)
 
 ##### Bước 1: Cài đặt các phần mềm sau:
 - **XAMPP**: Tải tại [đây](https://www.apachefriends.org/index.html).
@@ -88,5 +88,4 @@ Hãy thử các bước này và kiểm tra hệ thống hoạt động như mon
 
 
 ## Liên hệ 📧
-Nếu bạn có câu hỏi hoặc muốn hợp tác, hãy tạo issue trên GitHub; hoặc nếu bạn thích ai đó trong nhóm, hãy gặp họ trực tiếp, nhóm chúng tôi không giải quyết được.
-
+Nếu bạn có câu hỏi hoặc muốn hợp tác, hãy tạo issue trên GitHub. 
