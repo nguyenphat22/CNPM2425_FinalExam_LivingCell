@@ -44,7 +44,7 @@ Dự án **Hệ thống Quản lý Rèn luyện và Khen thưởng Sinh viên** 
   php composer-setup.php
   php -r "unlink('composer-setup.php');"
   ```
-- **Laravel**: Tải và cài đặt Laravel tại [đây](https://laravel.com/docs/8.x/installation).
+- **Laravel**: Tải và cài đặt Laravel tại [đây](https://laravel.com/docs/12.x/installation).
 
 ##### Bước 2: Mở XAMPP lên và kích hoạt **Apache** và **MySQL** bằng nút **Start**.
 
