@@ -51,9 +51,9 @@ Dự án **Hệ thống Quản lý Rèn luyện và Khen thưởng Sinh viên** 
 ##### Bước 3: Sau khi đã kích hoạt MySQL, vào trang quản lý cơ sở dữ liệu của XAMPP qua đường dẫn: 
 [http://localhost/phpmyadmin/](http://localhost/phpmyadmin/).
 
-##### Bước 4: Vào tab **SQL** trong phpMyAdmin, sao chép nội dung trong file **csdl_qldemo1.txt** và dán vào ô ghi code, sau đó chọn **Thực hiện**.
+##### Bước 4: Vào tab **SQL** trong phpMyAdmin, sao chép nội dung trong file **csdl_qldemo1.sql** và dán vào ô ghi code, sau đó chọn **Thực hiện**.
 
-##### Bước 5: Mở console trong Visual Studio Code (hoặc IDE bạn chọn), chạy file **gen_hash.php** và thực hiện các cú pháp sau:
+##### Bước 5: Mở console trong Visual Studio Code (hoặc IDE bạn chọn) và thực hiện các cú pháp sau:
 ```bash
 php artisan tinker
 Hash::make('mật khẩu muốn hash')
