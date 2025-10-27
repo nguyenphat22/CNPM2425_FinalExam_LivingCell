@@ -112,4 +112,10 @@ Route::prefix('sinhvien')
     ->middleware(['auth.session', 'active', 'role:SinhVien'])
     ->group(function () {
         Route::get('/', [SinhVienController::class, 'index'])->name('sv.home');
+        Route::get('/caidat', [SinhVienController::class, 'settings'])->name('sv.settings');
+
+        // Định nghĩa route cho action thay đổi mật khẩu
+        Route::post('/caidat/doimk', [SinhVienController::class, 'changePassword'])
+            ->middleware('throttle:5,1') // chống spam
+            ->name('sv.settings.password'); // Đảm bảo route có tên này
     }); 

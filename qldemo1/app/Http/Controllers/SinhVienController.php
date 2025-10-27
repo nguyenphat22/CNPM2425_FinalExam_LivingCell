@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 use App\Models\SinhVien;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class SinhVienController extends Controller
 {
@@ -187,6 +189,46 @@ class SinhVienController extends Controller
             }
         }
         return $labels;
+    }
+    // Phương thức đổi mật khẩu
+    public function changePassword(Request $r)
+    {
+        // Lấy thông tin tài khoản từ session
+        $matk = session('auth.MaTK') ?? session('user.MaTK');
+        if (!$matk) {
+            return redirect()->route('login')->withErrors('Bạn cần đăng nhập.');
+        }
+
+        // Validate dữ liệu từ form (mật khẩu cũ và mật khẩu mới)
+        $r->validate([
+            'current_password' => ['required', 'string'],
+            'new_password' => ['required', 'string', 'min:6', 'confirmed'], // yêu cầu mật khẩu mới phải có ít nhất 6 ký tự và phải trùng khớp
+        ], [
+            'current_password.required' => 'Mật khẩu cũ là bắt buộc',
+            'new_password.required' => 'Mật khẩu mới là bắt buộc',
+            'new_password.min' => 'Mật khẩu mới phải có ít nhất 6 ký tự',
+            'new_password.confirmed' => 'Mật khẩu mới không khớp',
+        ]);
+
+        // Kiểm tra tài khoản trong bảng BANG_TaiKhoan
+        $acc = DB::table('BANG_TaiKhoan')->where('MaTK', $matk)->first();
+        if (!$acc) {
+            return back()->withErrors('Không tìm thấy tài khoản.');
+        }
+
+        // Kiểm tra mật khẩu cũ
+        if (!Hash::check($r->input('current_password'), $acc->MatKhau)) {
+            return back()->withErrors('Mật khẩu hiện tại không đúng.');
+        }
+
+        // Băm mật khẩu mới
+        $newPasswordHash = Hash::make($r->input('new_password'));
+
+        // Cập nhật mật khẩu mới vào bảng BANG_TaiKhoan
+        DB::table('BANG_TaiKhoan')
+            ->where('MaTK', $matk)
+            ->update(['MatKhau' => $newPasswordHash]);
+        return back()->with('ok', 'Đổi mật khẩu thành công!');
     }
 }
 

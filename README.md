@@ -65,10 +65,9 @@ Kết quả là mã đã hash của mật khẩu bạn muốn.
 INSERT INTO BANG_TaiKhoan (MaTK, TenDangNhap, MatKhau, VaiTro, TrangThai, Email)
 VALUES
 (1, 'admin',     'mã đã hash', 'Admin',      'Active', 'admin@example.com'),
-(2, 'sinhvien',  'mã đã hash', 'SinhVien',   'Active', 'sv@example.com'),
-(3, 'ctcthssv',  'mã đã hash', 'CTCTHSSV',   'Active', 'ctct@example.com'),
-(4, 'khaothi',   'mã đã hash', 'KhaoThi',    'Active', 'khaothi@example.com'),
-(5, 'doantruong','mã đã hash', 'DoanTruong', 'Active', 'doan@example.com');
+(2, 'ctcthssv',  'mã đã hash', 'CTCTHSSV',   'Active', 'ctct@example.com'),
+(3, 'khaothi',   'mã đã hash', 'KhaoThi',    'Active', 'khaothi@example.com'),
+(4, 'doantruong','mã đã hash', 'DoanTruong', 'Active', 'doan@example.com');
 ```
 
 ##### Bước 7: Mở console trong Visual Studio Code (hoặc IDE bạn chọn) và chạy các dòng lệnh sau:

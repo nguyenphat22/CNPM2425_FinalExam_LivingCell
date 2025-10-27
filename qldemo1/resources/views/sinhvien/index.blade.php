@@ -7,7 +7,12 @@
 {{-- Bảng điều khiển sinh viên --}}
 <div class="row">
   <main class="col-md-12">
-    <h5 class="mb-3">Thông tin cá nhân</h5>
+    <h5 class="mb-3">Thông tin cá nhân
+      <!-- Nút Cài đặt (Biểu tượng bánh răng) -->
+      <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+        <span class="bi bi-gear text-primary" style="font-size: 1.5rem;"></span> <!-- Biểu tượng bánh răng -->
+      </button>
+    </h5>
 
     {{-- Thông tin sinh viên --}}
     <div class="card mb-3">
@@ -139,3 +144,35 @@
   });
 </script>
 @endpush
+<!-- Modal đổi mật khẩu -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="changePasswordModalLabel">Đổi mật khẩu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{{ route('sv.settings.password') }}" autocomplete="off">
+          @csrf
+          <div class="mb-3">
+            <label class="form-label">Mật khẩu cũ</label>
+            <input type="password" name="current_password" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Mật khẩu mới</label>
+            <input type="password" name="new_password" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Nhập lại mật khẩu mới</label>
+            <input type="password" name="new_password_confirmation" class="form-control" required>
+          </div>
+
+          <button class="btn btn-primary" type="submit">Đổi mật khẩu</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
