@@ -46,7 +46,7 @@ Dự án **Hệ thống Quản lý Rèn luyện và Khen thưởng Sinh viên** 
   ```
 - **Laravel**: Tải và cài đặt Laravel tại [đây](https://laravel.com/docs/12.x/installation).
 
-##### Bước 2: Mở XAMPP lên và kích hoạt **Apache** và **MySQL** bằng nút **Start**.
+##### Bước 2: Mở XAMPP lên và kích hoạt **Apache** và **MySQL** bằng nút **Start**. Sau đó bấm vào Config và mở php.ini. Tiếp theo sau đó là bỏ “ ; ” ở trước extension=gd và extension=zip. 
 
 ##### Bước 3: Sau khi đã kích hoạt MySQL, vào trang quản lý cơ sở dữ liệu của XAMPP qua đường dẫn: 
 [http://localhost/phpmyadmin/](http://localhost/phpmyadmin/).

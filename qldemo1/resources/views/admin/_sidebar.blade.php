@@ -3,4 +3,4 @@
    href="{{ route('admin.accounts.index') }}">
   <i class="bi bi-people me-1"></i> <span>Danh sách tài khoản</span>
 </a>
-{{-- thêm các mục khác ở đây --}}
+
