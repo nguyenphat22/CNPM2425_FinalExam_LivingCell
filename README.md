@@ -13,9 +13,11 @@ Chào mừng đến với kho lưu trữ của nhóm **Living Cells**!
 - 🧑‍💻 **Nguyễn Thị Thanh Trà** - Thành viên
 
 ## Nền tảng & Công cụ 🛠️
-- **Ngôn ngữ lập trình**: PHP ( Laravel )
-- **Database**: MySQL
-- **Công cụ**: Git, GitHub, VS Code, .....
+
+- **Frontend:** HTML5, CSS3, JavaScript (Bootstrap)
+- **Backend:** PHP (Laravel)
+- **Database:** MySQL
+- **Công cụ & Quản lý mã nguồn:** Git, GitHub, VS Code, XAMPP, Composer, phpMyAdmin
 
 ## Dự án 📂
 ## Hệ thống Quản lý Rèn luyện và Khen thưởng Sinh viên 🏅
