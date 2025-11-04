@@ -38,10 +38,12 @@
 .table {
   background: #fff;
   border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 6px 18px rgba(22, 75, 113, 0.05);
+  overflow: visible !important;
   font-family: "Inter", "Segoe UI", sans-serif;
   font-size: 0.95rem;
+  box-shadow:0 10px 24px rgba(22,75,113,.05);
+  border-collapse: separate;
+  border-spacing: 0;
 }
 .table thead {
   background: linear-gradient(90deg, #e8f0ff, #f2f6ff);
@@ -52,11 +54,11 @@
   border-bottom: 2px solid #c5d8f5;
 }
 .table thead th {
-  border: none !important;
-  padding-top: 0.9rem;
-  padding-bottom: 0.9rem;
-  text-align: center;
-  background: transparent;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: linear-gradient(90deg,#e8f0ff,#f2f6ff);
+  box-shadow: 0 2px 2px rgba(0,0,0,.05);
 }
 .table tbody td {
   vertical-align: middle;
@@ -89,7 +91,12 @@
 .table thead th:last-child {
   border-right: none;
 }
-
+.table-responsive{
+  position: relative;
+  max-height: calc(100vh - 260px);  /* chỉnh cao thấp tùy trang */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 /* Căn giữa cột STT, MATK, Vai trò, Trạng thái, Thao tác */
 .table td:nth-child(1),
 .table td:nth-child(2),

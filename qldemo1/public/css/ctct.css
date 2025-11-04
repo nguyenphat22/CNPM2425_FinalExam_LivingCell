@@ -1,71 +1,108 @@
-/* ===== CTCT: Danh sách sinh viên ===== */
+/* ===== CTCT: Danh sách sinh viên (polish + effects) ===== */
+:root{
+  --brand:#164B71; --brand2:#0d6efd;
+  --soft:#eef3f8; --ink:#ffffff;
+  --ok:#198754; --muted:#6c757d; --danger:#dc3545;
+}
 
-/* Tiêu đề trang */
+/* Tiêu đề */
 h4.mb-3{
-  font-weight:700;
-  color:#164B71;
-  border-left:5px solid #0d6efd;
-  padding-left:10px;
-  letter-spacing:.3px;
-  margin-bottom:.75rem;
+  font-weight:800; color:var(--brand);
+  border-left:6px solid var(--brand2);
+  padding-left:12px; letter-spacing:.2px; margin-bottom:.9rem;
 }
 
-/* Thanh công cụ (không cần thêm class mới) */
-.d-flex.gap-2.mb-3.align-items-center{
-  padding:.5rem .75rem;
-  background:#fff;
-  border:1px solid #e3e6ea;
-  border-radius:12px;
-  box-shadow:0 1px 3px rgba(0,0,0,.05);
+/* ===== Toolbar card ===== */
+.ctct-toolbar.card{
+  border:1px solid #e5e9ef; border-radius:14px;
+  box-shadow:0 6px 20px rgba(22,75,113,.06);
 }
-.d-flex.gap-2.mb-3.align-items-center .btn{
-  display:inline-flex; align-items:center; gap:.35rem;
-}
-.d-flex.gap-2.mb-3.align-items-center input[type="file"]{
-  height:36px; padding:.375rem .5rem;
-}
+.ctct-toolbar .btn{ display:inline-flex; align-items:center; gap:.4rem; }
+.ctct-toolbar input[type="file"]{ height:36px; padding:.375rem .5rem; }
 
-/* Bảng */
+/* Buttons: hover/active & ripple */
+.btn-animate{ transition:transform .12s ease, box-shadow .2s ease, background .2s ease; }
+.btn-animate:hover{ transform:translateY(-1px); box-shadow:0 8px 18px rgba(13,110,253,.18); }
+.btn-animate:active{ transform:translateY(0); box-shadow:none; }
+.ripple{ position:relative; overflow:hidden; } /* JS sẽ tạo sóng mực */
+
+.btn-soft-primary{ background:#e7f1ff; color:#0a58ca; border:1px solid #d6e4ff; }
+.btn-soft-primary:hover{ background:#d9e9ff; }
+.btn-soft-success{ background:#e8f7ef; color:#0f5132; border:1px solid #c9ecd7; }
+.btn-soft-secondary{ background:#f2f4f8; color:#384050; border:1px solid #e2e6ee; }
+
+/* ===== Bảng ===== */
 .table{
   background:#fff;
-  border-radius:10px;
-  overflow:hidden;
+  border-radius:12px;
+  /* bỏ overflow:hidden để sticky header hoạt động */
+  box-shadow:0 10px 24px rgba(22,75,113,.05);
+  font-size:.95rem;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 .table thead{
-  background:#eef3f8;
-  color:#164B71;
-  font-weight:600;
-  text-transform:uppercase;
-  letter-spacing:.3px;
-}
-.table tbody tr:hover{ background:#fcfdff; }
-.table td,.table th{ vertical-align:middle; }
-
-/* Header dính khi cuộn vùng bảng */
-.table-responsive{
-  max-height: calc(100vh - 260px);   /* đủ thở với header/toolbar */
-  overflow:auto;
+  background:linear-gradient(90deg,#e8f0ff,#f2f6ff);
+  color:var(--brand); font-weight:700; text-transform:uppercase; letter-spacing:.28px;
+  border-bottom:2px solid #c5d8f5;
 }
 .table thead th{
-  position:sticky; top:0; z-index:2;
+  border:none!important; padding:.9rem .75rem; text-align:center;
+  background:transparent;
+}
+.table td{ vertical-align:middle; border-color:#edf2f7; color:#334155; }
+.table tbody tr:nth-child(odd){ background:#fbfdff; }
+.table tbody tr:hover{ background:#f1f8ff; box-shadow:inset 0 0 0 9999px rgba(13,110,253,.03); }
+
+/* Sticky header trong vùng cuộn */
+.table-responsive{
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-/* Badge MaTK gọn đẹp */
-.table .badge{
-  border-radius:999px;
-  padding:.35rem .6rem;
-  font-weight:600;
+.table thead th{
+  position: sticky;
+  top: 0;
+  z-index: 3; /* cho chắc */
+  background: linear-gradient(90deg,#e8f0ff,#f2f6ff);
+  box-shadow: 0 2px 2px rgba(0,0,0,0.05);
 }
 
-/* Nút thao tác nhỏ gọn */
+/* Căn giữa các cột ngắn */
+.table td:nth-child(1),
+.table td:nth-child(2),
+.table td:nth-child(4),
+.table td:nth-child(6),
+.table td:nth-child(7),
+.table td:nth-child(8),
+.table th:nth-child(1),
+.table th:nth-child(2),
+.table th:nth-child(4),
+.table th:nth-child(6),
+.table th:nth-child(7),
+.table th:nth-child(8){ text-align:center; }
+
+/* Badge MaTK */
+.table .badge{ border-radius:999px; padding:.38rem .6rem; font-weight:700; box-shadow:0 1px 0 rgba(0,0,0,.05); }
+
+/* Nút thao tác */
 .btn.btn-sm{ min-width:58px; }
+.btn-outline-primary{ border-color:#bcd0ff; color:#0d6efd; }
+.btn-outline-primary:hover{ background:#0d6efd; color:#fff; }
+.btn-outline-danger{ border-color:#f5b7b7; color:var(--danger); }
+.btn-outline-danger:hover{ background:var(--danger); color:#fff; }
 
-/* Phân trang căn phải */
+/* Pagination */
 .pagination{ justify-content:flex-end; }
+.page-link{ border-radius:8px; margin:0 .15rem; transition:all .15s ease; }
+.page-link:hover{ transform:translateY(-1px); box-shadow:0 6px 12px rgba(0,0,0,.08); }
 
-/* Modal nhã hơn */
-.modal-header{
-  background:#f7fafc;
-  border-bottom-color:#eef3f8;
-}
-.modal-title{ color:#164B71; font-weight:700; }
+/* Modal */
+.modal.fade .modal-dialog{ transform:translateY(16px); transition:transform .18s ease-out; }
+.modal.show .modal-dialog{ transform:translateY(0); }
+.modal-header{ background:#f7fafc; border-bottom-color:#eef3f8; }
+.modal-title{ color:var(--brand); font-weight:800; }
+
+/* Highlight hàng khi thao tác */
+tr.glow{ background:#eaf3ff!important; box-shadow:inset 0 0 0 9999px rgba(13,110,253,.06); }

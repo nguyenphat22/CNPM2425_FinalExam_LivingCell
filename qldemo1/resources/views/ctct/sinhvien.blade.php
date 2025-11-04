@@ -23,7 +23,7 @@
 {{-- thanh công cụ: Lưu giả + Import + Thêm + Tìm --}}
 <div class="d-flex gap-2 mb-3 align-items-center">
   {{-- Nút Lưu giả (refresh trang + thông báo) --}}
-  <button id="btn-refresh" class="btn btn-success">
+  <button id="btn-refresh" class="btn btn-soft-success btn-animate ripple">
     <i class="bi bi-check-circle me-1"></i> Lưu
   </button>
 
@@ -35,18 +35,18 @@
     @csrf
     <input type="file" name="file" class="form-control"
       style="max-width:260px;" accept=".xlsx,.xls,.csv" required>
-    <button class="btn btn-secondary">
+    <button class="btn btn-soft-secondary btn-animate ripple">
   <i class="bi bi-cloud-upload me-1"></i> Upload file
 </button>
   </form>
 
-<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">
+<button class="btn btn-soft-primary btn-animate ripple" data-bs-toggle="modal" data-bs-target="#modalAdd">
   <i class="bi bi-plus-circle me-1"></i> Thêm
 </button>
 
   <form class="ms-auto d-flex" method="get">
     <input class="form-control me-2" name="q" value="{{ $q }}" placeholder="Tìm...">
-    <button class="btn btn-outline-primary">Tìm</button>
+    <button class="btn btn-outline-primary btn-animate ripple">Tìm</button>
   </form>
 </div>
 
@@ -88,7 +88,7 @@
         </td>
         <td>
           <button type="button"
-            class="btn btn-sm btn-outline-primary me-1"
+            class="btn btn-sm btn-outline-primary btn-animate ripple me-1"
             data-bs-toggle="modal" data-bs-target="#modalEdit"
             data-masv="{{ $r->MaSV }}"
             data-hoten="{{ $r->HoTen }}"
@@ -98,7 +98,7 @@
             data-matk="{{ $r->MaTK }}">Sửa</button>
 
           <button type="button"
-            class="btn btn-sm btn-outline-danger"
+            class="btn btn-sm btn-outline-danger btn-animate ripple"
             data-bs-toggle="modal" data-bs-target="#modalDelete"
             data-masv="{{ $r->MaSV }}">Xóa</button>
         </td>
@@ -158,7 +158,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary">Lưu</button>
+        <button class="btn btn-primary btn-animate ripple">Lưu</button>
       </div>
     </form>
   </div>
@@ -221,8 +221,8 @@
         Bạn chắc chắn muốn xóa sinh viên MaSV: <strong id="del_masv_text"></strong>?
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-        <button class="btn btn-danger">Xóa</button>
+        <button type="button" class="btn btn-secondary btn-animate ripple" data-bs-dismiss="modal">Hủy</button>
+        <button class="btn btn-danger btn-animate ripple">Xóa</button>
       </div>
     </form>
   </div>
@@ -263,6 +263,45 @@
       const masv = btn.getAttribute('data-masv');
       document.getElementById('del_masv_input').value = masv;
       document.getElementById('del_masv_text').textContent = masv;
+    });
+  });
+</script>
+<script>
+  // Ripple effect cho .ripple
+  document.addEventListener('click', function(e){
+    const t = e.target.closest('.ripple'); if(!t) return;
+    const r = t.getBoundingClientRect(), d = Math.max(r.width, r.height);
+    const x = e.clientX - r.left - d/2, y = e.clientY - r.top - d/2;
+    const ink = document.createElement('span');
+    Object.assign(ink.style,{
+      position:'absolute', borderRadius:'50%', pointerEvents:'none',
+      width:d+'px', height:d+'px', left:x+'px', top:y+'px',
+      background:'rgba(255,255,255,.35)', transform:'scale(0)',
+      transition:'transform .35s ease, opacity .55s ease'
+    });
+    t.appendChild(ink);
+    requestAnimationFrame(()=>{ ink.style.transform='scale(2.6)'; ink.style.opacity='0'; });
+    setTimeout(()=>ink.remove(),520);
+  });
+
+  // Highlight hàng khi mở modal Sửa/Xóa
+  document.addEventListener('DOMContentLoaded', () => {
+    let lastGlow;
+    const glow = (btn)=>{
+      if(lastGlow) lastGlow.classList.remove('glow');
+      lastGlow = btn.closest('tr'); lastGlow?.classList.add('glow');
+    };
+
+    const editModal = document.getElementById('modalEdit');
+    editModal?.addEventListener('show.bs.modal', ev => { glow(ev.relatedTarget); });
+
+    const delModal = document.getElementById('modalDelete');
+    delModal?.addEventListener('show.bs.modal', ev => { glow(ev.relatedTarget); });
+
+    // Bỏ highlight khi đóng modal
+    ['hidden.bs.modal','hide.bs.modal'].forEach(evt=>{
+      editModal?.addEventListener(evt, ()=> lastGlow?.classList.remove('glow'));
+      delModal?.addEventListener(evt, ()=> lastGlow?.classList.remove('glow'));
     });
   });
 </script>
