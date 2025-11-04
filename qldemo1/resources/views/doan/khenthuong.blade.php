@@ -17,7 +17,7 @@
     @endif
   </form>
 
-  <a href="{{ route('doan.khenthuong.export', ['hk' => $hk]) }}" class="btn btn-success">
+  <a href="{{ route('doan.khenthuong.export', ['hk' => $hk]) }}" class="btn btn-soft-success btn-animate ripple">
   <i class="bi bi-file-earmark-excel me-1"></i> Xuất file Excel
 </a>
 
@@ -25,7 +25,7 @@
   <form class="ms-auto d-flex" method="get" action="{{ route('doan.khenthuong.index') }}">
     <input type="hidden" name="hk" value="{{ $hk }}">
     <input class="form-control me-2" name="q" value="{{ $q ?? '' }}" placeholder="Tìm MSSV / Họ tên / Danh hiệu">
-    <button class="btn btn-outline-primary" type="submit">Tìm</button>
+    <button class="btn btn-outline-primary btn-animate ripple" type="submit">Tìm</button>
   </form>
 </div>
 

@@ -1,75 +1,149 @@
-/* ===== Đoàn Trường | Danh sách khen thưởng SV ===== */
+/* ===== Đoàn Trường | Danh sách khen thưởng SV (Polished + Unified Style) ===== */
+:root{
+  --brand:#164B71;
+  --brand2:#0d6efd;
+  --soft:#eef3f8;
+  --ok:#198754; --warn:#ffc107; --bad:#dc3545; --muted:#6c757d;
+}
 
-/* Tiêu đề trang */
+/* ===== Tiêu đề ===== */
 h5.mb-3{
-  font-weight:700;
-  color:#164B71;
-  border-left:5px solid #0d6efd;
-  padding-left:10px;
-  letter-spacing:.3px;
-  margin-bottom:.75rem;
+  font-weight:800;
+  color:var(--brand);
+  border-left:6px solid var(--brand2);
+  padding-left:12px;
+  letter-spacing:.2px;
+  margin-bottom:.9rem;
 }
 
-/* Thanh công cụ (dùng đúng selector hiện có) */
-.d-flex.mb-3.gap-2{
-  padding:.5rem .75rem;
+/* ===== Toolbar card (đồng bộ với khaothi/ctct) ===== */
+.doan-toolbar.card{
+  border:1px solid #e5e9ef;
+  border-radius:14px;
+  box-shadow:0 6px 20px rgba(22,75,113,.06);
   background:#fff;
-  border:1px solid #e3e6ea;
-  border-radius:12px;
-  box-shadow:0 1px 3px rgba(0,0,0,.05);
+  padding:.65rem .9rem;
+  gap:.6rem;
+  display:flex;
+  align-items:center;
 }
-.d-flex.mb-3.gap-2 .btn{
-  display:inline-flex; align-items:center; gap:.35rem;
-  white-space:nowrap;
-}
+.doan-toolbar.card .form-select,
+.doan-toolbar.card .form-control{ height:38px; }
+.doan-toolbar.card form.ms-auto{ display:flex; align-items:center; gap:.5rem; }
+.doan-toolbar.card input[type="file"]{ height:36px; padding:.375rem .5rem; }
 
-/* Bảng */
+/* ===== Buttons: soft style + hover + ripple ===== */
+.btn{ display:inline-flex; align-items:center; gap:.4rem; }
+.btn-animate{ transition:transform .12s ease, box-shadow .2s ease, background .2s ease, color .2s ease; }
+.btn-animate:hover{ transform:translateY(-1px); box-shadow:0 8px 18px rgba(13,110,253,.18); }
+.btn-animate:active{ transform:translateY(0); box-shadow:none; }
+
+.ripple{ position:relative; overflow:hidden; }
+.ripple::after{
+  content:""; position:absolute; left:50%; top:50%;
+  width:0; height:0; border-radius:50%;
+  background:rgba(255,255,255,.45);
+  transform:translate(-50%,-50%);
+  opacity:0;
+  transition:width .35s ease, height .35s ease, opacity .45s ease;
+}
+.ripple:active::after{ width:200%; height:200%; opacity:1; transition:0s; }
+
+.btn-soft-success{ background:#e8f7ee; color:#0f6b3e; border:1px solid #cfeedd; }
+.btn-soft-success:hover{ background:#dbf2e6; }
+
+.btn-outline-primary{ border-color:#bcd0ff; color:#0d6efd; }
+.btn-outline-primary:hover{ background:#0d6efd; color:#fff; }
+
+/* ===== Bảng ===== */
 .table{
   background:#fff;
-  border-radius:10px;
-  overflow:hidden;
+  border-radius:12px;
+  font-size:.95rem;
+  border-collapse:separate; border-spacing:0;
+  box-shadow:0 10px 24px rgba(22,75,113,.05);
 }
 .table thead{
-  background:#eef3f8;
-  color:#164B71;
-  font-weight:600;
+  background:linear-gradient(90deg,#e8f0ff,#f2f6ff);
+  color:var(--brand);
+  font-weight:700;
   text-transform:uppercase;
-  letter-spacing:.3px;
-}
-.table td,.table th{ vertical-align:middle; }
-.table tbody tr:hover{ background:#fcfdff; }
-
-/* Vùng bảng cuộn + header dính (desktop) */
-.table-responsive{
-  max-height: calc(100vh - 260px);
-  overflow:auto;
+  letter-spacing:.28px;
+  border-bottom:2px solid #c5d8f5;
 }
 .table thead th{
-  position:sticky; top:0; z-index:2;
+  border:none!important;
+  padding:.9rem .75rem;
+  text-align:center;
+  position:sticky; top:0; z-index:3;
+  background:linear-gradient(90deg,#e8f0ff,#f2f6ff);
+  box-shadow:0 2px 2px rgba(0,0,0,.05);
+}
+.table td{
+  vertical-align:middle;
+  border-color:#edf2f7;
+  color:#334155;
+}
+.table tbody tr:nth-child(odd){ background:#fbfdff; }
+.table tbody tr:hover{
+  background:#f1f8ff;
+  box-shadow:inset 0 0 0 9999px rgba(13,110,253,.03);
+  transition:all .18s ease;
+}
+
+/* Vùng cuộn + sticky header */
+.table-responsive{
+  position:relative;
+  max-height:calc(100vh - 260px);
+  overflow-y:auto; overflow-x:hidden;
 }
 
 /* Badge danh hiệu */
-.badge-award{ margin-right:.35rem; margin-bottom:.25rem; }
+.badge-award{
+  margin-right:.35rem; margin-bottom:.25rem;
+  padding:.5em .75em;
+  font-weight:600;
+  font-size:.8rem;
+  border-radius:8px;
+  box-shadow:0 2px 4px rgba(0,0,0,.05);
+  text-transform:capitalize;
+}
 .badge-award:last-child{ margin-right:0; }
 
-/* Phân trang căn phải */
+/* Badge màu Bootstrap tinh chỉnh nhẹ */
+.text-bg-success{ background:#198754!important; }
+.text-bg-primary{ background:#0d6efd!important; }
+.text-bg-warning{ background:#ffc107!important; color:#333!important; }
+.text-bg-info{ background:#0dcaf0!important; }
+
+/* Căn giữa các cột */
+.table th:nth-child(1), .table td:nth-child(1),
+.table th:nth-child(2), .table td:nth-child(2),
+.table th:nth-child(4), .table td:nth-child(4){
+  text-align:center;
+}
+
+/* Phân trang */
 .pagination{ justify-content:flex-end; }
+.page-link{ border-radius:8px; margin:0 .15rem; transition:all .15s ease; }
+.page-link:hover{ transform:translateY(-1px); box-shadow:0 6px 12px rgba(0,0,0,.08); }
 
 /* ===== Responsive ===== */
 @media (max-width: 991.98px){
-  .d-flex.mb-3.gap-2{
+  .doan-toolbar.card{
     display:grid !important;
-    grid-template-columns: 1fr 1fr;   /* tablet: 2 cột */
+    grid-template-columns:1fr 1fr;
     gap:.5rem .75rem;
   }
-  .d-flex.mb-3.gap-2 > *,
-  .d-flex.mb-3.gap-2 form > *{
-    width:100% !important; max-width:none !important;
+  .doan-toolbar.card > *,
+  .doan-toolbar.card form > *{
+    width:100%!important; max-width:none!important;
   }
+  .doan-toolbar.card form.ms-auto{ grid-column:1 / -1; }
   .table-responsive{ max-height:none; }
   .table thead th{ position:static; }
   h5.mb-3{ font-size:1.35rem; }
 }
 @media (max-width: 575.98px){
-  .d-flex.mb-3.gap-2{ grid-template-columns: 1fr; } /* mobile: 1 cột */
+  .doan-toolbar.card{ grid-template-columns:1fr; }
 }
