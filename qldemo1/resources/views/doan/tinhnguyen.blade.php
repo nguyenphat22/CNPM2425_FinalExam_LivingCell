@@ -11,23 +11,23 @@
       <form method="post" action="{{ route('doan.tinhnguyen.import') }}" enctype="multipart/form-data" class="d-flex gap-2">
         @csrf
         <input type="file" name="file" class="form-control" style="max-width:260px" accept=".xlsx,.xls,.csv" required>
-        <button class="btn btn-secondary">
+        <button class="btn btn-soft-secondary btn-animate ripple">
   <i class="bi bi-cloud-upload me-1"></i> Upload file
 </button>
       </form>
 
-      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNTN">
+      <button class="btn btn-soft-primary btn-animate ripple" data-bs-toggle="modal" data-bs-target="#addNTN">
   <i class="bi bi-plus-circle me-1"></i> Thêm
 </button>
 
-      <button id="btn-refresh" class="btn btn-warning" type="button" onclick="showSaveMessage()">
+      <button id="btn-refresh" class="btn btn-soft-warning btn-animate ripple" type="button" onclick="showSaveMessage()">
   <i class="bi-check-circle"></i> Lưu
 </button>
 
       <div class="ms-auto d-flex gap-2">
         <form method="GET" action="{{ route('doan.tinhnguyen.index') }}" class="d-flex gap-2">
           <input type="text" name="q" class="form-control" value="{{ $q }}" placeholder="Tìm MSSV / Họ tên / Hoạt động">
-          <button class="btn btn-outline-primary">Tìm</button>
+          <button class="btn btn-outline-primary btn-animate ripple">Tìm</button>
         </form>
       </div>
     </div>
@@ -56,23 +56,23 @@
             <td>{{ $r->NgayThamGia ?? '—' }}</td>
             <td>{{ $r->SoNgayTN ?? '—' }}</td>
            <td>
-  @php
-    $st = strtolower($r->TrangThaiDuyet ?? '');
-    $color = match($st){
-      'daduye'  => 'success',
-      'dachoduyet','chuaduyet' => 'warning',
-      'tuchoi' => 'danger',
-      default => 'secondary'
-    };
-  @endphp
-  <span class="badge text-bg-{{ $color }}">
-    {{ $r->TrangThaiDuyet ?? '—' }}
-  </span>
+@php
+  $st = strtolower($r->TrangThaiDuyet ?? '');
+  $color = match ($st) {
+    'daduyet'    => 'success',
+    'chuaduyet'  => 'warning',
+    'tuchoi'     => 'danger',
+    default      => 'secondary'
+  };
+@endphp
+<span class="badge text-bg-{{ $color }} badge-tn">
+  {{ $r->TrangThaiDuyet ?? '—' }}
+</span>
 </td>
             <td class="text-nowrap">
               @if($r->MaNTN)
               <button type="button"
-                class="btn btn-sm btn-outline-primary"
+                class="btn btn-sm btn-outline-primary btn-animate ripple me-1"
                 data-bs-toggle="modal" data-bs-target="#editNTN"
                 data-mantn="{{ $r->MaNTN }}"
                 data-masv="{{ $r->MaSV }}"
@@ -86,7 +86,7 @@
               <form method="post" action="{{ route('doan.tinhnguyen.delete') }}" class="d-inline">
                 @csrf
                 <input type="hidden" name="MaNTN" value="{{ $r->MaNTN }}">
-                <button class="btn btn-sm btn-outline-danger">Xóa</button>
+                <button class="btn btn-sm btn-outline-danger btn-animate ripple">Xóa</button>
               </form>
               @else
               <span class="text-muted">—</span>
