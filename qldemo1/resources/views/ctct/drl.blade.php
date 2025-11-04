@@ -14,20 +14,20 @@
       <form method="post" action="{{ route('ctct.drl.import') }}" enctype="multipart/form-data" class="d-flex gap-2">
         @csrf
         <input type="file" name="file" class="form-control" style="max-width:260px;" accept=".xlsx,.xls,.csv" required>
-        <button class="btn btn-secondary">
+        <button class="btn btn-soft-secondary btn-animate ripple">
   <i class="bi bi-cloud-upload me-1"></i> Upload file
 </button>
       </form>
 
       {{-- Xuất báo cáo (gắn route nếu có) --}}
-      <a class="btn btn-success"
+      <a class="btn btn-soft-success btn-animate ripple"
    href="{{ route('ctct.drl.export', ['hk'=>$hk, 'nh'=>$nh, 'q'=>$q]) }}">
   <i class="bi bi-file-earmark-excel me-1"></i> Xuất báo cáo Excel
 </a>
 
 
       {{-- Nút Lưu (hiển thị toast + refresh) --}}
-        <button id="btn-refresh" class="btn btn-warning" type="button" onclick="showSaveMessage()">
+        <button id="btn-refresh" class="btn btn-soft-warning btn-animate ripple" type="button" onclick="showSaveMessage()">
   <i class="bi-check-circle"></i> Lưu
 </button>
 
@@ -40,7 +40,7 @@
         </select>
         <input class="form-control" name="nh" value="{{ $nh ?? '2024-2025' }}" style="width:150px" placeholder="Năm học">
         <input class="form-control" name="q" value="{{ $q ?? '' }}" placeholder="Tìm MSSV, Họ tên..." style="width:220px">
-        <button class="btn btn-outline-primary">Tìm</button>
+        <button class="btn btn-outline-primary btn-animate ripple">Tìm</button>
       </form>
     </div>
 
@@ -78,7 +78,7 @@
             <td>{{ $r->DiemRL ?? '' }}</td>
             <td>{{ $r->XepLoai ?? '' }}</td>
             <td>
-              <button class="btn btn-sm btn-outline-primary me-1"
+              <button class="btn btn-sm btn-outline-primary btn-animate ripple me-1"
                 data-bs-toggle="modal" data-bs-target="#modalEdit"
                 data-masv="{{ $r->MaSV }}"
                 data-hoten="{{ $r->HoTen }}"
@@ -87,7 +87,7 @@
                 data-diem="{{ $r->DiemRL ?? '' }}"
                 data-xeploai="{{ $r->XepLoai ?? '' }}">Sửa</button>
 
-              <button type="button" class="btn btn-sm btn-outline-danger"
+              <button type="button" class="btn btn-sm btn-outline-danger btn-animate ripple"
                 data-bs-toggle="modal" data-bs-target="#modalDelete"
                 data-masv="{{ $r->MaSV }}"
                 data-hk="{{ $hk }}" data-nh="{{ $nh }}">Xóa</button>
@@ -138,7 +138,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary">Lưu</button>
+        <button class="btn btn-primary btn-animate ripple">Lưu</button>
       </div>
     </form>
   </div>
@@ -161,8 +161,8 @@
         (HK: <b id="del_hk_text"></b>, NH: <b id="del_nh_text"></b>)?
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-        <button class="btn btn-danger">Xóa</button>
+        <button type="button" class="btn btn-secondary btn-animate ripple" data-bs-dismiss="modal">Hủy</button>
+        <button class="btn btn-danger btn-animate ripple">Xóa</button>
       </div>
     </form>
   </div>
@@ -249,6 +249,24 @@
       document.getElementById('del_hk_text').textContent = hk;
       document.getElementById('del_nh_text').textContent = nh;
     });
+  });
+</script>
+<script>
+  // Ripple effect cho mọi nút có .ripple
+  document.addEventListener('click', function(e){
+    const t = e.target.closest('.ripple'); if(!t) return;
+    const r = t.getBoundingClientRect(), d = Math.max(r.width, r.height);
+    const x = e.clientX - r.left - d/2, y = e.clientY - r.top - d/2;
+    const ink = document.createElement('span');
+    Object.assign(ink.style,{
+      position:'absolute', borderRadius:'50%', pointerEvents:'none',
+      width:d+'px', height:d+'px', left:x+'px', top:y+'px',
+      background:'rgba(255,255,255,.35)', transform:'scale(0)',
+      transition:'transform .35s ease, opacity .55s ease'
+    });
+    t.appendChild(ink);
+    requestAnimationFrame(()=>{ ink.style.transform='scale(2.6)'; ink.style.opacity='0'; });
+    setTimeout(()=>ink.remove(),520);
   });
 </script>
 @endpush

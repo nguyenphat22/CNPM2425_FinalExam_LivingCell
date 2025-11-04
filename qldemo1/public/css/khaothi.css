@@ -1,68 +1,124 @@
-/* ===== Phòng Khảo thí | Danh sách sinh viên ===== */
+/* ===== Phòng Khảo thí | Danh sách sinh viên (polish + effects) ===== */
+:root{
+  --brand:#164B71; 
+  --brand2:#0d6efd;
+}
 
-/* Tiêu đề */
+/* ===== Tiêu đề ===== */
 h5.mb-3{
-  font-weight:700;
-  color:#164B71;
-  border-left:5px solid #0d6efd;
-  padding-left:10px;
-  letter-spacing:.3px;
-  margin-bottom:.75rem;
+  font-weight:800;
+  color:var(--brand);
+  border-left:6px solid var(--brand2);
+  padding-left:12px;
+  letter-spacing:.2px;
+  margin-bottom:.9rem;
 }
 
-/* Ô tìm kiếm (styling trực tiếp selector hiện có) */
-form.d-flex.mb-3{
-  padding:.5rem .75rem;
+/* ===== Toolbar card (thanh tìm kiếm) ===== */
+.khaothi-toolbar.card{
+  display:flex !important;
+  align-items:center;
+  justify-content:space-between;
+  gap:.75rem;
+  padding:.75rem 1rem;
+  border:1px solid #e5e9ef;
+  border-radius:14px;
+  box-shadow:0 6px 20px rgba(22,75,113,.06);
   background:#fff;
-  border:1px solid #e3e6ea;
-  border-radius:12px;
-  box-shadow:0 1px 3px rgba(0,0,0,.05);
-}
-form.d-flex.mb-3 .btn{
-  display:inline-flex; align-items:center; gap:.35rem;
 }
 
-/* Bảng */
+/* Form tìm kiếm nằm ngang */
+.khaothi-toolbar.card form{
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+  flex:1 1 auto;
+  margin:0;
+}
+
+.khaothi-toolbar.card .form-control{
+  flex:1 1 auto;
+  min-width:260px;
+  height:38px;
+}
+
+.khaothi-toolbar.card .btn{
+  flex-shrink:0;
+  white-space:nowrap;
+  width:auto !important;
+  display:inline-flex;
+  align-items:center;
+  gap:.35rem;
+}
+
+/* Hiệu ứng hover nhẹ */
+.btn-animate{ transition:transform .12s ease, box-shadow .2s ease, background .2s ease; }
+.btn-animate:hover{ transform:translateY(-1px); box-shadow:0 6px 16px rgba(13,110,253,.18); }
+.btn-animate:active{ transform:translateY(0); box-shadow:none; }
+.ripple{ position:relative; overflow:hidden; }
+
+/* ===== Bảng ===== */
 .table{
   background:#fff;
-  border-radius:10px;
-  overflow:hidden;
+  border-radius:12px;
+  box-shadow:0 10px 24px rgba(22,75,113,.05);
+  font-size:.95rem;
+  border-collapse:separate;
+  border-spacing:0;
 }
 .table thead{
-  background:#eef3f8;
-  color:#164B71;
-  font-weight:600;
+  background:linear-gradient(90deg,#e8f0ff,#f2f6ff);
+  color:var(--brand);
+  font-weight:700;
   text-transform:uppercase;
-  letter-spacing:.3px;
-}
-.table td,.table th{ vertical-align:middle; }
-.table tbody tr:hover{ background:#fcfdff; }
-
-/* Header dính khi cuộn trong vùng bảng */
-.table-responsive{
-  max-height: calc(100vh - 260px);  /* chừa chỗ cho header + form */
-  overflow:auto;
+  letter-spacing:.28px;
+  border-bottom:2px solid #c5d8f5;
 }
 .table thead th{
-  position:sticky; top:0; z-index:2;
+  border:none!important;
+  padding:.9rem .75rem;
+  text-align:center;
+  position:sticky;
+  top:0;
+  z-index:3;
+  background:linear-gradient(90deg,#e8f0ff,#f2f6ff);
+  box-shadow:0 2px 2px rgba(0,0,0,.05);
+}
+.table td{ vertical-align:middle; border-color:#edf2f7; color:#334155; }
+.table tbody tr:nth-child(odd){ background:#fbfdff; }
+.table tbody tr:hover{ background:#f1f8ff; }
+
+/* Vùng cuộn cho sticky header */
+.table-responsive{
+  position:relative;
+  max-height:calc(100vh - 260px);
+  overflow-y:auto;
+  overflow-x:hidden;
 }
 
-/* Phân trang căn phải */
+/* Căn giữa cột ngắn */
+.table th:nth-child(1),
+.table td:nth-child(1),
+.table th:nth-child(4),
+.table td:nth-child(4),
+.table th:nth-child(6),
+.table td:nth-child(6){ text-align:center; }
+
+/* Pagination */
 .pagination{ justify-content:flex-end; }
+.page-link{ border-radius:8px; margin:0 .15rem; transition:all .15s ease; }
+.page-link:hover{ transform:translateY(-1px); box-shadow:0 6px 12px rgba(0,0,0,.08); }
 
 /* ===== Responsive ===== */
 @media (max-width: 991.98px){
-  form.d-flex.mb-3{
-    display:grid !important;
-    grid-template-columns: 1fr; /* 1 cột trên mobile */
-    gap:.5rem;
+  .khaothi-toolbar.card{
+    flex-direction:column;
+    align-items:stretch;
   }
-  form.d-flex.mb-3 .form-control,
-  form.d-flex.mb-3 .btn{
-    width:100%;
+  .khaothi-toolbar.card form{
+    flex-direction:column;
+    align-items:stretch;
   }
-
-  /* Bảng: bỏ sticky để tránh giật trên màn nhỏ */
-  .table-responsive{ max-height:none; }
+  .table-responsive{ max-height:none; overflow:auto; }
   .table thead th{ position:static; }
 }

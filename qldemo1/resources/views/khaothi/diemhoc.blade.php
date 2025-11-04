@@ -9,17 +9,17 @@
   <form method="post" action="{{ route('khaothi.gpa.import') }}" enctype="multipart/form-data" class="d-flex gap-2">
     @csrf
     <input type="file" name="file" class="form-control" style="max-width:260px;" accept=".xlsx,.xls,.csv" required>
-    <button class="btn btn-secondary">
+    <button class="btn btn-soft-primary btn-animate ripple">
   <i class="bi bi-cloud-upload me-1"></i> Upload file
 </button>
   </form>
 
-  <a class="btn btn-success"
+  <a class="btn btn-soft-success btn-animate ripple"
     href="{{ route('khaothi.gpa.export', ['hk'=>$hk,'nh'=>$nh,'q'=>$q]) }}">
      <i class="bi bi-file-earmark-excel me-1"></i> Xuất báo cáo Excel
   </a>
 
-  <button id="btn-refresh" class="btn btn-warning" type="button" onclick="showSaveMessage()">
+  <button id="btn-refresh" class="btn btn-soft-warning btn-animate ripple" type="button" onclick="showSaveMessage()">
   <i class="bi-check-circle"></i> Lưu
 </button>
 
@@ -31,7 +31,7 @@
     </select>
     <input class="form-control" name="nh" value="{{ $nh }}" style="width:150px" placeholder="2024-2025">
     <input class="form-control" name="q" value="{{ $q }}" placeholder="Tìm MSSV / Họ tên">
-    <button class="btn btn-outline-primary">Tìm</button>
+    <button class="btn btn-outline-primary btn-animate ripple">Tìm</button>
   </form>
 </div>
 
@@ -67,7 +67,7 @@
         <td>{{ $r->DiemHT ?? '' }}</td>
         <td>{{ $r->XepLoai ?? '' }}</td>
         <td>
-          <button class="btn btn-sm btn-outline-primary me-1"
+          <button class="btn btn-sm btn-outline-primary btn-animate ripple me-1"
             data-bs-toggle="modal" data-bs-target="#modalEdit"
             data-masv="{{ $r->MaSV }}"
             data-hk="{{ $hk }}"
@@ -75,7 +75,7 @@
             data-diem="{{ $r->DiemHT ?? '' }}"
             data-xeploai="{{ $r->XepLoai ?? '' }}">Sửa</button>
 
-          <button class="btn btn-sm btn-outline-danger"
+          <button class="btn btn-sm btn-outline-danger btn-animate ripple"
             data-bs-toggle="modal" data-bs-target="#modalDelete"
             data-masv="{{ $r->MaSV }}"
             data-hk="{{ $hk }}"
