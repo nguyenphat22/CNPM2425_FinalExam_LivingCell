@@ -1,64 +1,172 @@
-/* ====== Trang Admin: Danh sách tài khoản ====== */
+/* ====== Trang Admin: Danh sách tài khoản (polish + effects) ====== */
+:root{
+  --brand:#164B71;
+  --brand-2:#0d6efd;
+  --soft:#eef3f8;
+  --ok:#198754; --warn:#ffc107; --bad:#dc3545; --muted:#6c757d;
+}
 
 /* Tiêu đề trang */
-.page-title {
-  font-weight: 700;
-  color: #164B71;
-  border-left: 5px solid #0d6efd;
-  padding-left: 10px;
-  margin-bottom: .75rem;
-  letter-spacing: .3px;
+.page-title{
+  font-weight:800; color:var(--brand);
+  border-left:6px solid var(--brand-2);
+  padding-left:12px; margin-bottom:.9rem; letter-spacing:.2px;
 }
 
-/* Thanh công cụ (toolbar) */
-.admin-toolbar.card {
-  border: 1px solid #e3e6ea;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,.05);
-}
-.admin-toolbar .btn {
-  display: inline-flex;
-  align-items: center;
-  gap: .35rem;
-}
-.admin-toolbar input[type="file"] {
-  height: 36px;
-  padding: .375rem .5rem;
+/* Card toolbar bóng nhẹ */
+.admin-toolbar.card{
+  border:1px solid #e5e9ef; border-radius:14px;
+  box-shadow:0 6px 20px rgba(22,75,113,.06);
 }
 
-/* Bảng danh sách */
+/* ===== Buttons: soft/ghost + hover/active + ripple ===== */
+.btn{ display:inline-flex; align-items:center; gap:.4rem; }
+.btn-animate{ transition:transform .12s ease, box-shadow .2s ease, background .2s ease; }
+.btn-animate:hover{ transform:translateY(-1px); box-shadow:0 8px 18px rgba(13,110,253,.18); }
+.btn-animate:active{ transform:translateY(0); box-shadow:none; }
+
+/* “Soft” tone cho các biến thể thường dùng */
+.btn-soft-primary{ background:#e7f1ff; color:#0a58ca; border:1px solid #d6e4ff; }
+.btn-soft-primary:hover{ background:#d9e9ff; }
+.btn-soft-warning{ background:#fff6db; color:#a07400; border:1px solid #ffe8a3; }
+.btn-soft-danger{ background:#ffe7ea; color:#b02a37; border:1px solid #ffc2c9; }
+
+/* Ripple (vùng hiệu ứng) */
+.btn.ripple{ position:relative; overflow:hidden; }
+
+/* ===== Bảng ===== */
 .table {
   background: #fff;
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 6px 18px rgba(22, 75, 113, 0.05);
+  font-family: "Inter", "Segoe UI", sans-serif;
+  font-size: 0.95rem;
 }
 .table thead {
-  background: #eef3f8;
-  color: #164B71;
-  font-weight: 600;
+  background: linear-gradient(90deg, #e8f0ff, #f2f6ff);
+  color: #164b71;
+  font-weight: 700;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
-  letter-spacing: .3px;
+  border-bottom: 2px solid #c5d8f5;
 }
+.table thead th {
+  border: none !important;
+  padding-top: 0.9rem;
+  padding-bottom: 0.9rem;
+  text-align: center;
+  background: transparent;
+}
+.table tbody td {
+  vertical-align: middle;
+  border-color: #edf2f7;
+  color: #334155;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+/* Hàng xen kẽ */
+.table tbody tr:nth-child(odd) {
+  background: #fbfdff;
+}
+.table tbody tr:nth-child(even) {
+  background: #ffffff;
+}
+
+/* Hover có ánh sáng nhẹ */
 .table tbody tr:hover {
-  background: #fcfdff;
+  background: #f1f8ff;
+  box-shadow: inset 0 0 0 9999px rgba(13, 110, 253, 0.03);
+  transition: all 0.2s ease;
 }
 
-/* Badge cho vai trò & trạng thái */
-.badge-role, .badge-state {
+/* Cột tiêu đề (STT, MATK...) nổi bật hơn */
+.table thead th {
+  background-image: linear-gradient(180deg, #e6efff 0%, #d8e5ff 100%);
+  color: #0d3b66;
+  font-weight: 800;
+  border-right: 1px solid #d0ddf5;
+}
+.table thead th:last-child {
+  border-right: none;
+}
+
+/* Căn giữa cột STT, MATK, Vai trò, Trạng thái, Thao tác */
+.table td:nth-child(1),
+.table td:nth-child(2),
+.table td:nth-child(6),
+.table td:nth-child(7),
+.table td:nth-child(8),
+.table th:nth-child(1),
+.table th:nth-child(2),
+.table th:nth-child(6),
+.table th:nth-child(7),
+.table th:nth-child(8) {
+  text-align: center;
+}
+
+/* Tooltip gợi ý màu chữ đẹp hơn */
+th {
+  color: #1d3557;
+}
+
+/* Badge nổi khối hơn */
+.badge-role,
+.badge-state {
   font-weight: 600;
+  border-radius: 999px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
-.badge-role.admin      { background: #dc3545; }
-.badge-role.ctcthssv   { background: #0dcaf0; color: #053848; }
-.badge-role.khaothi    { background: #0d6efd; }
-.badge-role.doantruong { background: #198754; }
-.badge-role.sinhvien   { background: #6c757d; }
 
-.badge-state.active    { background: #198754; }
-.badge-state.inactive  { background: #6c757d; }
-.badge-state.locked    { background: #dc3545; }
+/* Nút thao tác mềm mại hơn */
+.btn-outline-primary {
+  border-color: #bcd0ff;
+  color: #0d6efd;
+}
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+.btn-outline-danger {
+  border-color: #f5b7b7;
+  color: #dc3545;
+}
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: #fff;
+}
+.table-bordered > :not(caption) > * > * {
+  border-color: #d7e3f3 !important;
+}
+tr.table-active {
+  background-color: #eaf3ff !important;
+  box-shadow: inset 0 0 0 9999px rgba(13, 110, 253, 0.06);
+}
+/* Badge vai trò & trạng thái (glow nhẹ) */
+.badge-role,.badge-state{
+  font-weight:700; border-radius:999px; padding:.42rem .65rem; box-shadow:0 1px 0 rgba(0,0,0,.05);
+}
+.badge-role.admin{ background:var(--bad); }
+.badge-role.ctcthssv{ background:#0dcaf0; color:#053848; }
+.badge-role.khaothi{ background:#0d6efd; }
+.badge-role.doantruong{ background:#198754; }
+.badge-role.sinhvien{ background:var(--muted); }
+
+.badge-state.active{ background:var(--ok); }
+.badge-state.inactive{ background:var(--muted); }
+.badge-state.locked{ background:var(--bad); }
 
 /* Nút thao tác nhỏ */
-.btn-action { min-width: 58px; }
+.btn-action{ min-width:58px; }
 
-/* Phân trang sát phải */
-.pagination { justify-content: flex-end; }
+/* Pagination gọn & nổi khối */
+.pagination{ justify-content:flex-end; }
+.page-link{ border-radius:8px; margin:0 .15rem; transition:all .15s ease; }
+.page-link:hover{ transform:translateY(-1px); box-shadow:0 6px 12px rgba(0,0,0,.08); }
+
+/* Modal slide-up mượt */
+.modal.fade .modal-dialog{ transform:translateY(16px); transition:transform .18s ease-out; }
+.modal.show .modal-dialog{ transform:translateY(0); }
+
+/* Inputs */
+.admin-toolbar input[type="file"]{ height:36px; padding:.375rem .5rem; }

@@ -7,19 +7,19 @@
 
 <div class="admin-toolbar card mb-3">
   <div class="card-body py-2 d-flex flex-wrap gap-2 align-items-center">
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">
+    <button class="btn btn-primary btn-animate ripple" data-bs-toggle="modal" data-bs-target="#modalAdd">
       <i class="bi bi-plus-circle"></i> Thêm
     </button>
 
     <form method="post" action="{{ route('admin.accounts.import') }}" enctype="multipart/form-data" class="d-flex gap-2">
       @csrf
       <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv" required style="max-width:280px;">
-      <button class="btn btn-secondary">
+      <button class="btn btn-soft-primary btn-animate ripple">
         <i class="bi bi-cloud-upload"></i> Upload file
       </button>
     </form>
 
-    <button class="btn btn-warning" type="button" onclick="showSaveMessage()">
+    <button class="btn btn-soft-warning btn-animate ripple" type="button" onclick="showSaveMessage()">
       <i class="bi bi-check-circle"></i> Lưu
     </button>
 
@@ -67,7 +67,7 @@
 </td>
         <td>
           <button type="button"
-            class="btn btn-sm btn-outline-primary me-1"
+            class="btn btn-sm btn-outline-primary btn-animate ripple me-1"
             data-bs-toggle="modal" data-bs-target="#modalEdit"
             data-matk="{{ $r->MaTK }}"
             data-tendn="{{ $r->TenDangNhap }}"
@@ -78,7 +78,7 @@
           </button>
 
           <button type="button"
-            class="btn btn-sm btn-outline-danger"
+            class="btn btn-sm btn-outline-danger btn-animate ripple"
             data-bs-toggle="modal" data-bs-target="#confirmDelete"
             data-matk="{{ $r->MaTK }}"
             data-tendn="{{ $r->TenDangNhap }}">
@@ -165,7 +165,7 @@
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-primary">Lưu</button>
+        <button class="btn btn-primary btn-animate ripple">Lưu</button>
       </div>
     </form>
   </div>
@@ -243,8 +243,8 @@
         <input type="hidden" name="MaTK" id="delMaInput">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-        <button class="btn btn-danger">Xóa</button>
+        <button type="button" class="btn btn-secondary btn-animate ripple" data-bs-dismiss="modal">Hủy</button>
+        <button class="btn btn-danger btn-animate ripple">Xóa</button>
       </div>
     </form>
   </div>
@@ -326,5 +326,36 @@
   });
 </script>
 @endif
+<script>
+  // ===== Ripple effect cho mọi .ripple =====
+  document.addEventListener('click', function(e){
+    const t = e.target.closest('.ripple');
+    if(!t) return;
+    const rect = t.getBoundingClientRect();
+    const d = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - d/2;
+    const y = e.clientY - rect.top - d/2;
+
+    const ink = document.createElement('span');
+    ink.style.position='absolute';
+    ink.style.borderRadius='50%';
+    ink.style.pointerEvents='none';
+    ink.style.width=ink.style.height=d+'px';
+    ink.style.left=x+'px'; ink.style.top=y+'px';
+    ink.style.background='rgba(255,255,255,.35)';
+    ink.style.transform='scale(0)';
+    ink.style.transition='transform .35s ease, opacity .55s ease';
+    t.appendChild(ink);
+
+    requestAnimationFrame(()=>{ ink.style.transform='scale(2.6)'; ink.style.opacity='0'; });
+    setTimeout(()=>ink.remove(), 520);
+  });
+
+  // ===== Kích hoạt tooltip Bootstrap (nếu có) =====
+  document.addEventListener('DOMContentLoaded', () => {
+    [...document.querySelectorAll('[data-bs-toggle="tooltip"]')]
+      .forEach(el => new bootstrap.Tooltip(el));
+  });
+</script>
 @endpush
 @endsection
