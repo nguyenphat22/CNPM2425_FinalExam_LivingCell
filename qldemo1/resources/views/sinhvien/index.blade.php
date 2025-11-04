@@ -114,7 +114,9 @@
     </div>
 
     {{-- ===== XEM TIẾN ĐỘ ===== --}}
-<h5 class="mt-4 mb-3 text-center text-primary fw-semibold">Xem tiến độ</h5>
+<div class="text-center">
+  <h3 id="progress" class="section-title centered glow"><span>Xem tiến độ</span></h3>
+</div>
 {{-- (xoá hoặc đổi link cũ như hướng dẫn ở trên) --}}
 
 <div id="progress" class="card">

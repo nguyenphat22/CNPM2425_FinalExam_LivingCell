@@ -355,3 +355,36 @@ html { scroll-behavior: smooth; }
   .table-modern th,
   .table-modern td{ padding:12px 12px !important; }
 }
+/* ===== SECTION TITLE CĂN GIỮA ===== */
+.section-title.centered{
+  text-align:center;
+  padding-left:0;
+  display:inline-block;
+  position:relative;
+  padding-bottom:16px;            /* chừa chỗ cho gạch */
+}
+
+.section-title.centered > span{
+  position: relative;
+  z-index: 1;                     /* chữ ở trên */
+}
+
+.section-title.centered::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:0;                       /* đặt ở đáy tiêu đề */
+  width:0;
+  height:3px;
+  border-radius:10px;
+  background:linear-gradient(90deg,#0ea5e9,#8b5cf6,#22c55e);
+  transform:translate(-50%, 10px);/* đẩy xuống dưới chữ */
+  animation:underlineGrowCentered 1.6s ease forwards;
+  z-index:0;                      /* gạch ở dưới chữ */
+}
+
+@keyframes underlineGrowCentered{
+  from{ width:0; opacity:0; }
+  to{ width:140px; opacity:1; }
+}
+

@@ -14,11 +14,14 @@ Chào mừng đến với kho lưu trữ của nhóm **Living Cells**!
 
 ## Nền tảng & Công cụ 🛠️
 
-- **Frontend:** HTML5, CSS3, JavaScript (Bootstrap)
-- **Backend:** PHP (Laravel)
-- **Database:** MySQL
-- **Công cụ & Quản lý mã nguồn:** Git, GitHub, VS Code, XAMPP, Composer, phpMyAdmin
+| Loại | Công nghệ |
+|------|------------|
+| 🎨 **Frontend** | ![HTML5](https://img.shields.io/badge/-HTML5-E34F26?logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/-CSS3-1572B6?logo=css3&logoColor=white) ![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?logo=javascript&logoColor=black) ![Bootstrap](https://img.shields.io/badge/-Bootstrap-7952B3?logo=bootstrap&logoColor=white) |
+| ⚙️ **Backend** | ![PHP](https://img.shields.io/badge/-PHP-777BB4?logo=php&logoColor=white) ![Laravel](https://img.shields.io/badge/-Laravel-FF2D20?logo=laravel&logoColor=white) |
+| 🗄️ **Database** | ![MySQL](https://img.shields.io/badge/-MySQL-4479A1?logo=mysql&logoColor=white) |
+| 🧩 **Công cụ & Quản lý mã nguồn** | ![Git](https://img.shields.io/badge/-Git-F05032?logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/-GitHub-181717?logo=github&logoColor=white) ![VSCode](https://img.shields.io/badge/-VS%20Code-007ACC?logo=visualstudiocode&logoColor=white) ![XAMPP](https://img.shields.io/badge/-XAMPP-FB7A24?logo=xampp&logoColor=white) ![Composer](https://img.shields.io/badge/-Composer-885630?logo=composer&logoColor=white) ![phpMyAdmin](https://img.shields.io/badge/-phpMyAdmin-6C78AF?logo=phpmyadmin&logoColor=white) |
 
+---
 ## Dự án 📂
 ## Hệ thống Quản lý Rèn luyện và Khen thưởng Sinh viên 🏅
 
@@ -28,25 +31,26 @@ Dự án **Hệ thống Quản lý Rèn luyện và Khen thưởng Sinh viên** 
 
 ### Các yêu cầu chính
 
-- **Quản lý điểm học tập và điểm rèn luyện**: Phòng khảo thí và phòng CTCT HSSV có thể nhập, sửa, và xuất báo cáo.
-- **Quản lý danh hiệu và khen thưởng**: Phòng Đoàn Trường quản lý các tiêu chí và danh hiệu.
-- **Quản lý sinh viên**: Thông tin cá nhân, điểm học tập, rèn luyện, và ngày tình nguyện.
-- **Gợi ý danh hiệu**: Sinh viên nhận gợi ý danh hiệu dựa trên các chỉ tiêu (GPA, điểm rèn luyện, ngày tình nguyện).
+- 📊**Quản lý điểm học tập và điểm rèn luyện**: Phòng khảo thí và phòng CTCT HSSV có thể nhập, sửa, và xuất báo cáo.
+- 🏆**Quản lý danh hiệu và khen thưởng**: Phòng Đoàn Trường quản lý các tiêu chí và danh hiệu.
+- 👤**Quản lý sinh viên**: Thông tin cá nhân, điểm học tập, rèn luyện, và ngày tình nguyện.
+- 💡**Gợi ý danh hiệu**: Sinh viên nhận gợi ý danh hiệu dựa trên các chỉ tiêu (GPA, điểm rèn luyện, ngày tình nguyện).
 
 ###  Hướng dẫn cài đặt và chạy
 
 #### Chạy trên nội bộ (localhost)
 
 ##### Bước 1: Cài đặt các phần mềm sau:
-- **XAMPP**: Tải tại [đây](https://www.apachefriends.org/index.html).
-- **Composer**: Mở command prompt (cmd) với quyền administrator và gõ các dòng lệnh sau:
+-  [🧩 **XAMPP**](https://www.apachefriends.org/index.html) – Apache & MySQL  
+- [📦 **Composer**](https://getcomposer.org/download/) – Trình quản lý PHP packages  
+Mở command prompt (cmd) với quyền administrator và gõ các dòng lệnh sau:
   ```bash
   php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
   php -r "if (hash_file('sha384', 'composer-setup.php') === 'ed0feb545ba87161262f2d45a633e34f591ebb3381f2e0063c345ebea4d228dd0043083717770234ec00c5a9f9593792') { echo 'Installer verified'.PHP_EOL; } else { echo 'Installer corrupt'.PHP_EOL; unlink('composer-setup.php'); exit(1); }"
   php composer-setup.php
   php -r "unlink('composer-setup.php');"
   ```
-- **Laravel**: Tải và cài đặt Laravel tại [đây](https://laravel.com/docs/12.x/installation).
+- [🧱 **Laravel 12.x**](https://laravel.com/docs/12.x/installation) – Framework PHP hiện đại  
 
 ##### Bước 2: Mở XAMPP lên và kích hoạt **Apache** và **MySQL** bằng nút **Start**. Sau đó bấm vào Config và mở php.ini. Tiếp theo sau đó là bỏ “ ; ” ở trước extension=gd và extension=zip. 
 
