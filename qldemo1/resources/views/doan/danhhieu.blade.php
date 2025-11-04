@@ -6,11 +6,11 @@
 <h5 class="mb-3">Quản lý danh hiệu</h5>
 
 <div class="d-flex gap-2 mb-3 align-items-center">
-  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">
+  <button class="btn btn-soft-primary btn-animate ripple" data-bs-toggle="modal" data-bs-target="#modalAdd">
   <i class="bi bi-plus-circle me-1"></i> Thêm
 </button>
 
-  <button id="btn-refresh" class="btn btn-warning" type="button" onclick="showSaveMessage()">
+  <button id="btn-refresh" class="btn btn-soft-warning btn-animate ripple" type="button" onclick="showSaveMessage()">
   <i class="bi-check-circle"></i> Lưu
 </button>
 
@@ -22,7 +22,7 @@
     </select>
     <input class="form-control" name="nh" value="{{ $nh }}" style="width:150px" placeholder="2024-2025">
     <input class="form-control" name="q" value="{{ $q }}" placeholder="Tìm tên danh hiệu / tiêu chí">
-    <button class="btn btn-outline-primary">Tìm</button>
+    <button class="btn btn-outline-primary btn-animate">Tìm</button>
   </form>
 </div>
 
@@ -60,7 +60,7 @@
   @endif
 </td>
         <td>
-          <button class="btn btn-sm btn-outline-primary me-1"
+          <button class="btn btn-sm btn-outline-primary btn-animate ripple me-1"
             data-bs-toggle="modal" data-bs-target="#modalEdit"
             data-madh="{{ $r->MaDH }}"
             data-tendh="{{ $r->TenDH }}"
@@ -68,7 +68,7 @@
             data-drl="{{ $r->DieuKienDRL }}"
             data-ntn="{{ $r->DieuKienNTN }}">Sửa</button>
 
-          <button class="btn btn-sm btn-outline-danger"
+          <button class="btn btn-sm btn-outline-danger btn-animate ripple"
             data-bs-toggle="modal" data-bs-target="#modalDelete"
             data-madh="{{ $r->MaDH }}"
             data-tendh="{{ $r->TenDH }}">Xóa</button>

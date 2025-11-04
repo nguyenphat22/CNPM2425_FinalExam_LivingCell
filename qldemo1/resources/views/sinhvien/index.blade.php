@@ -6,13 +6,24 @@
 
 {{-- Bảng điều khiển sinh viên --}}
 <div class="row">
-  <main class="col-md-12">
-    <h5 class="mb-3">Thông tin cá nhân
-      <!-- Nút Cài đặt (Biểu tượng bánh răng) -->
-      <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
-        <span class="bi bi-gear text-primary" style="font-size: 1.5rem;"></span>
-      </button>
-    </h5>
+  <main class="col-md-12 hide-old-progress-link">
+    {{-- Banner hiệu ứng gradient + typewriter --}}
+<section class="hero-animated my-4 text-center">
+  {{-- Đếm ký tự câu này (ví dụ 36), điền vào --chars --}}
+  <div class="typewriter" style="--chars: 36">
+    Chào mừng bạn đến với trang Sinh viên
+  </div>
+  <p class="hero-sub">Theo dõi GPA, điểm rèn luyện và tiến độ danh hiệu của bạn.</p>
+  <a href="#progress" class="btn-neon mt-3">
+    Xem tiến độ <i class="bi bi-lightning-charge"></i>
+  </a>
+</section>
+    <h3 class="section-title underline glow with-icon">
+  <span>Thông tin cá nhân</span>
+  <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+    <i class="bi bi-gear" style="font-size: 1.4rem;"></i>
+  </button>
+</h3>
 
     {{-- Thông tin sinh viên --}}
     <div class="card mb-3">
@@ -32,7 +43,7 @@
     {{-- Ba cột thông tin điểm --}}
     <div class="row g-3">
       <div class="col-md-4">
-        <div class="card">
+        <div class="card-apple simple">
           <div class="card-body">
             <div class="fw-bold mb-1">Điểm học tập (GPA)</div>
             <div class="fs-5">{{ $gpaVal ?? '—' }}</div>
@@ -40,7 +51,7 @@
         </div>
       </div>
       <div class="col-md-4">
-        <div class="card">
+        <div class="card-apple simple">
           <div class="card-body">
             <div class="fw-bold mb-1">Điểm rèn luyện</div>
             <div class="fs-5">{{ $drlVal ?? '—' }}</div>
@@ -48,7 +59,7 @@
         </div>
       </div>
       <div class="col-md-4">
-        <div class="card">
+        <div class="card-apple simple">
           <div class="card-body">
             <div class="fw-bold mb-1">Số ngày tình nguyện</div>
             <div class="fs-5">{{ $ntnTong }}</div>
@@ -58,9 +69,9 @@
     </div>
 
     {{-- Danh hiệu --}}
-    <h5 class="mb-2 text-center text-success">Khen thưởng danh hiệu</h5>
-    <div class="table-responsive mb-3">
-      <table class="table table-bordered align-middle">
+    <h3 id="awards" class="section-title underline glow"><span>Khen thưởng danh hiệu</span></h3>
+    <div class="table-responsive mb-3 awards-shell">
+  <table class="table table-modern">
         <thead class="table-light">
           <tr>
             <th style="width:70px">STT</th>
@@ -72,7 +83,7 @@
           @forelse($awds as $i => $a)
           <tr>
             <td>{{ $i + 1 }}</td>
-            <td class="text-center"><span class="badge rounded-pill text-bg-success">{{ $a->Ten }}</span></td>
+            <td class="text-center"> <span class="badge-award">{{ $a->Ten }}</span></td>
             <td>{{ $a->HocKy ?? '—' }}</td>
           </tr>
           @empty
@@ -85,7 +96,7 @@
     </div>
 
     {{-- Đề xuất --}}
-    <h5 class="mt-4 mb-2 text-center text-success">Đề xuất danh hiệu</h5>
+    <h3 id="suggestions" class="section-title underline glow"><span>Đề xuất danh hiệu</span></h3>
     <div class="card mb-3">
       <div class="card-body">
         @if(!empty($goiY))
@@ -103,10 +114,10 @@
     </div>
 
     {{-- ===== XEM TIẾN ĐỘ ===== --}}
-    <h5 class="mt-4 mb-3 text-center text-primary fw-semibold">Xem tiến độ</h5>
-    <a href="#" class="btn-view-progress">Xem tiến độ</a>
+<h5 class="mt-4 mb-3 text-center text-primary fw-semibold">Xem tiến độ</h5>
+{{-- (xoá hoặc đổi link cũ như hướng dẫn ở trên) --}}
 
-    <div class="card">
+<div id="progress" class="card">
       <div class="card-body">
         @php($awardProgress = $awardProgress ?? collect())
         @forelse($awardProgress as $ap)

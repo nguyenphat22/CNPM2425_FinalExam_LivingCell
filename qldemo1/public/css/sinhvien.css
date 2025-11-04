@@ -1,150 +1,357 @@
-/* === CSS cho trang Sinh viên === */
-
-.height-22 {
-  height: 22px !important;
-}
-
-.progress-bar {
-  transition: width 0.8s ease;
-  font-weight: 500;
-  font-size: 0.9rem;
-  text-align: center;
-}
-
-.card {
-  border-radius: 10px;
-}
-
-.table th,
-.table td {
-  vertical-align: middle;
-}
-
-.text-success {
-  color: green !important;
-}
-/* ======== TOÀN TRANG SINH VIÊN ======== */
-body {
-  background-color: #f8fafc;
-  color: #222;
-  font-family: "Segoe UI", sans-serif;
-}
-
-/* ======== TIÊU ĐỀ CHÍNH ======== */
-h5.mb-3 {
-  font-weight: 700;
-  color: #164B71;
-  border-left: 5px solid #0d6efd;
-  padding-left: 10px;
-  text-transform: uppercase;
-  letter-spacing: .3px;
-}
-
-/* ======== KHUNG THÔNG TIN SINH VIÊN ======== */
-.card {
-  border: 1px solid #e3e6ea;
-  border-radius: 10px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-.card-body b {
-  color: #164B71;
-}
-
-/* ======== CÁC NHÃN NHỎ ======== */
-.fw-bold {
-  color: #164B71;
-}
-
-/* ======== TIÊU ĐỀ PHẦN ======== */
-h5.text-success, h5.text-primary {
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
-
-h5.text-success {
-  color: #0a7b34 !important; /* Xanh lá nhẹ */
-}
-
-h5.text-primary {
-  color: #0d6efd !important; /* Xanh dương chuẩn Bootstrap */
-}
-
-/* ======== BẢNG KẾT QUẢ ======== */
-.table {
+/* ========== APPLE PRODUCT CARD ========== */
+.card-apple{
+  --radius: 18px;
+  --shadow-rest: 0 2px 8px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-hover: 0 12px 28px rgba(0,0,0,.18), 0 4px 10px rgba(0,0,0,.12);
+  border: 1px solid #e9eef3;
+  border-radius: var(--radius);
   background: #fff;
-  border-radius: 10px;
   overflow: hidden;
+  box-shadow: var(--shadow-rest);
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease, border-color .35s ease;
+  will-change: transform, box-shadow;
 }
 
-.table thead {
-  background: #eef3f8;
-  color: #164B71;
+.card-apple:hover{
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+  border-color: #dde6ee;
+}
+
+.card-apple .apple-media{
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16/9;       /* giữ tỷ lệ ảnh chuẩn */
+  background: #f7fafc;
+}
+
+.card-apple .apple-media img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1);
+  transition: transform .6s cubic-bezier(.2,.8,.2,1), filter .6s ease;
+  will-change: transform;
+}
+
+.card-apple:hover .apple-media img{
+  transform: scale(1.06);   /* zoom nhẹ khi hover */
+  filter: saturate(1.05);
+}
+
+.card-apple .apple-body{
+  padding: 16px 18px 18px;
+}
+
+.card-apple .apple-title{
+  font-weight: 700;
+  letter-spacing: .2px;
+  color: #0f172a;
+  margin: 2px 0 6px;
+}
+
+.card-apple .apple-sub{
+  color: #475569;
+  font-size: .95rem;
+  margin-bottom: 12px;
+}
+
+.card-apple .apple-cta{
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid #dbe4ee;
+  background: #fff;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .3px;
-}
-
-.table td, .table th {
-  vertical-align: middle;
-}
-
-/* ======== THÔNG BÁO KHÔNG CÓ DANH HIỆU ======== */
-.card-body {
-  line-height: 1.5;
-}
-
-.card-body ul {
-  padding-left: 1.2rem;
-}
-
-.card-body em, .text-muted {
-  color: #6c757d !important;
-}
-
-/* ======== THANH TIẾN ĐỘ ======== */
-.progress {
-  height: 18px;
-  border-radius: 10px;
-  background-color: #e9ecef;
-}
-
-.progress-bar {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #222;
-  transition: width 1s ease;
-}
-
-.bg-success {
-  background-color: #28a745 !important;
-}
-
-.bg-warning {
-  background-color: #ffc107 !important;
-}
-
-/* ======== KHUNG “HIỆN TẠI KHÔNG CÓ DANH HIỆU” ======== */
-.no-award-box {
-  background: #f8f9fa;
-  color: #555;
-  border-left: 4px solid #ccc;
-  padding: 10px 15px;
-  border-radius: 6px;
-  text-align: center;
-  font-style: italic;
-}
-
-/* ======== LIÊN KẾT XEM TIẾN ĐỘ ======== */
-a.btn-view-progress {
-  display: inline-block;
   color: #0d6efd;
-  font-weight: 600;
-  text-decoration: none;
-  transition: color .2s;
+  transition: background .25s, border-color .25s, transform .2s;
 }
 
-a.btn-view-progress:hover {
-  color: #084298;
-  text-decoration: underline;
+.card-apple .apple-cta:hover{
+  background: #f5f9ff;
+  border-color: #bfd4ff;
+  transform: translateY(-1px);
+}
+
+/* Giảm chuyển động nếu người dùng chọn reduce motion */
+@media (prefers-reduced-motion: reduce){
+  .card-apple, .card-apple *{ transition: none !important; }
+}
+/* ========== HERO SECTION WITH ANIMATED GRADIENT + TYPEWRITER + NEON BUTTON ========== */
+.hero-animated{
+  --c1:#0ea5e9; --c2:#8b5cf6; --c3:#22c55e; --c4:#f59e0b;
+  position: relative;
+  border-radius: 20px;
+  padding: 20px 18px;
+  color: #0b1220;
+  background: linear-gradient(120deg, var(--c1), var(--c2), var(--c3), var(--c4));
+  background-size: 300% 300%;
+  animation: gradientMove 18s ease infinite;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(13,31,62,.15);
+}
+
+@keyframes gradientMove{
+  0%{ background-position: 0% 50%; }
+  50%{ background-position: 100% 50%; }
+  100%{ background-position: 0% 50%; }
+}
+
+/* Typewriter text */
+.typewriter{
+  --caret:#0b1220;
+  font-weight: 800;
+  font-size: clamp(1.25rem, 2.6vw, 2rem);
+  letter-spacing: .3px;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 2px solid var(--caret);
+  width: 0;                     /* sẽ mở rộng bằng animation */
+  animation: typing 3.5s steps(32, end) forwards, blink .9s step-end infinite;
+  text-shadow: 0 1px rgba(255,255,255,.35);
+}
+
+@keyframes typing{
+  from{ width: 0; }
+  to{ width: 100%; }
+}
+@keyframes blink{
+  0%,100%{ border-color: transparent; }
+  50%{ border-color: var(--caret); }
+}
+
+/* Subtitle nhẹ */
+.hero-sub{
+  margin-top: 10px;
+  color: rgba(11,18,32,.85);
+  font-weight: 500;
+}
+
+/* Neon border pulse button */
+.btn-neon{
+  --neon:#a5b4fc;
+  position: relative;
+  display: inline-flex; align-items:center; gap:.5rem;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.15);
+  backdrop-filter: blur(6px);
+  color: #0b1220;
+  font-weight: 700;
+  border: 2px solid var(--neon);
+  box-shadow: 0 0 0 0 rgba(165,180,252,.45);
+  animation: borderPulse 2s ease-in-out infinite;
+  transition: transform .2s ease;
+}
+.btn-neon:hover{ transform: translateY(-2px); }
+
+@keyframes borderPulse{
+  0%{ box-shadow: 0 0 0 0 rgba(165,180,252,.55), inset 0 0 12px rgba(165,180,252,.45); }
+  70%{ box-shadow: 0 0 0 10px rgba(165,180,252,0), inset 0 0 18px rgba(165,180,252,.4); }
+  100%{ box-shadow: 0 0 0 0 rgba(165,180,252,0), inset 0 0 12px rgba(165,180,252,.45); }
+}
+
+/* Giảm động cho người dùng hạn chế chuyển động */
+@media (prefers-reduced-motion: reduce){
+  .hero-animated{ animation: none; }
+  .typewriter{ animation: none; width: auto; border: none; }
+  .btn-neon{ animation: none; }
+}
+/* Smooth scroll khi click #hash */
+html { scroll-behavior: smooth; }
+
+/* Typewriter: chỉ rộng đúng số ký tự, không tràn mép phải */
+.typewriter{
+  --caret:#0b1220;
+  /* set số ký tự trong HTML: style="--chars: 36" */
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 2px solid var(--caret);
+  width: 0;
+  font-weight: 800;
+  letter-spacing: .3px;
+  animation: typing 3.2s steps(var(--chars), end) forwards, blink .9s step-end infinite;
+}
+
+@keyframes typing{
+  to { width: calc(var(--chars) * 1ch); }
+}
+@keyframes blink{
+  0%,100%{ border-color: transparent; }
+  50%{ border-color: var(--caret); }
+}
+
+/* (Tuỳ chọn) Ẩn link “Xem tiến độ” cũ nếu bạn muốn gọn */
+.hide-old-progress-link .btn-view-progress{ display:none; }
+/* ===== Apple card: SIMPLE CENTERED ===== */
+.card-apple.simple {
+  --radius: 18px;
+  --shadow-rest: 0 2px 8px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-hover: 0 10px 20px rgba(0,0,0,.12), 0 3px 6px rgba(0,0,0,.08);
+  border: 1px solid #e9eef3;
+  border-radius: var(--radius);
+  background: #fff;
+  height: 70px; /* chiều cao đồng đều */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: var(--shadow-rest);
+  transition: all .3s ease;
+}
+
+.card-apple.simple:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+  border-color: #d0dae3;
+}
+
+.card-apple.simple .title {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 1rem;
+  letter-spacing: .2px;
+  margin-bottom: 6px;
+}
+
+.card-apple.simple .value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+/* ===== SECTION TITLES (Awards / Suggestions / Progress) ===== */
+.section-title{
+  --accent:#0d6efd;            /* có thể set #e63946 (Đoàn) hoặc #164B71 (HCMUE) */
+  position:relative;
+  font-weight:800;
+  font-size:clamp(1.25rem,2.2vw,1.6rem);
+  letter-spacing:.3px;
+  margin:28px 0 14px;
+  padding-left:14px;
+  color:#164B71;
+  text-transform:uppercase;
+}
+.section-title::before{
+  content:"";
+  position:absolute; left:0; top:50%;
+  width:6px; height:70%;
+  background:linear-gradient(180deg,var(--accent),#8b5cf6);
+  border-radius:4px;
+  transform:translateY(-50%);
+}
+.section-title > span{
+  background:linear-gradient(90deg,var(--accent),#8b5cf6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* underline động (tùy chọn) */
+.section-title.underline::after{
+  content:"";
+  position:absolute; left:14px; bottom:-6px;
+  height:3px; width:0;
+  background:linear-gradient(90deg,#0ea5e9,#8b5cf6,#22c55e);
+  border-radius:10px;
+  animation:st-underline 1.6s ease forwards;
+}
+@keyframes st-underline{ to{ width:140px; } }
+
+/* Nhẹ nhàng glow */
+.section-title.glow{
+  text-shadow:0 1px 6px rgba(13,110,253,.18);
+}
+
+/* phụ: thanh progress cao hơn, bo tròn đẹp */
+.progress.height-22{ height:22px; border-radius:999px; }
+.progress.height-22 .progress-bar{ font-weight:700; border-radius:999px; }
+/* ===== Section Title có icon (Thông tin cá nhân) ===== */
+.section-title.with-icon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+}
+
+.section-title.with-icon button.btn-link {
+  padding: 0;
+  line-height: 1;
+  border: none;
+  color: var(--accent, #0d6efd);
+  transition: transform .25s ease;
+}
+
+.section-title.with-icon button.btn-link:hover {
+  transform: rotate(25deg);
+}
+/* ===== AWARDS TABLE – hiện đại, bo tròn, đổ bóng, hover ===== */
+.awards-shell{
+  border-radius:16px;
+  overflow:hidden;                 /* bo góc cho cả table */
+  border:1px solid #e7edf3;
+  box-shadow:0 6px 20px rgba(13,31,62,.06);
+  background:#fff;
+}
+
+/* Table hiện đại (không đụng tới .table chung của Bootstrap) */
+.table-modern{
+  margin:0;
+  vertical-align:middle;
+  border-collapse:separate;
+  border-spacing:0;
+}
+
+.table-modern thead th{
+  background:linear-gradient(180deg,#f7fafc,#eef3f8);
+  color:#0f172a;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.35px;
+  border-bottom:1px solid #e3e9f1 !important;
+}
+
+.table-modern th,
+.table-modern td{
+  padding:14px 16px !important;
+  border-color:#eef2f6 !important;
+}
+
+.table-modern tbody tr{
+  transition:background .22s ease, transform .12s ease;
+}
+
+.table-modern tbody tr:hover{
+  background:#f8fbff;
+}
+
+/* Zebra nhẹ */
+.table-modern tbody tr:nth-child(even){
+  background:#fcfdff;
+}
+
+/* Căn kích thước cột */
+.table-modern th:first-child,
+.table-modern td:first-child{ width:80px; text-align:center; }
+.table-modern th:last-child,
+.table-modern td:last-child{ width:140px; }
+
+/* Badge danh hiệu “sang” hơn */
+.badge-award{
+  display:inline-block;
+  padding:8px 14px;
+  border-radius:999px;
+  font-weight:800;
+  letter-spacing:.2px;
+  color:#fff;
+  background:linear-gradient(135deg,#2e7d32,#1b5e20);
+  box-shadow:0 6px 14px rgba(27,94,32,.18), inset 0 1px 0 rgba(255,255,255,.15);
+}
+
+/* Mobile tinh gọn */
+@media (max-width:576px){
+  .table-modern th,
+  .table-modern td{ padding:12px 12px !important; }
 }
