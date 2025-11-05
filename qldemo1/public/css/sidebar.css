@@ -99,3 +99,27 @@ body.sidebar-collapsed .sidebar form{
 .sidebar nav .nav-link.active{ background:rgba(255,255,255,.20); font-weight:600; }
 .sidebar form button{ background:#fff; color:var(--sidebar-bg); border:1.5px solid #e4e9f0; border-radius:8px; font-weight:600; width:100%; }
 .sidebar form button:hover{ background:#eaf3ff; border-color:#d7e6ff; color:#0f3d5e; }
+/* Mobile: bỏ hết hiệu ứng thu gọn của desktop */
+@media (max-width: 991.98px){
+  body.sidebar-collapsed .sidebar{
+    width: var(--sidebar-open);
+    min-width: var(--sidebar-open);
+    max-width: var(--sidebar-open);
+    padding: 16px 12px;           /* trả padding như bình thường */
+  }
+  body.sidebar-collapsed .sidebar .brand,
+  body.sidebar-collapsed .sidebar .user-info,
+  body.sidebar-collapsed .sidebar nav,
+  body.sidebar-collapsed .sidebar form{
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+  }
+
+  /* Ẩn nút 3 chấm desktop để khỏi đè lên nút ☰ */
+  .sidebar .sidebar-toggle{ display: none !important; }
+
+  /* Đẩy nút Đăng xuất xuống đáy, không bị “trôi” */
+  .sidebar{ display:flex; flex-direction:column; }
+  .sidebar form{ margin-top: auto; }
+}

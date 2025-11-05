@@ -7,7 +7,7 @@
 
 <div class="admin-toolbar card mb-3">
   <div class="card-body py-2 d-flex flex-wrap gap-2 align-items-center">
-    <button class="btn btn-primary btn-animate ripple" data-bs-toggle="modal" data-bs-target="#modalAdd">
+    <button class="btn btn-soft-secondary btn-animate ripple" data-bs-toggle="modal" data-bs-target="#modalAdd">
       <i class="bi bi-plus-circle"></i> Thêm
     </button>
 

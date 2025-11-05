@@ -201,7 +201,7 @@
 </head>
 
 
-<body class="sidebar-collapsed"></body>
+<body class="sidebar-collapsed">
 {{-- Nút 3 chấm toggle sidebar trên desktop --}}
 <!-- <button id="btnToggleSidebar"
       class="btn btn-dark d-none d-lg-flex align-items-center justify-content-center position-fixed top-0 start-0 mt-3"
@@ -218,8 +218,8 @@
   <aside class="sidebar text-white p-3 d-flex flex-column" id="appSidebar">
     {{-- Nút thu gọn / mở rộng (3 chấm) --}}
     <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="Thu gọn/mở rộng sidebar">
-      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-    </button>
+  <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+</button>
 
     <div class="brand text-center mb-3">
       <a href="https://hcmue.edu.vn/"><img src="{{ asset('assets/images/logo_truong.png') }}" alt="Logo" class="logo"></a>
@@ -288,37 +288,41 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  const sidebar = document.querySelector('.sidebar');
-  const backdrop = document.querySelector('.sidebar-backdrop');
-  const btn = document.querySelector('.sidebar-toggler');
-  const desktopBtn = document.getElementById('btnToggleSidebar');
+  const sidebar   = document.querySelector('.sidebar');
+  const backdrop  = document.querySelector('.sidebar-backdrop');
+  const btnMobile = document.querySelector('.sidebar-toggler');
 
-  desktopBtn?.addEventListener('click', () => {
-    sidebar.classList.toggle('collapsed');
-  });
-
-  function toggleSidebar(show) {
-    if (!sidebar) return;
+  function toggleSidebar(show){
     const add = typeof show === 'boolean' ? show : !sidebar.classList.contains('show');
     sidebar.classList.toggle('show', add);
     backdrop.classList.toggle('show', add);
     document.body.style.overflow = add ? 'hidden' : '';
   }
-  btn?.addEventListener('click', () => toggleSidebar());
-  backdrop?.addEventListener('click', () => toggleSidebar(false));
+
+  btnMobile?.addEventListener('click', (e)=>{ e.stopPropagation(); toggleSidebar(); });
+  backdrop?.addEventListener('click', ()=> toggleSidebar(false));
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') toggleSidebar(false); });
 </script>
 @stack('scripts')
 <script>
-  (function() {
+  (function () {
+    // Nhớ trạng thái thu gọn trên desktop
     const KEY = 'sidebar-collapsed';
     if (localStorage.getItem(KEY) === '1') {
       document.body.classList.add('sidebar-collapsed');
     }
-    document.addEventListener('click', function(e) {
-      if (!e.target.closest('#sidebarToggle')) return;
-      document.body.classList.toggle('sidebar-collapsed');
-      localStorage.setItem(KEY, document.body.classList.contains('sidebar-collapsed') ? '1' : '0');
-    });
+
+    const toggleBtn = document.getElementById('sidebarToggle');
+    if (toggleBtn) {
+      const toggle = () => {
+        document.body.classList.toggle('sidebar-collapsed');
+        localStorage.setItem(KEY, document.body.classList.contains('sidebar-collapsed') ? '1' : '0');
+      };
+      toggleBtn.addEventListener('click', toggle);
+      toggleBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+      });
+    }
   })();
 </script>
 <script>
@@ -440,5 +444,4 @@
     }
   })();
 </script>
-
 </html>
