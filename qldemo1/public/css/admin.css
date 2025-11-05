@@ -177,3 +177,6 @@ tr.table-active {
 
 /* Inputs */
 .admin-toolbar input[type="file"]{ height:36px; padding:.375rem .5rem; }
+/* dùng cho “Upload file” (xám dịu) */
+.btn-soft-secondary{ background:#c5f8ff; color:#4b5563; border:1px solid #e2e8f0; }
+.btn-soft-secondary:hover{ background:#e9eef5; }
