@@ -6,29 +6,35 @@ use Illuminate\Database\Eloquent\Model;
 
 class DiemHocTap extends Model
 {
-    protected $table = 'BANG_DiemHocTap';
-    public $timestamps = false;
-
-    // Khóa chính là composite (MaSV, HocKy, NamHoc) → không dùng PK mặc định
-    protected $primaryKey = null;
-    public $incrementing = false;
+    protected $table      = 'BANG_DiemHocTap';
+    public $timestamps    = false;
 
     protected $fillable = ['MaSV','HocKy','NamHoc','DiemHe4','XepLoai'];
 
-    public function sinhVien()
+    protected $casts = [
+        'HocKy'   => 'integer',
+        'DiemHe4' => 'float',
+    ];
+
+    /* Lấy MAX(GPA) theo MaSV cho danh sách MaSV */
+    public static function maxGpaByStudent(array $masv): array
     {
-        return $this->belongsTo(SinhVien::class, 'MaSV', 'MaSV');
+        return static::query()
+            ->whereIn('MaSV', $masv)
+            ->selectRaw('MaSV, MAX(DiemHe4) as DiemHe4')
+            ->groupBy('MaSV')
+            ->pluck('DiemHe4', 'MaSV')
+            ->toArray();
     }
 
-    /** Scope lọc theo học kỳ + năm học */
-    public function scopeTermYear($q, int $hk, string $nh)
+    /* ---------- Scopes tiện dụng ---------- */
+    public function scopeForTerm($q, int $hk, string $nh)
     {
         return $q->where('HocKy', $hk)->where('NamHoc', $nh);
     }
 
-    /** Upsert một record theo bộ khóa (MaSV, HocKy, NamHoc) */
-    public static function upsertOne(array $keys, array $values)
+    public function scopeStudent($q, string $maSV)
     {
-        return static::updateOrCreate($keys, $values); // tránh rắc rối composite key khi save()
+        return $q->where('MaSV', $maSV);
     }
 }

@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
-use Maatwebsite\Excel\Facades\Excel;
+use App\Models\TaiKhoan;
 use Maatwebsite\Excel\HeadingRowImport;
 use App\Imports\AccountsImport;
 
@@ -16,30 +14,28 @@ class AccountController extends Controller
     public function index(Request $r)
     {
         $q = $r->input('q');
-        $query = DB::table('BANG_TaiKhoan')
-            ->select('MaTK', 'TenDangNhap', 'MatKhau', 'VaiTro', 'TrangThai', 'Email');
 
-        if ($q) {
-            $query->where(function ($s) use ($q) {
-                $s->where('TenDangNhap', 'like', "%$q%")
-                    ->orWhere('VaiTro', 'like', "%$q%")
-                    ->orWhere('TrangThai', 'like', "%$q%");
-            });
-        }
+        $data = TaiKhoan::query()
+            ->select('MaTK','TenDangNhap','MatKhau','VaiTro','TrangThai','Email')
+            ->filterQ($q)
+            ->orderBy('MaTK')
+            ->paginate(10)
+            ->withQueryString();
 
-        $data = $query->orderBy('MaTK')->paginate(10)->withQueryString();
-        return view('admin.accounts.index', compact('data', 'q'));
+        return view('admin.accounts.index', compact('data','q'));
     }
 
-    // Demo store/update/delete để form hoạt động (không phải sản phẩm cuối)
+    // Demo store/update/delete để form hoạt động
     public function store(Request $r)
     {
-        // Lỗi hiển thị trong modal Thêm (bag 'add')
+        $table = TaiKhoan::tableName();
+
         $r->validateWithBag('add', [
-            'TenDangNhap' => 'required|string|max:50|unique:BANG_TaiKhoan,TenDangNhap',
-            'MatKhau'     => 'required|min:6',
-            'VaiTro'      => 'required|in:Admin,SinhVien,KhaoThi,CTCTHSSV,DoanTruong',
-            'Email'       => 'nullable|email|max:100|unique:BANG_TaiKhoan,Email',
+            'MaTK'        => 'nullable|string|max:50', // bật "required" nếu MaTK tự cấp
+            'TenDangNhap' => ['required','string','max:50', Rule::unique($table, 'TenDangNhap')],
+            'MatKhau'     => ['required','min:6'],
+            'VaiTro'      => ['required', Rule::in(['Admin','SinhVien','KhaoThi','CTCTHSSV','DoanTruong'])],
+            'Email'       => ['nullable','email','max:100', Rule::unique($table, 'Email')],
         ], [
             'TenDangNhap.unique' => 'Tên đăng nhập đã tồn tại.',
             'Email.unique'       => 'Email đã tồn tại.',
@@ -50,35 +46,34 @@ class AccountController extends Controller
             'Email'       => 'Email',
         ]);
 
-        DB::table('BANG_TaiKhoan')->insert([
+        $payload = [
+            'MaTK'        => $r->MaTK,     // nếu $incrementing=true và MaTK auto, dòng này không gây ảnh hưởng
             'TenDangNhap' => $r->TenDangNhap,
-            'MatKhau'     => Hash::make($r->MatKhau),
+            'MatKhau'     => $r->MatKhau,  // sẽ được mutator hash
             'VaiTro'      => $r->VaiTro,
             'TrangThai'   => 'Active',
             'Email'       => $r->Email,
-        ]);
+        ];
+
+        // Nếu MaTK auto-increment, loại bỏ key rỗng để Eloquent tự tạo
+        if ($payload['MaTK'] === null || $payload['MaTK'] === '') unset($payload['MaTK']);
+
+        TaiKhoan::create($payload);
 
         return back()->with('ok', 'Đã thêm tài khoản.');
     }
 
     public function update(Request $r)
     {
-        // Lỗi hiển thị trong modal Sửa (bag 'edit')
+        $table = TaiKhoan::tableName();
+
         $r->validateWithBag('edit', [
             'MaTK'        => 'required|string|max:50',
-            'TenDangNhap' => [
-                'required',
-                'string',
-                'max:50',
-                Rule::unique('BANG_TaiKhoan', 'TenDangNhap')->ignore($r->MaTK, 'MaTK'),
-            ],
-            'VaiTro'      => 'required|in:Admin,SinhVien,KhaoThi,CTCTHSSV,DoanTruong',
-            'Email'       => [
-                'nullable',
-                'email',
-                'max:100',
-                Rule::unique('BANG_TaiKhoan', 'Email')->ignore($r->MaTK, 'MaTK'),
-            ],
+            'TenDangNhap' => ['required','string','max:50', Rule::unique($table, 'TenDangNhap')->ignore($r->MaTK, 'MaTK')],
+            'MatKhau'     => ['nullable','min:6'],
+            'VaiTro'      => ['required', Rule::in(['Admin','SinhVien','KhaoThi','CTCTHSSV','DoanTruong'])],
+            'Email'       => ['nullable','email','max:100', Rule::unique($table, 'Email')->ignore($r->MaTK, 'MaTK')],
+            'TrangThai'   => ['nullable','in:Active,Inactive,Locked'],
         ], [
             'TenDangNhap.unique' => 'Tên đăng nhập đã tồn tại.',
             'Email.unique'       => 'Email đã tồn tại.',
@@ -89,27 +84,28 @@ class AccountController extends Controller
             'Email'       => 'Email',
         ]);
 
+        $tk = TaiKhoan::findOrFail($r->MaTK);
+
         $data = [
             'TenDangNhap' => $r->TenDangNhap,
             'VaiTro'      => $r->VaiTro,
             'TrangThai'   => $r->TrangThai ?? 'Active',
             'Email'       => $r->Email,
         ];
+
         if ($r->filled('MatKhau')) {
-            $data['MatKhau'] = Hash::make($r->MatKhau);
+            $data['MatKhau'] = $r->MatKhau; // mutator sẽ hash
         }
 
-        DB::table('BANG_TaiKhoan')->where('MaTK', $r->MaTK)->update($data);
+        $tk->update($data);
 
         return back()->with('ok', 'Đã cập nhật tài khoản.');
     }
 
-
-
     public function delete(Request $r)
     {
-        $r->validate(['MaTK' => 'required|string']); // MaTK có thể là MSSV có dấu chấm/0 đầu
-        DB::table('BANG_TaiKhoan')->where('MaTK', $r->MaTK)->delete();
+        $r->validate(['MaTK' => 'required|string']);
+        TaiKhoan::destroy($r->MaTK);
         return back()->with('ok', 'Đã xóa tài khoản.');
     }
 
@@ -118,47 +114,37 @@ class AccountController extends Controller
         $r->validate([
             'file' => 'required|file|mimes:xlsx,xls,csv|max:5120',
         ]);
-        $file = $r->file('file');
 
-        // Đọc hàng tiêu đề 1 cách “an toàn”
-        $arr = (new HeadingRowImport)->toArray($file);
-
-        // Sheet đầu, dòng đầu
+        // Kiểm tra header “an toàn” (giữ nguyên logic cũ)
+        $arr = (new HeadingRowImport)->toArray($r->file('file'));
         $firstRow = $arr[0][0] ?? [];
-
-        // Hỗ trợ cả 2 dạng: assoc (key=header) hoặc numeric (value=header)
         $headers = [];
         foreach ((array)$firstRow as $k => $v) {
             $headers[] = is_string($k) ? $k : $v;
         }
-
-        // Chuẩn hoá: bỏ khoảng trắng, xuống dòng, về lowercase
         $headers = array_map(function ($h) {
             $h = is_string($h) ? $h : '';
             $h = trim($h);
-            $h = preg_replace('/\s+/u', '', $h);   // xoá mọi khoảng trắng
+            $h = preg_replace('/\s+/u', '', $h);
             return mb_strtolower($h, 'UTF-8');
         }, $headers);
 
-        // Required headers
-        $required = ['matk', 'tendangnhap', 'matkhau', 'vaitro', 'email'];
-
-        // Tính cột thiếu
-        $missing = array_values(array_diff($required, $headers));
+        $required = \App\Imports\AccountsImport::$requiredHeaders;
+        $missing  = array_values(array_diff($required, $headers));
         if (!empty($missing)) {
             return back()->withErrors('File Excel thiếu cột: ' . implode(', ', $missing));
         }
 
-        // ===== Import dữ liệu =====
-        $import = new \App\Imports\AccountsImport();
+        $import = new AccountsImport();
         try {
-            \Maatwebsite\Excel\Facades\Excel::import($import, $file);
+            \Maatwebsite\Excel\Facades\Excel::import($import, $r->file('file'));
         } catch (\Throwable $e) {
             return back()->withErrors('Import lỗi: ' . $e->getMessage());
         }
 
         if ($import->failures()->isNotEmpty()) {
             $msg = [];
+            /** @var \Maatwebsite\Excel\Validators\Failure $f */
             foreach ($import->failures()->take(5) as $f) {
                 $msg[] = 'Dòng ' . $f->row() . ': ' . implode('; ', $f->errors());
             }
@@ -169,9 +155,6 @@ class AccountController extends Controller
             return back()->withErrors('File không có dữ liệu hợp lệ để import.');
         }
 
-        return back()->with(
-            'ok',
-            "Nhập thành công: Tổng {$import->total}, Thêm {$import->inserted}, Cập nhật {$import->updated}"
-        );
+        return back()->with('ok', "Nhập thành công: Tổng {$import->total}, Thêm {$import->inserted}, Cập nhật {$import->updated}");
     }
 }

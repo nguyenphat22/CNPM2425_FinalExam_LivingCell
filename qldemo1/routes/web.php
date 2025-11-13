@@ -18,28 +18,38 @@ Route::post('/logout',      [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/forgot',       [AuthController::class, 'showForgot'])->name('forgot.show');
 Route::post('/forgot',      [AuthController::class, 'handleForgot'])->name('forgot.handle');
-Route::get('/reset',        [AuthController::class, 'showReset'])->name('reset.show');        // sau khi verify
+Route::get('/reset',        [AuthController::class, 'showReset'])->name('reset.show');        
 Route::post('/reset',       [AuthController::class, 'handleReset'])->name('reset.handle');
 
-// Dashboards theo vai trò (chỉ UI)
+// Dashboards theo vai trò
 Route::middleware(['auth.session', 'active'])->group(function () {
     Route::get('/admin',        [DashboardController::class, 'admin'])->name('admin.home');
     Route::get('/sinhvien',     [DashboardController::class, 'sinhvien'])->name('sv.home');
     Route::get('/ctct-hssv',    [DashboardController::class, 'ctct'])->name('ctct.home');
     Route::get('/khaothi',      [DashboardController::class, 'khaothi'])->name('khaothi.home');
     Route::get('/doantruong',   [DashboardController::class, 'doan'])->name('doan.home');
-    Route::post('/admin/accounts/import', [AccountController::class, 'import'])->name('admin.accounts.import');
-
-    // Admin: Danh sách tài khoản (UI + phân trang đọc từ DB)
-    Route::get('/admin/accounts',                  [AccountController::class, 'index'])->name('admin.accounts.index');
-    Route::post('/admin/accounts/store',           [AccountController::class, 'store'])->name('admin.accounts.store');   // demo
-    Route::post('/admin/accounts/update',          [AccountController::class, 'update'])->name('admin.accounts.update'); // demo
-    Route::post('/admin/accounts/delete',          [AccountController::class, 'delete'])->name('admin.accounts.delete'); // demo
 });
 // Admin Home -> redirect sang danh sách tài khoản
-Route::get('/admin', function () {
-    return redirect()->route('admin.accounts.index');
-})->name('admin.home');
+Route::prefix('admin')
+    ->middleware(['auth.session', 'active', 'role:Admin'])
+    ->name('admin.')
+    ->group(function () {
+
+        // Admin home → chuyển thẳng sang danh sách tài khoản
+        Route::redirect('/', '/admin/accounts')->name('home');
+
+        // Accounts
+        Route::controller(AccountController::class)
+            ->prefix('accounts')
+            ->name('accounts.')
+            ->group(function () {
+                Route::get('/',        'index')->name('index');
+                Route::post('/store',  'store')->name('store');     // thêm
+                Route::post('/update', 'update')->name('update');   // sửa
+                Route::post('/delete', 'delete')->name('delete');   // xóa
+                Route::post('/import', 'import')->name('import');   // import Excel
+            });
+    });
 // Khao Thi routes
 Route::prefix('khaothi')
     ->middleware(['auth.session', 'active', 'role:KhaoThi'])
@@ -52,9 +62,10 @@ Route::prefix('khaothi')
         Route::get('/gpa',         [KhaothiController::class, 'gpaIndex'])->name('gpa.index');
         Route::post('/gpa/update', [KhaothiController::class, 'gpaUpdate'])->name('gpa.update');
         Route::post('/gpa/delete', [KhaothiController::class, 'gpaDelete'])->name('gpa.delete');
-        Route::post('/gpa/import', [KhaothiController::class, 'gpaImport'])->name('gpa.import'); // ✅ thêm dòng này
+        Route::post('/gpa/import', [KhaothiController::class, 'gpaImport'])->name('gpa.import'); 
         Route::get ('/gpa/export', [KhaothiController::class, 'gpaExport'])->name('gpa.export');
     });
+
 // CTCT HSSV routes
 Route::prefix('ctct')
     ->middleware(['auth.session', 'active', 'role:CTCTHSSV'])

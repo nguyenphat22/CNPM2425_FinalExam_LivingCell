@@ -11,22 +11,37 @@ class TaiKhoan extends Model
     protected $primaryKey = 'MaTK';
     public $timestamps = false;
 
-    // Nếu MaTK là AUTO INCREMENT (int) thì giữ mặc định.
-    // Nếu MaTK là chuỗi MSSV/MSCB, mở 2 dòng dưới và tự truyền MaTK khi create():
+    // Nếu MaTK là chuỗi (MSSV/MSCB) tự cấp khoá, bật 2 dòng dưới:
     // public $incrementing = false;
     // protected $keyType = 'string';
 
     protected $fillable = [
-        'TenDangNhap', 'MatKhau', 'VaiTro', 'TrangThai', 'Email',
-        // 'MaTK', // chỉ thêm nếu $incrementing=false và bạn tự cấp khóa
+        'MaTK', 'TenDangNhap', 'MatKhau', 'VaiTro', 'TrangThai', 'Email',
     ];
 
     protected $hidden = ['MatKhau'];
 
-    // Hash mật khẩu khi được gán (create/fill/update)
+    // Hash mật khẩu khi gán
     public function setMatKhauAttribute($value)
     {
-        if ($value === null || $value === '') return; // không động vào nếu không truyền
+        if ($value === null || $value === '') return;
         $this->attributes['MatKhau'] = Hash::make($value);
+    }
+
+    /* ---------- Scopes ---------- */
+    public function scopeFilterQ($q, ?string $kw)
+    {
+        if (!$kw) return $q;
+        $kw = trim($kw);
+        return $q->where(function ($s) use ($kw) {
+            $s->where('TenDangNhap', 'like', "%{$kw}%")
+              ->orWhere('VaiTro', 'like', "%{$kw}%")
+              ->orWhere('TrangThai', 'like', "%{$kw}%");
+        });
+    }
+
+    public static function tableName(): string
+    {
+        return (new static)->getTable();
     }
 }

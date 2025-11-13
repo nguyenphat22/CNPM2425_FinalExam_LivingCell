@@ -2,8 +2,7 @@
 
 namespace App\Imports;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use App\Models\TaiKhoan;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -19,8 +18,7 @@ class AccountsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
     public int $inserted = 0;
     public int $updated = 0;
 
-    /** Các cột bắt buộc trong file Excel */
-    public static array $requiredHeaders = ['matk', 'tendangnhap', 'matkhau', 'vaitro', 'email'];
+    public static array $requiredHeaders = ['matk','tendangnhap','matkhau','vaitro','email'];
 
     public static function missingHeaders(array $headers): array
     {
@@ -32,7 +30,6 @@ class AccountsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
     {
         $this->total++;
 
-        // chuẩn hoá key
         $row = array_change_key_case($row, CASE_LOWER);
 
         $maTK        = trim((string)($row['matk'] ?? ''));
@@ -42,41 +39,44 @@ class AccountsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
         $email       = trim((string)($row['email'] ?? ''));
 
         if (!$maTK || !$tenDangNhap || !$vaiTro) {
-            return null; // bỏ qua dòng trống hoặc thiếu dữ liệu chính
+            return null;
         }
 
-        $exist = DB::table('BANG_TaiKhoan')->where('MaTK', $maTK)->first();
-
-        $data = [
+        $payload = [
             'TenDangNhap' => $tenDangNhap,
             'VaiTro'      => $vaiTro,
             'TrangThai'   => 'Active',
             'Email'       => $email ?: null,
         ];
-        if ($matKhau) {
-            $data['MatKhau'] = Hash::make($matKhau);
+
+        if ($matKhau !== '') {
+            // để mutator hash
+            $payload['MatKhau'] = $matKhau;
         }
 
-        if ($exist) {
-            DB::table('BANG_TaiKhoan')->where('MaTK', $maTK)->update($data);
-            $this->updated++;
-        } else {
-            $data['MaTK'] = $maTK;
-            DB::table('BANG_TaiKhoan')->insert($data);
-            $this->inserted++;
-        }
+        // Nếu bản ghi tồn tại -> update, ngược lại -> create
+        $exists = TaiKhoan::query()->where('MaTK', $maTK)->exists();
+
+        TaiKhoan::updateOrCreate(
+            ['MaTK' => $maTK],
+            $payload
+        );
+
+        if ($exists) $this->updated++; else $this->inserted++;
 
         return null;
     }
 
     public function rules(): array
     {
+        $table = TaiKhoan::tableName();
+
         return [
-            '*.matk'        => ['required', 'max:50'],
-            '*.tendangnhap' => ['required', 'max:50'],
-            '*.matkhau'     => ['nullable', 'regex:/^.{6,}$/'], // >=6 ký tự
+            '*.matk'        => ['required','max:50'],
+            '*.tendangnhap' => ['required','max:50'],
+            '*.matkhau'     => ['nullable','regex:/^.{6,}$/'],
             '*.vaitro'      => ['required', Rule::in(['Admin','SinhVien','KhaoThi','CTCTHSSV','DoanTruong'])],
-            '*.email'       => ['nullable', 'email', 'max:100'],
+            '*.email'       => ['nullable','email','max:100'],
         ];
     }
 

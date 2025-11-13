@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/SinhVienController.php
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;

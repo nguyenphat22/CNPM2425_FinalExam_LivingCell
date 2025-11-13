@@ -27,7 +27,7 @@ class CtctController extends Controller
         $q = trim((string) $r->input('q'));
 
         $query = DB::table('BANG_SinhVien')
-            ->select('MaSV', 'HoTen', 'NgaySinh', 'Khoa', 'Lop', 'MaTK'); // 👈 thêm MaTK
+            ->select('MaSV', 'HoTen', 'NgaySinh', 'Khoa', 'Lop', 'MaTK'); 
 
         if ($q !== '') {
             $query->where(function ($s) use ($q) {
@@ -35,7 +35,7 @@ class CtctController extends Controller
                     ->orWhere('HoTen', 'like', "%{$q}%")
                     ->orWhere('Khoa', 'like', "%{$q}%")
                     ->orWhere('Lop', 'like', "%{$q}%")
-                    ->orWhere('MaTK', 'like', "%{$q}%"); // (tuỳ chọn) cho phép tìm theo MaTK
+                    ->orWhere('MaTK', 'like', "%{$q}%"); 
             });
         }
 
@@ -60,7 +60,7 @@ class CtctController extends Controller
                 'nullable',
                 'integer',
                 Rule::exists('BANG_TaiKhoan', 'MaTK')->where(fn($q) => $q->where('VaiTro', 'SinhVien')),
-                Rule::unique('BANG_SinhVien', 'MaTK'), // không trùng với SV khác
+                Rule::unique('BANG_SinhVien', 'MaTK'), 
             ],
         ], [], [
             'MaSV' => 'MSSV',
@@ -168,7 +168,7 @@ class CtctController extends Controller
                             $maTK  = $row['matk'] ?? null;
 
                             // Dòng hiển thị = index + 2 (vì có tiêu đề)
-                            $line = $idx + 2;
+                            $line = ((int) $idx) + 2;
 
                             if ($maSV === '' || $hoTen === '') {
                                 $this->failures->push("Dòng {$line}: thiếu MSSV hoặc HoTen.");

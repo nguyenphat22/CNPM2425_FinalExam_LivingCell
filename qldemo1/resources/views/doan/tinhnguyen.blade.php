@@ -53,7 +53,7 @@
             <td>{{ $r->MaSV }}</td>
             <td>{{ $r->HoTen }}</td>
             <td>{{ $r->TenHoatDong ?? '— Chưa có —' }}</td>
-            <td>{{ $r->NgayThamGia ?? '—' }}</td>
+            <td>{{ $r->NgayThamGiaText ?? '—' }}</td>
             <td>{{ $r->SoNgayTN ?? '—' }}</td>
            <td>
 @php

@@ -6,17 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class DiemRenLuyen extends Model
 {
-    protected $table = 'BANG_DiemRenLuyen';
-    public $timestamps = false;
+    protected $table      = 'BANG_DiemRenLuyen';
+    protected $primaryKey = null;
+    public $timestamps    = false;
 
-    // Bảng này dùng khóa tổng hợp (MaSV, HocKy, NamHoc)
-    // -> không dùng incrementing / primaryKey mặc định
-    public $incrementing = false;
+    protected $fillable = ['MaSV','HocKy','NamHoc','DiemRL'];
 
-    protected $fillable = ['MaSV','HocKy','NamHoc','DiemRL','XepLoai'];
-
-    public function sinhvien()
+    public static function maxDrlByStudent(array $masv): array
     {
-        return $this->belongsTo(SinhVien::class, 'MaSV', 'MaSV');
+        return static::query()
+            ->whereIn('MaSV', $masv)
+            ->selectRaw('MaSV, MAX(DiemRL) as DiemRL')
+            ->groupBy('MaSV')
+            ->pluck('DiemRL', 'MaSV')
+            ->toArray();
     }
 }
