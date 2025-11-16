@@ -8,6 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Models\TaiKhoan;
 use Maatwebsite\Excel\HeadingRowImport;
 use App\Imports\AccountsImport;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AccountController extends Controller
 {
@@ -16,13 +19,13 @@ class AccountController extends Controller
         $q = $r->input('q');
 
         $data = TaiKhoan::query()
-            ->select('MaTK','TenDangNhap','MatKhau','VaiTro','TrangThai','Email')
+            ->select('MaTK', 'TenDangNhap', 'MatKhau', 'VaiTro', 'TrangThai', 'Email')
             ->filterQ($q)
             ->orderBy('MaTK')
             ->paginate(10)
             ->withQueryString();
 
-        return view('admin.accounts.index', compact('data','q'));
+        return view('admin.accounts.index', compact('data', 'q'));
     }
 
     // Demo store/update/delete để form hoạt động
@@ -32,10 +35,10 @@ class AccountController extends Controller
 
         $r->validateWithBag('add', [
             'MaTK'        => 'nullable|string|max:50', // bật "required" nếu MaTK tự cấp
-            'TenDangNhap' => ['required','string','max:50', Rule::unique($table, 'TenDangNhap')],
-            'MatKhau'     => ['required','min:6'],
-            'VaiTro'      => ['required', Rule::in(['Admin','SinhVien','KhaoThi','CTCTHSSV','DoanTruong'])],
-            'Email'       => ['nullable','email','max:100', Rule::unique($table, 'Email')],
+            'TenDangNhap' => ['required', 'string', 'max:50', Rule::unique($table, 'TenDangNhap')],
+            'MatKhau'     => ['required', 'min:6'],
+            'VaiTro'      => ['required', Rule::in(['Admin', 'SinhVien', 'KhaoThi', 'CTCTHSSV', 'DoanTruong'])],
+            'Email'       => ['nullable', 'email', 'max:100', Rule::unique($table, 'Email')],
         ], [
             'TenDangNhap.unique' => 'Tên đăng nhập đã tồn tại.',
             'Email.unique'       => 'Email đã tồn tại.',
@@ -69,11 +72,11 @@ class AccountController extends Controller
 
         $r->validateWithBag('edit', [
             'MaTK'        => 'required|string|max:50',
-            'TenDangNhap' => ['required','string','max:50', Rule::unique($table, 'TenDangNhap')->ignore($r->MaTK, 'MaTK')],
-            'MatKhau'     => ['nullable','min:6'],
-            'VaiTro'      => ['required', Rule::in(['Admin','SinhVien','KhaoThi','CTCTHSSV','DoanTruong'])],
-            'Email'       => ['nullable','email','max:100', Rule::unique($table, 'Email')->ignore($r->MaTK, 'MaTK')],
-            'TrangThai'   => ['nullable','in:Active,Inactive,Locked'],
+            'TenDangNhap' => ['required', 'string', 'max:50', Rule::unique($table, 'TenDangNhap')->ignore($r->MaTK, 'MaTK')],
+            'MatKhau'     => ['nullable', 'min:6'],
+            'VaiTro'      => ['required', Rule::in(['Admin', 'SinhVien', 'KhaoThi', 'CTCTHSSV', 'DoanTruong'])],
+            'Email'       => ['nullable', 'email', 'max:100', Rule::unique($table, 'Email')->ignore($r->MaTK, 'MaTK')],
+            'TrangThai'   => ['nullable', 'in:Active,Inactive,Locked'],
         ], [
             'TenDangNhap.unique' => 'Tên đăng nhập đã tồn tại.',
             'Email.unique'       => 'Email đã tồn tại.',
@@ -156,5 +159,45 @@ class AccountController extends Controller
         }
 
         return back()->with('ok', "Nhập thành công: Tổng {$import->total}, Thêm {$import->inserted}, Cập nhật {$import->updated}");
+    }
+    public function downloadTemplate(): StreamedResponse
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Tiêu đề cột
+        $columns = [
+            'A1' => 'MaTK',
+            'B1' => 'TenDangNhap',
+            'C1' => 'MatKhau',
+            'D1' => 'VaiTro',
+            'E1' => 'TrangThai',
+            'F1' => 'Email'
+        ];
+
+        foreach ($columns as $cell => $value) {
+            $sheet->setCellValue($cell, $value);
+        }
+
+        // Style tiêu đề
+        $sheet->getStyle('A1:F1')->getFont()->setBold(true);
+        $sheet->getColumnDimension('A')->setWidth(12);
+        $sheet->getColumnDimension('B')->setWidth(22);
+        $sheet->getColumnDimension('C')->setWidth(18);
+        $sheet->getColumnDimension('D')->setWidth(15);
+        $sheet->getColumnDimension('E')->setWidth(15);
+        $sheet->getColumnDimension('F')->setWidth(25);
+
+        // Xuất file xlsx
+        $fileName = 'mau_taikhoan.xlsx';
+        $writer = new Xlsx($spreadsheet);
+
+        return new StreamedResponse(function () use ($writer) {
+            $writer->save('php://output');
+        }, 200, [
+            'Content-Type'        => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => "attachment; filename=\"mau_taikhoan.xlsx\"",
+            'Cache-Control'       => 'max-age=0',
+        ]);
     }
 }

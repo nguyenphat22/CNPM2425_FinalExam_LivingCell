@@ -18,9 +18,13 @@
   <i class="bi bi-cloud-upload me-1"></i> Upload file
 </button>
       </form>
-
-      {{-- Xuất báo cáo (gắn route nếu có) --}}
-      <a class="btn btn-soft-success btn-animate ripple"
+{{--  Mẫu Excel DRL --}}
+  <a href="{{ route('ctct.drl.template') }}"
+     class="btn btn-soft-success btn-animate ripple">
+    <i class="bi bi-file-earmark-excel me-1"></i> Mẫu Excel
+  </a>
+      {{-- Xuất báo cáo  --}}
+      <a class="btn btn-soft-info btn-animate ripple"
    href="{{ route('ctct.drl.export', ['hk'=>$hk, 'nh'=>$nh, 'q'=>$q]) }}">
   <i class="bi bi-file-earmark-excel me-1"></i> Xuất báo cáo Excel
 </a>

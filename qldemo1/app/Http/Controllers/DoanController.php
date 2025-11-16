@@ -18,6 +18,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use App\Imports\NtnImport;
 use App\Models\TaiKhoan;
 use Illuminate\Support\Facades\Hash;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DoanController extends Controller
 {
@@ -251,7 +254,42 @@ public function changePassword(Request $request)
         return back()->withErrors('Import lỗi: ' . $e->getMessage());
     }
 }
+    public function ntnTemplate(): StreamedResponse
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
 
+        // Header đúng theo cột bạn yêu cầu
+        $headers = [
+            'A1' => 'masv',
+            'B1' => 'tenhoatdong',
+            'C1' => 'ngaythamgia',
+            'D1' => 'songaytn',
+            'E1' => 'trangthaiduyet',
+        ];
+
+        foreach ($headers as $cell => $text) {
+            $sheet->setCellValue($cell, $text);
+        }
+
+        // In đậm + chỉnh rộng cột
+        $sheet->getStyle('A1:E1')->getFont()->setBold(true);
+        $sheet->getColumnDimension('A')->setWidth(16);
+        $sheet->getColumnDimension('B')->setWidth(32);
+        $sheet->getColumnDimension('C')->setWidth(16);
+        $sheet->getColumnDimension('D')->setWidth(14);
+        $sheet->getColumnDimension('E')->setWidth(20);
+
+        $writer = new Xlsx($spreadsheet);
+
+        return new StreamedResponse(function () use ($writer) {
+            $writer->save('php://output');
+        }, 200, [
+            'Content-Type'        => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="mau_ngay_tinh_nguyen.xlsx"',
+            'Cache-Control'       => 'max-age=0',
+        ]);
+    }
     /* ======================== Danh hiệu ======================== */
     public function danhHieuIndex(Request $r)
     {

@@ -70,7 +70,7 @@ class SinhVienController extends Controller
         $ngaySinh = null;
         if (!empty($sv->NgaySinh)) {
             try {
-                $ngaySinh = Carbon::parse($sv->NgaySinh)->format('Y-m-d');
+                $ngaySinh = Carbon::parse($sv->NgaySinh)->format('d/m/Y');
             } catch (\Throwable $e) {
                 $ngaySinh = $sv->NgaySinh;
             }

@@ -48,6 +48,7 @@ Route::prefix('admin')
                 Route::post('/update', 'update')->name('update');   // sửa
                 Route::post('/delete', 'delete')->name('delete');   // xóa
                 Route::post('/import', 'import')->name('import');   // import Excel
+                Route::get('/template', 'downloadTemplate')->name('template');
             });
     });
 // Khao Thi routes
@@ -64,6 +65,7 @@ Route::prefix('khaothi')
         Route::post('/gpa/delete', [KhaothiController::class, 'gpaDelete'])->name('gpa.delete');
         Route::post('/gpa/import', [KhaothiController::class, 'gpaImport'])->name('gpa.import');
         Route::get('/gpa/export', [KhaothiController::class, 'gpaExport'])->name('gpa.export');
+        Route::get('/gpa/template', [KhaothiController::class, 'gpaTemplate'])->name('gpa.template');
 
         // Đổi mật khẩu tài khoản KhaoThi
         Route::post('/password/change', [KhaothiController::class, 'changePassword'])
@@ -86,6 +88,8 @@ Route::prefix('ctct')
         Route::post('/sinhvien/update', [CtctController::class, 'svUpdate'])->name('sv.update');
         Route::post('/sinhvien/delete', [CtctController::class, 'svDelete'])->name('sv.delete');
         Route::post('/sinhvien/import', [CtctController::class, 'svImport'])->name('sv.import');
+        Route::get('/sinhvien/template', [CtctController::class, 'svTemplate'])->name('sv.template');
+
 
         // Điểm rèn luyện
         Route::get('/drl',         [CtctController::class, 'drlIndex'])->name('drl.index');
@@ -93,6 +97,8 @@ Route::prefix('ctct')
         Route::post('/drl/delete',  [CtctController::class, 'drlDelete'])->name('drl.delete');
         Route::post('/drl/import',  [CtctController::class, 'drlImport'])->name('drl.import');
         Route::get('/drl/export',  [CtctController::class, 'drlExport'])->name('drl.export'); 
+        Route::get('/drl/template', [CtctController::class, 'drlTemplate'])->name('drl.template');
+
 
         // Đổi mật khẩu tài khoản CTCT-HSSV
         Route::post('/doimatkhau', [CtctController::class, 'changePassword'])
@@ -110,6 +116,9 @@ Route::prefix('doantruong')
         Route::get('/khenthuong', [DoanController::class, 'khenThuongIndex'])->name('khenthuong.index');
         Route::get('/tinhnguyen', [DoanController::class, 'tinhNguyenIndex'])->name('tinhnguyen.index');
         Route::get('/danhhieu',   [DoanController::class, 'danhHieuIndex'])->name('danhhieu.index');
+        // Mẫu Excel ngày tình nguyện
+        Route::get('/tinhnguyen/template', [DoanController::class, 'ntnTemplate'])
+            ->name('tinhnguyen.template');
 
         // Export khen thưởng
         Route::get('/khenthuong/export', [DoanController::class, 'exportExcel'])

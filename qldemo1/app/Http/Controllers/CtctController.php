@@ -16,6 +16,11 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
+
 
 
 class CtctController extends Controller
@@ -164,6 +169,7 @@ class CtctController extends Controller
                             $maSV  = trim((string)($row['masv']     ?? ''));
                             $hoTen = trim((string)($row['hoten']    ?? ''));
                             $ngay  = trim((string)($row['ngaysinh'] ?? ''));
+                            $rawNgay = $row['ngaysinh'] ?? null;
                             $khoa  = trim((string)($row['khoa']     ?? ''));
                             $lop   = trim((string)($row['lop']      ?? ''));
                             $maTK  = $row['matk'] ?? null;
@@ -211,23 +217,53 @@ class CtctController extends Controller
                                 }
                             }
 
-                            // Chuẩn ngày
-                            $ngaySinh = null;
-                            if ($ngay !== '') {
-                                try {
-                                    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $ngay)) {
-                                        $ngaySinh = $ngay; // yyyy-mm-dd
-                                    } elseif (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $ngay)) {
-                                        $ngaySinh = Carbon::createFromFormat('d/m/Y', $ngay)->format('Y-m-d');
-                                    } else {
-                                        $ngaySinh = Carbon::parse($ngay)->format('Y-m-d');
-                                    }
-                                } catch (\Throwable $e) {
-                                    // để null nếu không parse được
-                                    $ngaySinh = null;
-                                }
-                            }
+                            // ===== Chuẩn hoá NgaySinh =====
+$ngaySinh = null;
 
+if ($rawNgay !== null && $rawNgay !== '') {
+
+    // 1) Nếu là DateTime (thường khi dùng Excel date)
+    if ($rawNgay instanceof \DateTimeInterface) {
+        $ngaySinh = Carbon::instance($rawNgay)->format('Y-m-d');
+
+    // 2) Nếu là số serial của Excel
+    } elseif (is_numeric($rawNgay)) {
+        try {
+            $ngaySinh = ExcelDate::excelToDateTimeObject($rawNgay)->format('Y-m-d');
+        } catch (\Throwable $e) {
+            $ngaySinh = null;
+        }
+
+    // 3) Nếu là chuỗi (29/12/2005, 2005-12-29, ...)
+    } else {
+        $ngay = trim((string)$rawNgay);
+        if ($ngay !== '') {
+            try {
+                if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $ngay)) {
+                    // yyyy-mm-dd
+                    $ngaySinh = $ngay;
+                } elseif (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $ngay)) {
+                    // dd/mm/yyyy
+                    $ngaySinh = Carbon::createFromFormat('d/m/Y', $ngay)->format('Y-m-d');
+                } elseif (preg_match('/^\d{2}-\d{2}-\d{4}$/', $ngay)) {
+                    // dd-mm-yyyy
+                    $ngaySinh = Carbon::createFromFormat('d-m-Y', $ngay)->format('Y-m-d');
+                } else {
+                    // Cho Carbon tự đoán
+                    $ngaySinh = Carbon::parse($ngay)->format('Y-m-d');
+                }
+            } catch (\Throwable $e) {
+                $ngaySinh = null;
+            }
+        }
+    }
+}
+
+// Nếu vẫn không parse được → báo lỗi, bỏ qua dòng để khỏi lỗi SQL
+if (!$ngaySinh) {
+    $this->failures->push("Dòng {$line}: NgaySinh không hợp lệ hoặc để trống.");
+    continue;
+}
                             $exists = DB::table('BANG_SinhVien')->where('MaSV', $maSV)->exists();
 
                             DB::table('BANG_SinhVien')->updateOrInsert(
@@ -283,6 +319,39 @@ class CtctController extends Controller
         ->update(['MatKhau' => Hash::make($r->new_password)]);
 
     return back()->with('ok', 'Đổi mật khẩu thành công!');
+}
+public function svTemplate(): StreamedResponse
+{
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+
+    // Tiêu đề cột
+    $headers = ['A1' => 'MaSV', 'B1' => 'HoTen', 'C1' => 'NgaySinh',
+                'D1' => 'Khoa', 'E1' => 'Lop', 'F1' => 'MaTK'];
+
+    foreach ($headers as $cell => $value) {
+        $sheet->setCellValue($cell, $value);
+    }
+
+    // In đậm + chỉnh rộng cột
+    $sheet->getStyle('A1:F1')->getFont()->setBold(true);
+    $sheet->getColumnDimension('A')->setWidth(18);
+    $sheet->getColumnDimension('B')->setWidth(28);
+    $sheet->getColumnDimension('C')->setWidth(16);
+    $sheet->getColumnDimension('D')->setWidth(22);
+    $sheet->getColumnDimension('E')->setWidth(16);
+    $sheet->getColumnDimension('F')->setWidth(12);
+
+    $fileName = 'mau_sinhvien.xlsx';
+    $writer   = new Xlsx($spreadsheet);
+
+    return new StreamedResponse(function () use ($writer) {
+        $writer->save('php://output');
+    }, 200, [
+        'Content-Type'        => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'Content-Disposition' => "attachment; filename=\"mau_sinhvien.xlsx\"",
+        'Cache-Control'       => 'max-age=0',
+    ]);
 }
     /**
      * Trang quản lý điểm rèn luyện (placeholder)
@@ -387,4 +456,41 @@ class CtctController extends Controller
 
         return back()->with('ok', $deleted ? 'Đã xóa điểm rèn luyện.' : 'Không tìm thấy bản ghi để xóa.');
     }
+    public function drlTemplate(): StreamedResponse
+{
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+
+    // Dòng tiêu đề
+    $headers = [
+        'A1' => 'MaSV',
+        'B1' => 'HocKy',
+        'C1' => 'NamHoc',
+        'D1' => 'DiemRL',
+        'E1' => 'XepLoai',
+    ];
+
+    foreach ($headers as $cell => $value) {
+        $sheet->setCellValue($cell, $value);
+    }
+
+    // In đậm + set width cho dễ nhìn
+    $sheet->getStyle('A1:E1')->getFont()->setBold(true);
+    $sheet->getColumnDimension('A')->setWidth(18);
+    $sheet->getColumnDimension('B')->setWidth(10);
+    $sheet->getColumnDimension('C')->setWidth(14);
+    $sheet->getColumnDimension('D')->setWidth(12);
+    $sheet->getColumnDimension('E')->setWidth(16);
+
+    $fileName = 'mau_diem_ren_luyen.xlsx';
+    $writer   = new Xlsx($spreadsheet);
+
+    return new StreamedResponse(function () use ($writer) {
+        $writer->save('php://output');
+    }, 200, [
+        'Content-Type'        => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'Content-Disposition' => "attachment; filename=\"mau_diem_ren_luyen.xlsx\"",
+        'Cache-Control'       => 'max-age=0',
+    ]);
+}
 }

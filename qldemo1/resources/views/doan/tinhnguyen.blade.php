@@ -15,7 +15,11 @@
   <i class="bi bi-cloud-upload me-1"></i> Upload file
 </button>
       </form>
-
+{{-- Nút tải Mẫu Excel --}}
+      <a href="{{ route('doan.tinhnguyen.template') }}"
+         class="btn btn-soft-success btn-animate ripple">
+        <i class="bi bi-file-earmark-excel me-1"></i> Mẫu Excel
+      </a>
       <button class="btn btn-soft-primary btn-animate ripple" data-bs-toggle="modal" data-bs-target="#addNTN">
   <i class="bi bi-plus-circle me-1"></i> Thêm
 </button>

@@ -31,10 +31,14 @@
 {{-- thanh công cụ: Lưu giả + Import + Thêm + Tìm --}}
 <div class="d-flex gap-2 mb-3 align-items-center">
   {{-- Nút Lưu giả (refresh trang + thông báo) --}}
-  <button id="btn-refresh" class="btn btn-soft-success btn-animate ripple">
+  <button id="btn-refresh" class="btn btn-soft-third btn-animate ripple">
     <i class="bi bi-check-circle me-1"></i> Lưu
   </button>
-
+{{-- Nút Mẫu Excel --}}
+  <a href="{{ route('ctct.sv.template') }}"
+     class="btn btn-soft-success btn-animate ripple">
+    <i class="bi bi-file-earmark-excel me-1"></i> Mẫu Excel
+  </a>
   {{-- *** FORM IMPORT PHẢI CÓ form + POST + enctype + csrf *** --}}
   <form method="post"
     action="{{ route('ctct.sv.import') }}"
@@ -80,9 +84,11 @@
         <td>{{ $r->HoTen }}</td>
         <td>
           @php
-          $d = $r->NgaySinh ? \Illuminate\Support\Carbon::parse($r->NgaySinh)->format('Y-m-d') : '';
-          @endphp
-          {{ $d }}
+$d = $r->NgaySinh
+    ? \Illuminate\Support\Carbon::parse($r->NgaySinh)->format('d/m/Y')
+    : '';
+@endphp
+{{ $d }}
         </td>
         <td>{{ $r->Khoa }}</td>
         <td>{{ $r->Lop }}</td>

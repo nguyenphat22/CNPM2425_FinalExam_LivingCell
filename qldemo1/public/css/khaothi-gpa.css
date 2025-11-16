@@ -150,3 +150,24 @@ h5.mb-3{
   justify-content: center;   
   align-items: center;       
 }
+/* Mẫu Excel – xanh lá nhạt */
+.btn-soft-success{
+  background:#e8fbe8;
+  color:#1f7a1f;
+  border:1px solid #d4f4d4;
+}
+.btn-soft-success:hover{
+  background:#dcf7dc;
+  color:#145c14;
+}
+
+/* Xuất báo cáo Excel – xanh dương nhạt */
+.btn-soft-info{
+  background:#e8f3ff;
+  color:#0d6efd;
+  border:1px solid #c7ddff;
+}
+.btn-soft-info:hover{
+  background:#d9eaff;
+  color:#0a58ca;
+}
