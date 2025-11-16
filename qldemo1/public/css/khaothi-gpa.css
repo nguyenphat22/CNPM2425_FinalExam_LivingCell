@@ -140,3 +140,13 @@ h5.mb-3{
 @media (max-width: 575.98px){
   .khaothi-gpa-toolbar.card{ grid-template-columns:1fr; }
 }
+/* Nút tìm kiếm GPA */
+.btn-search {
+  padding: 0.375rem 0.9rem;
+  min-width: 70px;
+  white-space: nowrap;
+
+  display: flex;          
+  justify-content: center;   
+  align-items: center;       
+}

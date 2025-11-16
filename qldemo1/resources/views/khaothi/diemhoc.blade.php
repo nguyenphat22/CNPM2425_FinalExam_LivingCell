@@ -31,7 +31,9 @@
     </select>
     <input class="form-control" name="nh" value="{{ $nh }}" style="width:150px" placeholder="2024-2025">
     <input class="form-control" name="q" value="{{ $q }}" placeholder="Tìm MSSV / Họ tên">
-    <button class="btn btn-outline-primary btn-animate ripple">Tìm</button>
+    <button class="btn btn-outline-primary btn-animate ripple btn-search" type="submit">
+    Tìm
+</button>
   </form>
 </div>
 

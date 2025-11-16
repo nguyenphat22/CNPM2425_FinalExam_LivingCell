@@ -15,6 +15,7 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 
 class CtctController extends Controller
@@ -253,7 +254,36 @@ class CtctController extends Controller
         $msg = "Nhập file thành công. Thêm mới: {$inserted}, Cập nhật: {$updated}.";
         return back()->with('ok', $msg)->with('failures', $failures);
     }
+    public function changePassword(Request $r)
+{
+    $matk = session('auth.MaTK') ?? session('user.MaTK');
 
+    if (!$matk) {
+        return back()->withErrors(['old_password' => 'Không xác định tài khoản.']);
+    }
+
+    $r->validate([
+        'old_password' => 'required',
+        'new_password' => 'required|min:6|confirmed',
+    ], [
+        'old_password.required' => 'Vui lòng nhập mật khẩu cũ.',
+        'new_password.required' => 'Vui lòng nhập mật khẩu mới.',
+        'new_password.min' => 'Mật khẩu mới phải >= 6 ký tự.',
+        'new_password.confirmed' => 'Mật khẩu xác nhận không khớp.',
+    ]);
+
+    $acc = DB::table('BANG_TaiKhoan')->where('MaTK', $matk)->first();
+
+    if (!$acc || !Hash::check($r->old_password, $acc->MatKhau)) {
+        return back()->withErrors(['old_password' => 'Mật khẩu cũ không đúng.']);
+    }
+
+    DB::table('BANG_TaiKhoan')
+        ->where('MaTK', $matk)
+        ->update(['MatKhau' => Hash::make($r->new_password)]);
+
+    return back()->with('ok', 'Đổi mật khẩu thành công!');
+}
     /**
      * Trang quản lý điểm rèn luyện (placeholder)
      */

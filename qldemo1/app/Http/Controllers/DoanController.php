@@ -16,7 +16,8 @@ use App\Models\DiemHocTap;
 use App\Models\DiemRenLuyen;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Imports\NtnImport;
-
+use App\Models\TaiKhoan;
+use Illuminate\Support\Facades\Hash;
 
 class DoanController extends Controller
 {
@@ -95,6 +96,42 @@ class DoanController extends Controller
         $fileName = "Bao_cao_KhenThuong_{$hk}.xlsx";
         return Excel::download(new KhenThuongExport($hk), $fileName);
     }
+    /* ======================== Đổi mật khẩu Đoàn Trường ======================== */
+public function changePassword(Request $request)
+{
+    // 1. Validate
+    $request->validate([
+        'old_password' => ['required'],
+        'new_password' => ['required','string','min:6','confirmed','different:old_password'],
+    ], [
+        'old_password.required'      => 'Vui lòng nhập mật khẩu hiện tại.',
+        'new_password.required'      => 'Vui lòng nhập mật khẩu mới.',
+        'new_password.min'           => 'Mật khẩu mới phải có ít nhất 6 ký tự.',
+        'new_password.confirmed'     => 'Xác nhận mật khẩu không khớp.',
+        'new_password.different'     => 'Mật khẩu mới phải khác mật khẩu cũ.',
+    ]);
+
+    // 2. Lấy user từ session (mảng)
+    $user = session('user');
+    if (!$user || empty($user['MaTK'])) {
+        return back()->withErrors([
+            'old_password' => 'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.',
+        ]);
+    }
+
+    // 3. Lấy tài khoản tương ứng
+    $tk = TaiKhoan::findOrFail($user['MaTK']);   
+    // 4. Kiểm tra mật khẩu cũ
+    if (!Hash::check($request->old_password, $tk->MatKhau)) {
+        return back()->withErrors(['old_password' => 'Mật khẩu cũ không đúng.']);
+    }
+
+    // 5. Cập nhật mật khẩu mới
+    $tk->MatKhau = $request->new_password;  
+    $tk->save();
+
+    return back()->with('ok', 'Đã đổi mật khẩu thành công.');
+}
 
     /* ======================== Ngày tình nguyện ======================== */
     public function tinhNguyenIndex(Request $r)
