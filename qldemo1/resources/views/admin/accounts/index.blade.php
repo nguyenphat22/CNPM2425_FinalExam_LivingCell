@@ -10,7 +10,11 @@
     <button class="btn btn-soft-secondary btn-animate ripple" data-bs-toggle="modal" data-bs-target="#modalAdd">
       <i class="bi bi-plus-circle"></i> Thêm
     </button>
-
+{{-- Nút tải mẫu Excel --}}
+<a href="{{ route('admin.accounts.template') }}"
+   class="btn btn-soft-success btn-animate ripple">
+  <i class="bi bi-file-earmark-excel"></i> Mẫu Excel
+</a>
     <form method="post" action="{{ route('admin.accounts.import') }}" enctype="multipart/form-data" class="d-flex gap-2">
       @csrf
       <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv" required style="max-width:280px;">

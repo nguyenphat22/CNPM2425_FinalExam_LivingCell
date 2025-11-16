@@ -3,7 +3,15 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/ctct.css') }}">
-<h4 class="mb-3">Danh sách sinh viên</h4>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-3">Danh sách sinh viên</h4>
+
+    <button class="btn btn-soft-primary btn-animate ripple"
+            data-bs-toggle="modal"
+            data-bs-target="#modalChangePassword">
+        <i class="bi bi-gear-fill me-1"></i> Đổi mật khẩu
+    </button>
+</div>
 
 {{-- THÔNG BÁO --}}
 @if ($errors->has('file'))
@@ -23,10 +31,14 @@
 {{-- thanh công cụ: Lưu giả + Import + Thêm + Tìm --}}
 <div class="d-flex gap-2 mb-3 align-items-center">
   {{-- Nút Lưu giả (refresh trang + thông báo) --}}
-  <button id="btn-refresh" class="btn btn-soft-success btn-animate ripple">
+  <button id="btn-refresh" class="btn btn-soft-third btn-animate ripple">
     <i class="bi bi-check-circle me-1"></i> Lưu
   </button>
-
+{{-- Nút Mẫu Excel --}}
+  <a href="{{ route('ctct.sv.template') }}"
+     class="btn btn-soft-success btn-animate ripple">
+    <i class="bi bi-file-earmark-excel me-1"></i> Mẫu Excel
+  </a>
   {{-- *** FORM IMPORT PHẢI CÓ form + POST + enctype + csrf *** --}}
   <form method="post"
     action="{{ route('ctct.sv.import') }}"
@@ -72,9 +84,11 @@
         <td>{{ $r->HoTen }}</td>
         <td>
           @php
-          $d = $r->NgaySinh ? \Illuminate\Support\Carbon::parse($r->NgaySinh)->format('Y-m-d') : '';
-          @endphp
-          {{ $d }}
+$d = $r->NgaySinh
+    ? \Illuminate\Support\Carbon::parse($r->NgaySinh)->format('d/m/Y')
+    : '';
+@endphp
+{{ $d }}
         </td>
         <td>{{ $r->Khoa }}</td>
         <td>{{ $r->Lop }}</td>
@@ -223,6 +237,47 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary btn-animate ripple" data-bs-dismiss="modal">Hủy</button>
         <button class="btn btn-danger btn-animate ripple">Xóa</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Modal Đổi Mật Khẩu -->
+<div class="modal fade" id="modalChangePassword" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="{{ route('ctct.password.change') }}" class="modal-content">
+      @csrf
+      <div class="modal-header">
+        <h5 class="modal-title">Đổi mật khẩu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Mật khẩu cũ</label>
+          <input type="password" name="old_password" class="form-control" required>
+          @error('old_password')
+            <small class="text-danger">{{ $message }}</small>
+          @enderror
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Mật khẩu mới</label>
+          <input type="password" name="new_password" class="form-control" required>
+          <small class="text-muted">Tối thiểu 6 ký tự.</small>
+          @error('new_password')
+            <small class="text-danger">{{ $message }}</small>
+          @enderror
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Nhập lại mật khẩu mới</label>
+          <input type="password" name="new_password_confirmation" class="form-control" required>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary">Đổi mật khẩu</button>
       </div>
     </form>
   </div>

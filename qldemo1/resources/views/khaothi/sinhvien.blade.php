@@ -3,7 +3,15 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/khaothi.css') }}">
-<h5 class="mb-3">Danh sách sinh viên</h5>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="page-title mb-0">Danh sách sinh viên</h4>
+
+    <button class="btn btn-soft-primary btn-animate ripple"
+            data-bs-toggle="modal"
+            data-bs-target="#modalChangePassword">
+        <i class="bi bi-gear-fill me-1"></i> Đổi mật khẩu
+    </button>
+</div>
 
 <div class="khaothi-toolbar card mb-3">
   <form method="get" action="">
@@ -44,7 +52,51 @@
     </tbody>
   </table>
 </div>
+{{-- MODAL ĐỔI MẬT KHẨU KHAOTHI --}}
+<div class="modal fade" id="modalChangePassword" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form method="POST"
+          action="{{ route('khaothi.password.change') }}"
+          class="modal-content">
+      @csrf
 
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">Đổi mật khẩu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="mb-3">
+          <label class="form-label">Mật khẩu cũ</label>
+          <input type="password" name="old_password" class="form-control" required>
+          @error('old_password')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+          @enderror
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Mật khẩu mới</label>
+          <input type="password" name="new_password" class="form-control" required>
+          <small class="text-muted">Tối thiểu 6 ký tự.</small>
+          @error('new_password')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+          @enderror
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Nhập lại mật khẩu mới</label>
+          <input type="password" name="new_password_confirmation" class="form-control" required>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary">Cập nhật</button>
+      </div>
+    </form>
+  </div>
+</div>
 {{ $data->links() }}
 @push('scripts')
 <script>

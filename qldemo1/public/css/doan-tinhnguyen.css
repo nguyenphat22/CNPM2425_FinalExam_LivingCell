@@ -166,3 +166,13 @@ h5{
 @media (max-width: 575.98px){
   .doan-tn-toolbar.card{ grid-template-columns:1fr; }
 }
+/* Nút Mẫu Excel – xanh lá dịu */
+.btn-soft-success{
+  background:#e7fbe9;
+  color:#13795b;
+  border:1px solid #c3e6cb;
+}
+.btn-soft-success:hover{
+  background:#d5f5dd;
+  color:#0f5132;
+}

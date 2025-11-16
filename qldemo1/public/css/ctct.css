@@ -30,6 +30,18 @@ h4.mb-3{
 .btn-soft-primary:hover{ background:#d9e9ff; }
 .btn-soft-success{ background:#e8f7ef; color:#0f5132; border:1px solid #c9ecd7; }
 .btn-soft-secondary{ background:#f2f4f8; color:#384050; border:1px solid #e2e6ee; }
+.btn-soft-third{ background:#eeff9a; color:#384050; border:1px solid #e2e6ee; }
+.btn-soft-success{
+  background:#e8fbe8;
+  color:#1f7a3a;
+  border:1px solid #d1f1d1;
+}
+.btn-soft-success:hover{
+  background:#daf7da;
+  color:#145c14;
+  border-color:#b9e6b9;
+}
+
 
 /* ===== Bảng ===== */
 .table{

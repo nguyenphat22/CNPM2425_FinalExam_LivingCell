@@ -3,7 +3,14 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/doan-khenthuong.css') }}">
-<h5 class="mb-3">Danh sách khen thưởng sinh viên</h5>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-3">Danh sách khen thưởng sinh viên</h5>
+
+  <button class="btn btn-outline-primary btn-animate ripple"
+          data-bs-toggle="modal" data-bs-target="#modalDoiMatKhau">
+    <i class="bi bi-gear"></i> Đổi mật khẩu
+  </button>
+</div>
 
 <div class="d-flex mb-3 gap-2">
   {{-- Học kỳ --}}
@@ -27,6 +34,44 @@
     <input class="form-control me-2" name="q" value="{{ $q ?? '' }}" placeholder="Tìm MSSV / Họ tên / Danh hiệu">
     <button class="btn btn-outline-primary btn-animate ripple" type="submit">Tìm</button>
   </form>
+</div>
+
+<!-- Modal Đổi Mật Khẩu Đoàn trường -->
+<div class="modal fade" id="modalDoiMatKhau" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="post" action="{{ route('doan.password.change') }}" class="modal-content">
+      @csrf
+
+      <div class="modal-header">
+        <h5 class="modal-title">Đổi mật khẩu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Mật khẩu cũ</label>
+          <input type="password" name="old_password" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Mật khẩu mới</label>
+          <input type="password" name="new_password" class="form-control"
+                 required minlength="6">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Xác nhận mật khẩu mới</label>
+          <input type="password" name="new_password_confirmation" class="form-control"
+                 required minlength="6">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary" type="submit">Lưu thay đổi</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <div class="table-responsive">

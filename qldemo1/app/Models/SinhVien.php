@@ -10,19 +10,16 @@ class SinhVien extends Model
     protected $primaryKey = 'MaSV';
     public $timestamps = false;
 
-    // Nếu MaSV là chuỗi (MSSV)
     public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = ['MaSV', 'HoTen', 'NgaySinh', 'Khoa', 'Lop'];
 
-    /** Quan hệ: 1 SV có nhiều bản ghi điểm học tập */
     public function diemHocTap()
     {
         return $this->hasMany(DiemHocTap::class, 'MaSV', 'MaSV');
     }
 
-    /** Scope tìm kiếm nhanh theo q (MSSV/Họ tên/Khoa/Lớp) */
     public function scopeSearch($q, ?string $term)
     {
         $term = trim((string) $term);
@@ -34,5 +31,11 @@ class SinhVien extends Model
               ->orWhere('Khoa', 'like', "%{$term}%")
               ->orWhere('Lop', 'like', "%{$term}%");
         });
+    }
+
+    // Sắp theo MSSV dạng số (bỏ dấu chấm) – giống code T đang dùng
+    public function scopeOrderByMaSVNumeric($q)
+    {
+        return $q->orderByRaw('LPAD(REPLACE(MaSV, ".", ""), 20, "0")');
     }
 }

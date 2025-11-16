@@ -9,6 +9,10 @@ use App\Imports\GpaImport;
 use App\Exports\GpaExport;
 use App\Models\DiemHocTap;
 use App\Models\SinhVien;
+use Illuminate\Support\Facades\Hash;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class KhaothiController extends Controller
 {
@@ -133,5 +137,88 @@ class KhaothiController extends Controller
         $q  = $r->input('q');
 
         return Excel::download(new GpaExport($hk, $nh, $q), "GPA_HK{$hk}_{$nh}.xlsx");
+    }
+    // === ĐỔI MẬT KHẨU TÀI KHOẢN KHẢO THÍ ===
+    public function changePassword(Request $request)
+    {
+        // 1. Validate dữ liệu
+        $request->validate([
+            'old_password' => ['required'],
+            'new_password' => ['required', 'confirmed', 'min:6'],
+        ], [], [
+            'old_password' => 'Mật khẩu cũ',
+            'new_password' => 'Mật khẩu mới',
+        ]);
+
+        // 2. Lấy MaTK từ session
+        $user = session('user');
+        $maTK = data_get($user, 'MaTK');
+
+        if (!$maTK) {
+            return back()->withErrors(['old_password' => 'Không tìm thấy tài khoản đăng nhập.']);
+        }
+
+        // 3. Lấy tài khoản
+        $account = DB::table('BANG_TaiKhoan')->where('MaTK', $maTK)->first();
+        if (!$account) {
+            return back()->withErrors(['old_password' => 'Tài khoản không tồn tại trong hệ thống.']);
+        }
+
+        // 4. Kiểm tra mật khẩu cũ
+        if (!Hash::check($request->old_password, $account->MatKhau)) {
+            return back()->withErrors(['old_password' => 'Mật khẩu cũ không đúng.']);
+        }
+
+        // ❗❗ 5. NGĂN ĐẶT MẬT KHẨU MỚI GIỐNG MẬT KHẨU CŨ
+        if (Hash::check($request->new_password, $account->MatKhau)) {
+            return back()->withErrors([
+                'new_password' => 'Mật khẩu mới không được trùng với mật khẩu cũ.'
+            ]);
+        }
+
+        // 6. Cập nhật mật khẩu mới
+        DB::table('BANG_TaiKhoan')
+            ->where('MaTK', $maTK)
+            ->update([
+                'MatKhau' => Hash::make($request->new_password),
+            ]);
+
+        return back()->with('ok', 'Đã đổi mật khẩu thành công.');
+    }
+    public function gpaTemplate(): StreamedResponse
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Hàng tiêu đề: MaSV  HocKy  NamHoc  DiemHT  XepLoai
+        $headers = [
+            'A1' => 'MaSV',
+            'B1' => 'HocKy',
+            'C1' => 'NamHoc',
+            'D1' => 'DiemHT',
+            'E1' => 'XepLoai',
+        ];
+
+        foreach ($headers as $cell => $value) {
+            $sheet->setCellValue($cell, $value);
+        }
+
+        // In đậm + chỉnh độ rộng cột
+        $sheet->getStyle('A1:E1')->getFont()->setBold(true);
+        $sheet->getColumnDimension('A')->setWidth(18);
+        $sheet->getColumnDimension('B')->setWidth(10);
+        $sheet->getColumnDimension('C')->setWidth(14);
+        $sheet->getColumnDimension('D')->setWidth(12);
+        $sheet->getColumnDimension('E')->setWidth(16);
+
+        $writer = new Xlsx($spreadsheet);
+
+        return new StreamedResponse(function () use ($writer) {
+            $writer->save('php://output');
+        }, 200, [
+            'Content-Type'        => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="mau_diem_hoc_tap.xlsx"',
+            'Cache-Control'       => 'max-age=0',
+        ]);
     }
 }

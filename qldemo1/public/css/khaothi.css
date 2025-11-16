@@ -122,3 +122,34 @@ h5.mb-3{
   .table-responsive{ max-height:none; overflow:auto; }
   .table thead th{ position:static; }
 }
+/* Tiêu đề trang khaothi */
+.page-title {
+    font-weight: 700;
+    color: #164B71;
+    border-left: 4px solid #0d6efd;
+    padding-left: 10px;
+}
+
+/* Nút mềm giống các module khác */
+.btn-soft-primary {
+    background: #eef4ff;
+    border: 1px solid #d6e4ff;
+    color: #0d6efd;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all .2s;
+}
+
+.btn-soft-primary:hover {
+    background: #dce9ff;
+    border-color: #b9d3ff;
+    color: #0b5ed7;
+}
+
+.btn-animate {
+    transition: all .18s ease-in-out;
+}
+
+.btn-animate:active {
+    transform: scale(.95);
+}

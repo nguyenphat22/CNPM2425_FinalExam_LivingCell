@@ -14,7 +14,14 @@
 </button>
   </form>
 
-  <a class="btn btn-soft-success btn-animate ripple"
+    {{-- Nút Mẫu Excel --}}
+  <a href="{{ route('khaothi.gpa.template') }}"
+     class="btn btn-soft-success btn-animate ripple">
+    <i class="bi bi-file-earmark-excel me-1"></i> Mẫu Excel
+  </a>
+
+    {{-- Xuất báo cáo  --}}
+  <a class="btn btn-soft-info btn-animate ripple"
     href="{{ route('khaothi.gpa.export', ['hk'=>$hk,'nh'=>$nh,'q'=>$q]) }}">
      <i class="bi bi-file-earmark-excel me-1"></i> Xuất báo cáo Excel
   </a>
@@ -31,7 +38,9 @@
     </select>
     <input class="form-control" name="nh" value="{{ $nh }}" style="width:150px" placeholder="2024-2025">
     <input class="form-control" name="q" value="{{ $q }}" placeholder="Tìm MSSV / Họ tên">
-    <button class="btn btn-outline-primary btn-animate ripple">Tìm</button>
+    <button class="btn btn-outline-primary btn-animate ripple btn-search" type="submit">
+    Tìm
+</button>
   </form>
 </div>
 

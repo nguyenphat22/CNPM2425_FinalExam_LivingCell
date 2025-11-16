@@ -30,7 +30,17 @@
 .btn-soft-primary:hover{ background:#d9e9ff; }
 .btn-soft-warning{ background:#fff6db; color:#a07400; border:1px solid #ffe8a3; }
 .btn-soft-danger{ background:#ffe7ea; color:#b02a37; border:1px solid #ffc2c9; }
-
+/* Nút mẫu Excel (soft-success) */
+.btn-soft-success{
+  background:#e8fbe8;           /* xanh lá pastel rất nhẹ */
+  color:#1f7a1f;                /* chữ xanh đậm */
+  border:1px solid #d1f1d1;     /* viền xanh lá nhạt */
+}
+.btn-soft-success:hover{
+  background:#daf7da;           /* đậm hơn chút khi hover */
+  color:#145c14;
+  border-color:#b9e6b9;
+}
 /* Ripple (vùng hiệu ứng) */
 .btn.ripple{ position:relative; overflow:hidden; }
 
