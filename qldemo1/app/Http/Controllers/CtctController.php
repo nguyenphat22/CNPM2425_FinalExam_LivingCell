@@ -21,8 +21,6 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 
-
-
 class CtctController extends Controller
 {
     /**

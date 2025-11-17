@@ -68,26 +68,42 @@
       <div class="modal-body">
 
         <div class="mb-3">
-          <label class="form-label">Mật khẩu cũ</label>
-          <input type="password" name="old_password" class="form-control" required>
-          @error('old_password')
-            <div class="text-danger small mt-1">{{ $message }}</div>
-          @enderror
-        </div>
+  <label class="form-label">Mật khẩu cũ</label>
+  <input type="password"
+         name="old_password"
+         class="form-control"
+         placeholder="Nhập mật khẩu hiện tại"
+         required>
+  @error('old_password')
+    <div class="text-danger small mt-1">{{ $message }}</div>
+  @enderror
+</div>
 
-        <div class="mb-3">
-          <label class="form-label">Mật khẩu mới</label>
-          <input type="password" name="new_password" class="form-control" required>
-          <small class="text-muted">Tối thiểu 6 ký tự.</small>
-          @error('new_password')
-            <div class="text-danger small mt-1">{{ $message }}</div>
-          @enderror
-        </div>
+<div class="mb-3">
+  <label class="form-label">Mật khẩu mới</label>
+  <input type="password"
+         name="new_password"
+         class="form-control"
+         placeholder="Tối thiểu 6 ký tự"
+         required>
 
-        <div class="mb-3">
-          <label class="form-label">Nhập lại mật khẩu mới</label>
-          <input type="password" name="new_password_confirmation" class="form-control" required>
-        </div>
+  @error('new_password')
+    <div class="text-danger small mt-1">{{ $message }}</div>
+  @enderror
+</div>
+
+<div class="mb-3">
+  <label class="form-label">Nhập lại mật khẩu mới</label>
+  <input type="password"
+         name="new_password_confirmation"
+         class="form-control"
+         placeholder="Nhập lại mật khẩu mới"
+         required>
+
+  @error('new_password_confirmation')
+    <div class="text-danger small mt-1">{{ $message }}</div>
+  @enderror
+</div>
 
       </div>
 
