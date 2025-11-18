@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TaiKhoan;        
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -14,47 +14,48 @@ class AuthController extends Controller
     }
 
     public function login(Request $r)
-{
-    $r->validate([
-        'TenDangNhap' => 'required',
-        'MatKhau'     => 'required',
-    ]);
+    {
+        $r->validate([
+            'TenDangNhap' => 'required',
+            'MatKhau'     => 'required',
+        ]);
 
-    $user = DB::table('BANG_TaiKhoan')->where('TenDangNhap', $r->TenDangNhap)->first();
+        // LẤY USER BẰNG ELOQUENT
+        $user = TaiKhoan::where('TenDangNhap', $r->TenDangNhap)->first();
 
-    // Sai tài khoản/mật khẩu
-    if (!$user || !Hash::check($r->MatKhau, $user->MatKhau)) {
-        return back()->withErrors('Tên đăng nhập hoặc mật khẩu không đúng.');
-    }
+        // Sai tài khoản/mật khẩu
+        if (!$user || !Hash::check($r->MatKhau, $user->MatKhau)) {
+            return back()->withErrors('Tên đăng nhập hoặc mật khẩu không đúng.');
+        }
 
-    // CHẶN THEO TRẠNG THÁI
-    if ($user->TrangThai !== 'Active') {
-        $msg = match ($user->TrangThai) {
-            'Inactive' => 'Tài khoản chưa được kích hoạt.',
-            'Locked'   => 'Tài khoản đã bị khóa. Vui lòng liên hệ quản trị.',
-            default    => 'Tài khoản không hợp lệ.',
+        // CHẶN THEO TRẠNG THÁI
+        if ($user->TrangThai !== 'Active') {
+            $msg = match ($user->TrangThai) {
+                'Inactive' => 'Tài khoản chưa được kích hoạt.',
+                'Locked'   => 'Tài khoản đã bị khóa. Vui lòng liên hệ quản trị.',
+                default    => 'Tài khoản không hợp lệ.',
+            };
+            return back()->withErrors($msg);
+        }
+
+        // Lưu session
+        $r->session()->put('user', [
+            'MaTK'   => $user->MaTK,
+            'name'   => $user->TenDangNhap,
+            'role'   => $user->VaiTro,
+            'status' => $user->TrangThai,
+        ]);
+
+        // Điều hướng theo vai trò
+        return match ($user->VaiTro) {
+            'Admin'      => redirect()->route('admin.home'),
+            'SinhVien'   => redirect()->route('sv.home'),
+            'CTCTHSSV'   => redirect()->route('ctct.home'),
+            'KhaoThi'    => redirect()->route('khaothi.home'),
+            'DoanTruong' => redirect()->route('doan.home'),
+            default      => redirect()->route('login.show'),
         };
-        return back()->withErrors($msg);
     }
-
-    // Lưu session
-    $r->session()->put('user', [
-        'MaTK'   => $user->MaTK,
-        'name'   => $user->TenDangNhap,
-        'role'   => $user->VaiTro,
-        'status' => $user->TrangThai,
-    ]);
-
-    // Điều hướng theo vai trò
-    return match ($user->VaiTro) {
-        'Admin'      => redirect()->route('admin.home'),
-        'SinhVien'   => redirect()->route('sv.home'),
-        'CTCTHSSV'   => redirect()->route('ctct.home'),
-        'KhaoThi'    => redirect()->route('khaothi.home'),
-        'DoanTruong' => redirect()->route('doan.home'),
-        default      => redirect()->route('login.show'),
-    };
-}
 
     public function logout(Request $r)
     {
@@ -75,8 +76,8 @@ class AuthController extends Controller
             'Email'       => 'required|email',
         ]);
 
-        $u = DB::table('BANG_TaiKhoan')
-            ->where('TenDangNhap', $r->TenDangNhap)
+        // DÙNG ELOQUENT THAY CHO DB::table
+        $u = TaiKhoan::where('TenDangNhap', $r->TenDangNhap)
             ->where('Email', $r->Email)
             ->first();
 
@@ -91,26 +92,39 @@ class AuthController extends Controller
             ->with('ok', 'Xác thực thành công, vui lòng đặt mật khẩu mới.');
     }
 
-
     public function showReset(Request $r)
     {
-        if (!$r->session()->has('reset_ok_user_id')) return redirect()->route('forgot.show');
+        if (!$r->session()->has('reset_ok_user_id')) {
+            return redirect()->route('forgot.show');
+        }
+
         return view('auth.reset');
     }
 
     public function handleReset(Request $r)
     {
-        if (!$r->session()->has('reset_ok_user_id')) return redirect()->route('forgot.show');
+        if (!$r->session()->has('reset_ok_user_id')) {
+            return redirect()->route('forgot.show');
+        }
 
         $r->validate([
-            'MatKhau' => 'required|min:6|confirmed', // dùng MatKhau + MatKhau_confirmation
+            'MatKhau' => 'required|min:6|confirmed', 
         ]);
 
-        DB::table('BANG_TaiKhoan')
-            ->where('MaTK', $r->session()->get('reset_ok_user_id'))
-            ->update(['MatKhau' => Hash::make($r->MatKhau)]);
+        $id = $r->session()->get('reset_ok_user_id');
+
+        // LẤY USER BẰNG ELOQUENT
+        $user = TaiKhoan::find($id);
+        if (!$user) {
+            $r->session()->forget('reset_ok_user_id');
+            return redirect()->route('forgot.show')
+                ->withErrors('Tài khoản không tồn tại, vui lòng thử lại.');
+        }
+
+        $user->MatKhau = $r->MatKhau;
+        $user->save();
 
         $r->session()->forget('reset_ok_user_id');
         return redirect()->route('login.show')->with('ok', 'Đổi mật khẩu thành công, hãy đăng nhập lại.');
     }
-}   
+}

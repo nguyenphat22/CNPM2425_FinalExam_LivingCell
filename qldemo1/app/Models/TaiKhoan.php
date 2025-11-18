@@ -40,6 +40,20 @@ class TaiKhoan extends Model
         });
     }
 
+    /* ---------- Helper methods (tùy chọn) ---------- */
+
+    // Dùng cho login: tìm theo tên đăng nhập
+    public static function findByUsername(string $username): ?self
+    {
+        return static::where('TenDangNhap', $username)->first();
+    }
+
+    // Kiểm tra active
+    public function isActive(): bool
+    {
+        return $this->TrangThai === 'Active';
+    }
+
     public static function tableName(): string
     {
         return (new static)->getTable();

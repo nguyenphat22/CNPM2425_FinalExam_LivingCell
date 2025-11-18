@@ -30,20 +30,26 @@ class NgayTinhNguyen extends Model
     }
 
     public function scopeSearch($q, ?string $term)
-    {
-        $term = trim((string)$term);
-        if ($term === '') return $q;
+{
+    $term  = trim((string)$term);
+    $table = $q->getModel()->getTable();
 
-        $table = $q->getModel()->getTable();
+    // Luôn join sang bảng sinh viên + select HoTen
+    $q->leftJoin('BANG_SinhVien as sv', 'sv.MaSV', '=', "{$table}.MaSV")
+      ->select("{$table}.*", 'sv.HoTen');
 
-        return $q->leftJoin('BANG_SinhVien as sv', 'sv.MaSV', '=', "{$table}.MaSV")
-                 ->where(function ($s) use ($term, $table) {
-                    $s->where('sv.MaSV', 'like', "%{$term}%")
-                      ->orWhere('sv.HoTen','like', "%{$term}%")
-                      ->orWhere("{$table}.TenHoatDong",'like', "%{$term}%");
-                 })
-                 ->select("{$table}.*", 'sv.HoTen');
+    // Nếu không có từ khóa thì trả luôn query đã join
+    if ($term === '') {
+        return $q;
     }
+
+    // Có từ khóa thì thêm where
+    return $q->where(function ($s) use ($term, $table) {
+        $s->where("{$table}.MaSV", 'like', "%{$term}%")
+          ->orWhere('sv.HoTen', 'like', "%{$term}%")
+          ->orWhere("{$table}.TenHoatDong", 'like', "%{$term}%");
+    });
+}
 
     public function scopeApproved($q)
     {
